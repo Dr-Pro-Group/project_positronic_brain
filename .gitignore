@@ -1,0 +1,29 @@
+# Python / virtual environments
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+.ipynb_checkpoints/
+
+# Tooling / cache
+.pytest_cache/
+.claude/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Private — kept on disk, never published (paper, grant proposal, results, weights)
+research_paper/
+proposal/
+runs/
+trained_models/*.pt
+trained_models/*.pt.meta.json
+
+# Leftover .venv from the old nested layout
+positronic_brain_v2/

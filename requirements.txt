@@ -1,0 +1,37 @@
+# Project Positronic Brain v3
+# Python 3.11+ recommended (works on 3.11-3.14).
+
+numpy>=1.26
+torch>=2.2               # MPS/Metal support on Apple Silicon (standard macOS wheels);
+                         # CPU fallback on Intel Macs, Linux, Windows. No special plugins needed.
+matplotlib>=3.8
+plotly>=5.20
+streamlit>=1.32
+pandas>=2.2              # used by streamlit internally for some widgets
+
+# Tests
+pytest>=8.0
+
+# notebook support (optional but nice for the example)
+jupyterlab>=4.0
+ipykernel>=6.29
+
+# --- Multimodal pretrained encoders (OPTIONAL) -------------------------------
+# The brain runs fully offline with the built-in deterministic FallbackEncoder,
+# so these are NOT required. Install them to enable real, semantically-aligned
+# encoders (CLIP for image+text, Wav2Vec2 for audio, CLIP-per-frame for video):
+#   pip install transformers soundfile "imageio[ffmpeg]" pillow
+# transformers>=4.40   # CLIP (image/text) + Wav2Vec2 (audio)
+# soundfile>=0.12      # load audio files into waveforms
+# imageio[ffmpeg]>=2.34  # sample video frames
+pillow>=10.0           # image IO (also used by the fallback image encoder)
+
+# --- Seeding from public datasets (OPTIONAL) ---------------------------------
+# Only needed for seed.py (bootstrap a brain from public COCO / speech data).
+# Streams small capped subsets; audio is decoded via soundfile (no torchcodec).
+#   pip install datasets soundfile
+# datasets>=3.0        # stream public image-caption / speech datasets
+
+# Dev / convenience (optional)
+# black>=24.3
+# ruff>=0.4
