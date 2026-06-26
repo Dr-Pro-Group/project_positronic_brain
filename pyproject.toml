@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "positronic-brain"
+version = "3.3.0"
+description = "A biomimetic, learnable, sparse 3D conductance-based recurrent neuronal network, usable directly as a generative model."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { file = "LICENSE" }
+authors = [{ name = "Project Positronic Brain Contributors" }]
+keywords = [
+    "brain-inspired", "recurrent-neural-network", "conductance-based",
+    "Dale's-law", "sparse", "neuromorphic", "computational-neuroscience",
+]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "numpy>=1.26",
+    "torch>=2.2",
+]
+
+[project.optional-dependencies]
+viz = ["matplotlib>=3.8", "plotly>=5.20", "streamlit>=1.32", "pandas>=2.2", "pillow>=10.0"]
+multimodal = ["transformers>=4.40", "soundfile>=0.12", "imageio[ffmpeg]>=2.34", "pillow>=10.0"]
+data = ["datasets>=3.0", "soundfile>=0.12"]
+dev = ["pytest>=8.0"]
+
+[project.urls]
+Repository = "https://github.com/Dr-Pro-Group/project_positronic_brain"
+
+[tool.setuptools]
+packages = ["positronic_brain"]
+license-files = ["LICENSE"]
