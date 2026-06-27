@@ -8,6 +8,8 @@ authors:
     affiliation: "Dr Pro"
 repository-code: "https://github.com/Dr-Pro-Group/project_positronic_brain"
 license: MIT
+version: "3.3.0"
+date-released: "2026-06-27"
 keywords:
   - brain-inspired
   - computational-neuroscience

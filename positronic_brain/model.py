@@ -793,7 +793,10 @@ class PositronicBrain(nn.Module):
         older v2 dense model), a fresh brain with the saved config is returned
         and a warning is printed instead of raising, unless ``strict`` is set.
         """
-        ckpt = torch.load(path, map_location="cpu", weights_only=False)
+        # weights_only=True forbids arbitrary pickle execution; our checkpoints are
+        # only a plain config dict + a tensor state_dict, so this loads safely and
+        # closes the CodeQL "unsafe deserialization" path for untrusted files.
+        ckpt = torch.load(path, map_location="cpu", weights_only=True)
         cfg = BrainConfig.from_dict(ckpt.get("config", {}))
         brain = cls(cfg, device=device)
         try:
