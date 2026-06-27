@@ -436,7 +436,9 @@ class BrainLanguageModel(nn.Module):
     @classmethod
     def load(cls, path: str, device: Union[str, torch.device] = "auto"):
         """Load a model; returns (model, tokenizer_or_None)."""
-        ckpt = torch.load(path, map_location="cpu", weights_only=False)
+        # weights_only=True: checkpoints hold only plain config/tokenizer dicts and a
+        # tensor state_dict, so loading is safe and free of arbitrary pickle execution.
+        ckpt = torch.load(path, map_location="cpu", weights_only=True)
         cfg = LMConfig.from_dict(ckpt.get("lm_config", {}))
         model = cls(ckpt["vocab_size"], cfg, device=device)
         model.load_state_dict(ckpt["state_dict"])

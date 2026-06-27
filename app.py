@@ -21,6 +21,7 @@ Features:
 
 from __future__ import annotations
 
+import os
 import time
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
@@ -63,6 +64,25 @@ st.markdown(DARK_CSS, unsafe_allow_html=True)
 # -----------------------------------------------------------------------------
 # Model loading (cached)
 # -----------------------------------------------------------------------------
+def _safe_ckpt_path(model_path: str | None) -> str | None:
+    """Validate a user-supplied checkpoint path before opening it.
+
+    Returns the resolved path only if it is an existing ``.pt`` file located inside
+    the current working directory tree; otherwise ``None``. Normalising with
+    ``realpath`` and confining to a base directory prevents path traversal
+    (closes the CodeQL ``py/path-injection`` alerts).
+    """
+    if not model_path:
+        return None
+    base = os.path.realpath(os.getcwd())
+    full = os.path.realpath(str(model_path))
+    if full != base and not full.startswith(base + os.sep):
+        return None
+    if not (os.path.isfile(full) and full.endswith(".pt")):
+        return None
+    return full
+
+
 @st.cache_resource(show_spinner="Loading Positronic Brain...")
 def load_brain(
     model_path: str | None = None,
@@ -71,9 +91,10 @@ def load_brain(
     device: str = "auto",
 ) -> PositronicBrain:
     """Load a trained model or instantiate a fresh one with good defaults."""
-    if model_path and Path(model_path).exists():
+    safe_path = _safe_ckpt_path(model_path)
+    if safe_path:
         try:
-            brain = PositronicBrain.load(model_path, device=device, strict=False)
+            brain = PositronicBrain.load(safe_path, device=device, strict=False)
             brain.eval()
             return brain
         except Exception as e:  # noqa: BLE001
@@ -262,7 +283,7 @@ def main() -> None:
                 help="auto = MPS (Metal) on Apple Silicon if available, else CPU.",
             )
 
-        use_ckpt = Path(model_path).exists()
+        use_ckpt = _safe_ckpt_path(model_path) is not None
         brain = load_brain(
             model_path if use_ckpt else None,
             grid_size=gsize, recurrent_steps=rsteps, device=device_choice,
