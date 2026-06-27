@@ -27,3 +27,7 @@ trained_models/*.pt.meta.json
 
 # Leftover .venv from the old nested layout
 positronic_brain_v2/
+
+# Python build artifacts
+build/
+dist/
