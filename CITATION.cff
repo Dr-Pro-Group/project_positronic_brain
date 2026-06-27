@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+title: "Positronic Brain"
+message: "If you use this software, please cite it."
+type: software
+authors:
+  - family-names: Poyet
+    given-names: Laurent
+    affiliation: "Dr Pro"
+repository-code: "https://github.com/Dr-Pro-Group/project_positronic_brain"
+license: MIT
+keywords:
+  - brain-inspired
+  - computational-neuroscience
+  - recurrent-neural-networks
+  - pytorch
+  - neuromorphic
