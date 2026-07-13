@@ -158,6 +158,21 @@ class BrainConfig:
     dend_gain: float = 4.0        # steepness of the per-branch NMDA gate
     dend_thr: float = 0.05        # branch activation threshold
 
+    # Spike-frequency adaptation (I_M / I_AHP): a slow, activity-dependent
+    # hyperpolarizing K+ current — the most ubiquitous single-neuron adaptation
+    # mechanism in cortex. A per-neuron state ``a`` low-pass-filters that neuron's
+    # OWN firing rate and subtracts a hyperpolarizing current from its membrane
+    # update, so a neuron that has been firing progressively throttles itself (a
+    # natural novelty / high-pass filter that decorrelates repeated input). This is
+    # the rate-model reduction of the AdEx / Benda-Herz adaptation current, where
+    # the per-spike jump is replaced by the firing rate (Benda & Herz 2003; Brette
+    # & Gerstner 2005). Off by default; when off the dynamics are byte-identical to
+    # baseline (the adaptation state is never allocated and step() skips the block).
+    #   tau_a * da/dt = -a + r ;   dV -= adapt_gain * a
+    use_adaptation: bool = False
+    adapt_tau: float = 30.0       # adaptation time constant (steps); should be >> tau_m
+    adapt_gain: float = 0.4       # strength of the hyperpolarizing self-feedback
+
     # Laminar microcircuit: read the cube's z-axis as cortical depth (L2/3, L4,
     # L5/6) and bias connectivity toward the canonical L4→L2/3→L5/6 flow
     # (Douglas & Martin 2004; Bastos et al. 2012). Also places inhibitory neurons
@@ -354,6 +369,7 @@ class PositronicBrain(nn.Module):
         self._stp_u = None
         self._stp_x = None
         self._osc_t = 0          # oscillatory phase counter (reset each forward)
+        self._adapt_a = None     # spike-frequency adaptation state (B, N), per forward
 
         # Dendritic branch assignment: deterministically bucket each neuron's
         # incoming edges into `dend_branches` branches. nb maps an edge to its
@@ -497,9 +513,15 @@ class PositronicBrain(nn.Module):
         """Begin a forward pass: reset the oscillation phase and (if enabled) STP.
 
         Called at the start of every forward/generate so transient per-sequence
-        state (oscillator phase, release variables) starts fresh.
+        state (oscillator phase, release variables, adaptation) starts fresh.
         """
         self._osc_t = 0
+        # Spike-frequency adaptation state: a per-neuron (B, N) buffer, allocated
+        # only when enabled so that off == baseline (step() reads None and skips).
+        if self.config.use_adaptation:
+            self._adapt_a = torch.zeros((batch, self.num_neurons), device=self.device)
+        else:
+            self._adapt_a = None
         if not self.config.use_stp:
             self._stp_u = self._stp_x = None
             return
@@ -508,14 +530,30 @@ class PositronicBrain(nn.Module):
         self._stp_x = torch.ones((batch, E), device=self.device)
 
     def stp_detach(self) -> None:
-        """Detach STP state from the graph (for carrying it across windows)."""
+        """Detach transient dynamical state (STP, adaptation) from the graph so it
+        can be carried across truncated-BPTT windows without keeping their graph."""
         if getattr(self, "_stp_u", None) is not None:
             self._stp_u = self._stp_u.detach()
             self._stp_x = self._stp_x.detach()
+        if getattr(self, "_adapt_a", None) is not None:
+            self._adapt_a = self._adapt_a.detach()
 
     def stp_end(self) -> None:
-        """Clear STP state after a forward pass."""
+        """Clear transient per-forward state (STP, adaptation) after a forward pass."""
         self._stp_u = self._stp_x = None
+        self._adapt_a = None
+
+    def step_mutates_state(self) -> bool:
+        """True if :meth:`step` writes transient module state that a gradient-
+        checkpoint recompute would corrupt — STP (u, x), the oscillator phase,
+        the homeostatic gain, or the adaptation trace. Callers that wrap the
+        reverberation in ``torch.utils.checkpoint`` must skip checkpointing when
+        this is True, because the backward recompute would run against end-of-
+        forward state and evaluate a different function than the forward did.
+        """
+        cfg = self.config
+        return bool(cfg.use_stp or cfg.use_oscillation
+                    or cfg.use_homeostasis or cfg.use_adaptation)
 
     def _zone_pool(self, x: torch.Tensor) -> torch.Tensor:
         """Per-neuron zone-mean of ``x`` (B, N) -> (B, N).
@@ -613,6 +651,18 @@ class PositronicBrain(nn.Module):
             osc = cfg.osc_amp * float(np.sin(phase))
             dV = dV + osc * self.is_inhibitory.to(V.dtype).unsqueeze(0)
             self._osc_t += 1
+
+        if cfg.use_adaptation and self._adapt_a is not None:
+            # Spike-frequency adaptation: subtract a slow hyperpolarizing current
+            # proportional to the neuron's OWN accumulated firing, then advance the
+            # adaptation trace as a low-pass of the current rate r. The subtraction
+            # uses the pre-update trace (zero on the first step), so adaptation
+            # builds up over a run of activity and relaxes when the neuron quiets.
+            # Out-of-place reassignment (like STP / homeostasis) so the tensor saved
+            # for backward is never mutated in place.
+            dV = dV - cfg.adapt_gain * self._adapt_a
+            alpha_a = cfg.dt / max(cfg.adapt_tau, 1.0)
+            self._adapt_a = self._adapt_a + alpha_a * (r - self._adapt_a)
 
         return V + self.alpha * dV
 

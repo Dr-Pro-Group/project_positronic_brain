@@ -198,6 +198,7 @@ class BrainLanguageModel(nn.Module):
         # penalty (only accumulated when track_activity is set, to avoid cost).
         self.track_activity = False
         self._last_activity = None
+        self._ckpt_warned = False   # one-shot guard for the grad-checkpoint warning
 
         self.to(self._device)
 
@@ -245,13 +246,35 @@ class BrainLanguageModel(nn.Module):
         of being stored — trading ~1 extra forward for a large activation-memory
         saving, which is what lets ``inner_steps`` and batch size grow at
         ``grid_size`` 48-64+.
+
+        Checkpointing is automatically **disabled** (with a one-time warning) when
+        any stateful biological mechanism is active — STP, oscillation,
+        homeostasis, or adaptation. ``step`` mutates that transient state in place
+        each call, so the backward recompute would run against end-of-forward
+        state and silently evaluate a *different* function than the forward did,
+        corrupting the recurrent-core gradient. Correctness beats the memory
+        saving, so we fall back to the plain (non-checkpointed) path instead.
         """
         I_ext = self._token_current(token_ids)
-        if self.config.grad_checkpoint and V.requires_grad:
+        want_ckpt = self.config.grad_checkpoint and V.requires_grad
+        if want_ckpt and not self.brain.step_mutates_state():
             import torch.utils.checkpoint as _cp
 
             V = _cp.checkpoint(self._reverberate, V, I_ext, use_reentrant=False)
         else:
+            if want_ckpt and not self._ckpt_warned:
+                import warnings
+
+                warnings.warn(
+                    "grad_checkpoint was requested but is disabled because a "
+                    "stateful mechanism (STP / oscillation / homeostasis / "
+                    "adaptation) is active: checkpoint recompute would corrupt its "
+                    "gradients. Training without checkpointing (higher activation "
+                    "memory). Reduce batch size or inner_steps if you hit an OOM.",
+                    RuntimeWarning,
+                    stacklevel=2,
+                )
+                self._ckpt_warned = True
             V = self._reverberate(V, I_ext)
         rates = self.brain.firing_rate(V)
         logits = self.head(rates)

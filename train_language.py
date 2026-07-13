@@ -264,6 +264,10 @@ def main() -> None:
                    help="enable a theta-like oscillatory pacemaker on inhibitory cells")
     p.add_argument("--dendrites", action="store_true",
                    help="enable per-branch dendritic NMDA nonlinearity")
+    p.add_argument("--adaptation", action="store_true",
+                   help="enable spike-frequency adaptation (I_M/I_AHP): a slow "
+                        "hyperpolarizing current that throttles a neuron's own "
+                        "firing — a novelty/high-pass filter (Benda & Herz 2003)")
     p.add_argument("--laminar", action="store_true",
                    help="enable laminar microcircuit: canonical L4->L2/3->L5/6 "
                         "connectivity bias + spatially-even inhibition")
@@ -319,6 +323,7 @@ def main() -> None:
         "use_homeostasis": args.homeostasis,
         "use_oscillation": args.oscillation,
         "use_dendrites": args.dendrites,
+        "use_adaptation": args.adaptation,
         "use_laminar": args.laminar,
     }
     cfg = LMConfig(
