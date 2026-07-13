@@ -117,7 +117,7 @@ sel = spec.selectivity_index(brain, samples)    # which zone prefers which strea
 positronic_brain/   core package — model, connectivity, zones, language, encoders,
                     diagnostics, streaming, eprop, multimodal, specialization, …
 train_language.py   char-LM trainer (held-out eval + mechanism flags)
-tests/              pytest suite (77 tests)
+tests/              pytest suite (89 tests)
 docs/               architecture + usage documentation
 examples/           notebooks
 ```
