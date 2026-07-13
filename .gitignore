@@ -18,10 +18,11 @@ Thumbs.db
 .idea/
 .vscode/
 
-# Private — kept on disk, never published (paper, grant proposal, results, weights)
+# Private — kept on disk, never published (paper, grant proposal, results, weights, handover)
 research_paper/
 proposal/
 runs/
+HANDOVER.md
 trained_models/*.pt
 trained_models/*.pt.meta.json
 
