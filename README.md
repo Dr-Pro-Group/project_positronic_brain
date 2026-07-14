@@ -87,6 +87,7 @@ All **off by default** and byte-identical to baseline when disabled — see
 | `--homeostasis` | homeostatic intrinsic-gain control (Turrigiano) |
 | `--oscillation` | theta-like inhibitory pacemaker |
 | `--dendrites` | per-branch NMDA nonlinearity |
+| `--adaptation` | spike-frequency adaptation, I_M/I_AHP (Benda & Herz) |
 | `--laminar` | canonical L4→L2/3→L5/6 microcircuit |
 | `--learning-rule eprop` | forward-only, biologically-local credit assignment |
 | `--persistent-state` | carry membrane state across windows |
@@ -117,7 +118,7 @@ sel = spec.selectivity_index(brain, samples)    # which zone prefers which strea
 positronic_brain/   core package — model, connectivity, zones, language, encoders,
                     diagnostics, streaming, eprop, multimodal, specialization, …
 train_language.py   char-LM trainer (held-out eval + mechanism flags)
-tests/              pytest suite (89 tests)
+tests/              pytest suite (98 tests)
 docs/               architecture + usage documentation
 examples/           notebooks
 ```

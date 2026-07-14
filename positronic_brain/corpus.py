@@ -216,6 +216,21 @@ def load_corpus_splits(
             va_parts.append(va)
         if te:
             te_parts.append(te)
+        # Guard the honesty contract: a non-empty source that yields an empty
+        # held-out split has too few content blocks to partition, so its
+        # bits-per-char would not be measured on disjoint data. Warn loudly rather
+        # than let a collapsed split pass unnoticed.
+        if full_text.strip() and (not va or not te):
+            import warnings
+
+            warnings.warn(
+                f"a corpus source produced an empty held-out split "
+                f"(val_chars={len(va)}, test_chars={len(te)}): it has too few "
+                f"content blocks (separated by a blank line) to partition. Its "
+                f"held-out bits-per-char will not reflect this source.",
+                RuntimeWarning,
+                stacklevel=2,
+            )
 
     if text_path:
         with open(text_path, "r", encoding="utf-8", errors="ignore") as fh:
@@ -309,7 +324,12 @@ def _stream_hf_text(name: str, limit: int) -> str:
                 out.append(" ".join(map(str, v)))
                 break
     print(f"[corpus] streamed {len(out)} text rows from {name}.")
-    return "\n".join(out)
+    # Join rows with a BLANK line so each row is one splittable block for
+    # split_text_blocks (which splits on "\n\n"). Joining with a single "\n"
+    # collapsed the whole stream into ONE block for datasets whose rows have no
+    # internal blank line (e.g. tinystories), which silently sent every character
+    # to the train split and left the held-out val/test empty.
+    return "\n\n".join(out)
 
 
 # ----------------------------------------------------------- conversational HF

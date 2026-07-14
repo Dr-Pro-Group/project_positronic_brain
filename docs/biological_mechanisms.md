@@ -21,6 +21,7 @@ measurable. These fixes are the foundation:
 |---|---|---|
 | No held-out split (in-distribution numbers) | content-disjoint **train/val/test** split + **bits-per-char** logging + best-val checkpoint | `corpus.load_corpus_splits`, `train_language.py` |
 | Ablation harness val leak (repeated dialogues straddle the split) | partition dialogue **groups before** the `repeats` duplication | `corpus.load_corpus_splits`, `matched_experiment.py` |
+| Streamed `--hf` plain-text corpus collapsed into one block → **empty held-out val/test** (all data silently went to train) | join streamed rows on a **blank line** so each row is a splittable block; warn when any source yields an empty held-out split | `corpus._stream_hf_text`, `corpus.load_corpus_splits` |
 | OOV chars silently dropped; index 0 aliases a real char | real **UNK** token at index 0, OOV mapped not dropped, UNK-rate logged | `language.CharTokenizer` |
 | Dying-ReLU weight trap (`clamp(min=0)`) | smooth non-negative `abs()` reparam (checkpoint-safe) | `model.signed_weights` |
 | Two divergent integration depths | single shared `integrate()` helper | `model.integrate`, `language._reverberate` |
@@ -41,6 +42,7 @@ behind the README's honest-scope caveats.
 | `--homeostasis` | per-neuron **intrinsic-gain set-point** controller | Turrigiano 2008 (synaptic scaling) | **stability** | slow gain toward target rate; lets grad-clip loosen at scale |
 | `--oscillation` | theta-like **pacemaker** drive on inhibitory cells | Buzsáki; Lisman & Jensen 2013 | **fidelity** | a temporal clock / phase substrate |
 | `--dendrites` | per-branch **NMDA** thresholded nonlinearity | Poirazi 2003; Beniaguev et al. 2021 | **fidelity** | per-neuron nonlinear depth without growing the head |
+| `--adaptation` | **spike-frequency adaptation** (I_M / I_AHP): a slow per-neuron hyperpolarizing current that low-pass-filters the neuron's own rate and subtracts it from the membrane (`τ_a·ȧ = −a + r`; `dV −= g_a·a`) | Benda & Herz 2003; Brette & Gerstner 2005 | **fidelity** (may be quality-positive) | rate-model reduction of the AdEx adaptation current; a novelty / high-pass filter that decorrelates repeated characters. One extra `(B,N)` state, threaded through `step`/reverberation/TBPTT like STP |
 | `--sparse-weight W` | metabolic **sparse-coding** penalty toward a firing set-point | Olshausen & Field 1996 | fidelity / anti-dead-unit | per-neuron mean-rate penalty |
 | `--learning-rule eprop` | forward-only **eligibility-trace** learning (vs BPTT) | Bellec et al. 2020 | **fidelity** + online learning | gated by a gradient-agreement test (cosine to BPTT > 0.2); includes the conductance driving-force term |
 | `--laminar` | canonical **laminar microcircuit**: L4→L2/3→L5/6 connectivity bias + spatially-even inhibition | Douglas & Martin 2004; Bastos et al. 2012 | **fidelity** | reshapes local wiring (same edge count/k_max); also fixes the random-inhibition zero-gap problem |
