@@ -189,6 +189,15 @@ class BrainConfig:
     delay_velocity: float = 1.0   # lattice units travelled per integration step;
                                   # lower = slower axons = a wider delay spectrum
     delay_max: int = 8            # cap on per-edge delay, in integration steps
+    delay_mode: str = "distance"
+    # Controls that separate "distance buys time" from "any lag buys time".
+    #   distance — latency from edge length, the mechanism under test
+    #   uniform  — every edge gets the same latency (mean of the distance case),
+    #              so the network gains a longer effective time constant but no
+    #              spatial structure whatsoever
+    #   shuffled — the exact distance-derived latency histogram, randomly
+    #              reassigned across edges: same distribution, geometry destroyed
+    # If distance does not beat both, the effect is lag, not geometry.
 
     # Laminar microcircuit: read the cube's z-axis as cortical depth (L2/3, L4,
     # L5/6) and bias connectivity toward the canonical L4→L2/3→L5/6 flow
@@ -342,6 +351,15 @@ class PositronicBrain(nn.Module):
             # checkpoint trained without delays still loads strictly.
             delay = np.clip(np.round(edge_dist / max(cfg.delay_velocity, 1e-6)),
                             1, cfg.delay_max).astype(np.int64)
+            if cfg.delay_mode == "uniform":
+                # Same mean latency, no spatial structure at all.
+                delay = np.full_like(delay, int(round(float(delay.mean()))))
+            elif cfg.delay_mode == "shuffled":
+                # Same latency histogram, reassigned at random across edges.
+                np.random.default_rng(cfg.seed + 991).shuffle(delay)
+            elif cfg.delay_mode != "distance":
+                raise ValueError(f"delay_mode must be distance|uniform|shuffled, "
+                                 f"got {cfg.delay_mode!r}")
             self.register_buffer("edge_delay", torch.as_tensor(delay, dtype=torch.long))
             # The delay line only ever needs to reach back as far as the longest
             # axon actually present, which the geometry usually puts well below

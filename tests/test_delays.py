@@ -155,3 +155,47 @@ def test_delays_change_language_model_and_trains():
     assert float(model.loss_on(batch).item()) < first
     # The delay line must not leak between forward passes.
     assert model.brain._rate_hist is None
+
+
+def test_delay_modes_control_for_geometry():
+    """`uniform` and `shuffled` isolate lag from distance.
+
+    Without them, any improvement from --delays reads as evidence that the spatial
+    embedding matters; measured, it is the lag that matters and the geometry
+    contributes nothing. The controls have to preserve the right things to say so:
+    `shuffled` keeps the exact latency histogram and only moves it between edges,
+    and `uniform` collapses the histogram to a single value.
+    """
+    base = BrainConfig(grid_size=8, seed=0, use_delays=True)
+    dist = PositronicBrain(base, device="cpu")
+    shuf = PositronicBrain(BrainConfig(grid_size=8, seed=0, use_delays=True,
+                                       delay_mode="shuffled"), device="cpu")
+    uni = PositronicBrain(BrainConfig(grid_size=8, seed=0, use_delays=True,
+                                      delay_mode="uniform"), device="cpu")
+
+    # Shuffled preserves the distribution exactly, but not the assignment.
+    assert torch.equal(torch.bincount(shuf.edge_delay), torch.bincount(dist.edge_delay))
+    assert not torch.equal(shuf.edge_delay, dist.edge_delay)
+
+    # Uniform collapses to one latency everywhere.
+    assert int(uni.edge_delay.unique().numel()) == 1
+
+    # Only the distance mode should correlate with actual edge length.
+    import numpy as np
+    src, dst = dist.edge_index[0], dist.edge_index[1]
+    d = (dist.positions[src] - dist.positions[dst]).norm(dim=1).numpy()
+    r_dist = float(np.corrcoef(d, dist.edge_delay.numpy())[0, 1])
+    r_shuf = float(np.corrcoef(d, shuf.edge_delay.numpy())[0, 1])
+    # Rounding to integers caps the achievable correlation (the latencies take only
+    # a couple of distinct values), so the contract is a strong association in the
+    # distance mode and essentially none once the assignment is scrambled.
+    assert r_dist > 0.8
+    assert abs(r_shuf) < 0.1
+    assert r_dist > 10 * abs(r_shuf)
+
+
+def test_unknown_delay_mode_is_rejected():
+    import pytest
+    with pytest.raises(ValueError, match="delay_mode"):
+        PositronicBrain(BrainConfig(grid_size=5, use_delays=True, delay_mode="nope"),
+                        device="cpu")

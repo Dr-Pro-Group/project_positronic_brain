@@ -269,21 +269,46 @@ load-bearing rather than decorative.
 | 44 | 2.7634 | 2.7135 | −0.0499 |
 | **mean** | 2.7359 ± 0.0206 | **2.7003 ± 0.0095** | **−0.0355** |
 
-Held-out bits-per-char improves on all three seeds, by ~1.3% relative. We state
-that carefully: three seeds is few, and although the two ranges technically do not
-overlap they are separated by 0.0003 bpc, which is not meaningful separation. The
-defensible claim is a **consistent direction and a small effect**, not a
-established win. It is worth noting mainly because the design expectation for
-fidelity mechanisms in this project is that they cost quality or leave it flat,
-and this one does neither.
+Held-out bits-per-char improves on all three seeds, by ~1.3% relative.
 
-Two caveats bound it. At the default conduction velocity and this connection
-radius the delay spectrum is narrow — every edge is either 1 or 2 steps — so the
-mechanism has little room to act at grid 12; a wider spectrum needs either slower
-axons (`--delay-velocity`) or a physically larger brain. And the delay line costs
-about **7% per step** (1.22 → 1.30 ms at grid 12, batch 16), after the
-implementation was changed from a per-delay-class scatter to a single fused gather;
-the first version was 13.8× slower and would have made the flag unusable.
+### But the improvement is lag, not distance
+
+The obvious reading of that number — that the 3D geometry has finally become
+load-bearing — is wrong, and two controls show it. `--delay-mode uniform` gives
+every edge the *same* latency (lag, no spatial structure at all). `--delay-mode
+shuffled` keeps the exact distance-derived latency histogram and reassigns it at
+random across edges (same distribution, same mean, geometry destroyed).
+[`runs/delay_controls.log`](runs/delay_controls.log)
+
+| arm | seed 42 | seed 43 | seed 44 | mean | vs baseline |
+|---|---:|---:|---:|---:|---:|
+| baseline | 2.7304 | 2.7138 | 2.7634 | 2.7359 | — |
+| distance (the mechanism) | 2.6958 | 2.6917 | 2.7135 | 2.7003 | −0.0355 |
+| uniform (no geometry) | 2.6898 | 2.6905 | 2.7173 | 2.6992 | −0.0367 |
+| shuffled (geometry destroyed) | 2.6918 | 2.6874 | 2.7214 | 2.7002 | −0.0357 |
+
+Distance beats uniform by 0.0011 and shuffled by 0.0001, against a baseline seed
+spread of 0.0206 — differences one to two orders of magnitude below the noise
+floor, and distance wins on only 1 of 3 seeds against each control.
+
+**So `--delays` buys a small, real improvement, and none of it is attributable to
+distance.** What helps is having *any* transmission lag, which gives the network a
+second temporal timescale; which edge gets which lag is irrelevant. An earlier
+version of this document claimed the mechanism made the spatial embedding
+load-bearing. It does not, and the claim is retracted.
+
+Why it comes out this way is visible in the delay histogram: at the default
+velocity and `connection_radius=2.6`, every edge is either 1 or 2 steps
+(9,637 and 18,011 edges at grid 12, the same proportions at grid 32). A one-step
+spread is not enough spatial variation for geometry to express itself. Testing
+whether distance *per se* ever matters needs a genuinely wider spectrum — slower
+conduction (`--delay-velocity`) or a physically larger brain — and that experiment
+has not been run.
+
+The delay line costs about **7% per step** (1.22 → 1.30 ms at grid 12, batch 16),
+after the implementation was changed from a per-delay-class scatter to a single
+fused gather; the first version was 13.8× slower and would have made the flag
+unusable.
 
 ## 8. Reproducing all of it
 

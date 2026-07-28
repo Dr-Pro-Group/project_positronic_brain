@@ -278,6 +278,12 @@ def main() -> None:
                         "means slower conduction and a wider spread of delays")
     p.add_argument("--delay-max", type=int, default=8,
                    help="cap on any single edge's delay, in integration steps")
+    p.add_argument("--delay-mode", choices=["distance", "uniform", "shuffled"],
+                   default="distance",
+                   help="control for --delays: 'uniform' gives every edge the same "
+                        "latency (lag without geometry) and 'shuffled' keeps the "
+                        "latency histogram but reassigns it at random. If distance "
+                        "does not beat both, the effect is lag, not distance")
     p.add_argument("--laminar", action="store_true",
                    help="enable laminar microcircuit: canonical L4->L2/3->L5/6 "
                         "connectivity bias + spatially-even inhibition")
@@ -337,6 +343,7 @@ def main() -> None:
         "use_delays": args.delays,
         "delay_velocity": args.delay_velocity,
         "delay_max": args.delay_max,
+        "delay_mode": args.delay_mode,
         "use_laminar": args.laminar,
     }
     cfg = LMConfig(
