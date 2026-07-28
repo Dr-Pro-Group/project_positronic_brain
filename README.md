@@ -40,6 +40,7 @@ and as a multimodal network whose distinct **zones** receive different input str
 - 🔬 **A library of ablatable biology** — divisive normalization, short-term plasticity, homeostasis, dendritic NMDA, a laminar microcircuit, e-prop, and more.
 - 🌐 **Multi-stream specialization** — route different data into different zones and ask whether the zones *spontaneously specialize*.
 - 📐 **Honest instrumentation** — held-out evaluation, frozen-reservoir probes, and quantitative specialization metrics.
+- 📊 **Published measurements** — every claim below is backed by a committed result file in [`runs/`](runs/) and a figure regenerated from it; see **[RESULTS.md](RESULTS.md)**.
 
 ## 🚀 Quickstart
 
@@ -88,6 +89,7 @@ All **off by default** and byte-identical to baseline when disabled — see
 | `--oscillation` | theta-like inhibitory pacemaker |
 | `--dendrites` | per-branch NMDA nonlinearity |
 | `--adaptation` | spike-frequency adaptation, I_M/I_AHP (Benda & Herz) |
+| `--delays` | distance-dependent axonal conduction delays (Swadlow) |
 | `--laminar` | canonical L4→L2/3→L5/6 microcircuit |
 | `--learning-rule eprop` | forward-only, biologically-local credit assignment |
 | `--persistent-state` | carry membrane state across windows |
@@ -118,8 +120,12 @@ sel = spec.selectivity_index(brain, samples)    # which zone prefers which strea
 positronic_brain/   core package — model, connectivity, zones, language, encoders,
                     diagnostics, streaming, eprop, multimodal, specialization, …
 train_language.py   char-LM trainer (held-out eval + mechanism flags)
-tests/              pytest suite (98 tests)
-docs/               architecture + usage documentation
+experiments/        the harnesses that produced every published number, plus the
+                    figure builder that regenerates each plot from its result file
+runs/               committed result records (JSON) + their written analyses
+RESULTS.md          what has actually been measured, with the caveats
+tests/              pytest suite (112 tests)
+docs/               architecture + usage documentation, figures
 examples/           notebooks
 ```
 

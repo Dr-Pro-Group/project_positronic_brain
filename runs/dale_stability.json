@@ -1,0 +1,200 @@
+{
+  "args": {
+    "seeds": 8,
+    "seed0": 42,
+    "steps": 150,
+    "seq_lens": "48,64",
+    "grid_size": 12,
+    "embed_dim": 64,
+    "inner_steps": 3,
+    "batch_size": 16,
+    "lr": 0.0008,
+    "grad_clip": 0.5,
+    "val_frac": 0.1,
+    "repeats": 60,
+    "hf_chat": "soda",
+    "hf_chat_limit": 2000,
+    "control_seeds": 3,
+    "device": "mps",
+    "json": "runs/dale_stability.json"
+  },
+  "device": "mps",
+  "runs": [
+    {
+      "seed": 42,
+      "seq_len": 48,
+      "condition": "no-Dale",
+      "diverged_at": null,
+      "ppl": 11.061420001095696,
+      "seconds": 49.8
+    },
+    {
+      "seed": 42,
+      "seq_len": 48,
+      "condition": "Dale intact",
+      "diverged_at": null,
+      "ppl": 8.799068826600593,
+      "seconds": 53.7
+    },
+    {
+      "seed": 42,
+      "seq_len": 64,
+      "condition": "no-Dale",
+      "diverged_at": 1,
+      "ppl": null,
+      "seconds": 0.5
+    },
+    {
+      "seed": 42,
+      "seq_len": 64,
+      "condition": "Dale intact",
+      "diverged_at": null,
+      "ppl": 8.469459405046479,
+      "seconds": 71.0
+    },
+    {
+      "seed": 43,
+      "seq_len": 48,
+      "condition": "no-Dale",
+      "diverged_at": null,
+      "ppl": 10.793410391761961,
+      "seconds": 53.2
+    },
+    {
+      "seed": 43,
+      "seq_len": 48,
+      "condition": "Dale intact",
+      "diverged_at": null,
+      "ppl": 8.715865191272556,
+      "seconds": 50.2
+    },
+    {
+      "seed": 43,
+      "seq_len": 64,
+      "condition": "no-Dale",
+      "diverged_at": null,
+      "ppl": 10.663017946109704,
+      "seconds": 65.5
+    },
+    {
+      "seed": 43,
+      "seq_len": 64,
+      "condition": "Dale intact",
+      "diverged_at": null,
+      "ppl": 8.445554681105026,
+      "seconds": 65.6
+    },
+    {
+      "seed": 44,
+      "seq_len": 48,
+      "condition": "no-Dale",
+      "diverged_at": null,
+      "ppl": 10.982871556804154,
+      "seconds": 54.4
+    },
+    {
+      "seed": 44,
+      "seq_len": 48,
+      "condition": "Dale intact",
+      "diverged_at": null,
+      "ppl": 8.703773511411036,
+      "seconds": 49.6
+    },
+    {
+      "seed": 44,
+      "seq_len": 64,
+      "condition": "no-Dale",
+      "diverged_at": null,
+      "ppl": 10.753228214901139,
+      "seconds": 65.5
+    },
+    {
+      "seed": 44,
+      "seq_len": 64,
+      "condition": "Dale intact",
+      "diverged_at": null,
+      "ppl": 8.461047745403981,
+      "seconds": 67.8
+    },
+    {
+      "seed": 45,
+      "seq_len": 48,
+      "condition": "no-Dale",
+      "diverged_at": 1,
+      "ppl": null,
+      "seconds": 0.4
+    },
+    {
+      "seed": 45,
+      "seq_len": 64,
+      "condition": "no-Dale",
+      "diverged_at": 1,
+      "ppl": null,
+      "seconds": 0.2
+    },
+    {
+      "seed": 46,
+      "seq_len": 48,
+      "condition": "no-Dale",
+      "diverged_at": null,
+      "ppl": 11.03143416584605,
+      "seconds": 48.7
+    },
+    {
+      "seed": 46,
+      "seq_len": 64,
+      "condition": "no-Dale",
+      "diverged_at": null,
+      "ppl": 10.57010299956389,
+      "seconds": 63.9
+    },
+    {
+      "seed": 47,
+      "seq_len": 48,
+      "condition": "no-Dale",
+      "diverged_at": null,
+      "ppl": 10.6289873112405,
+      "seconds": 48.0
+    },
+    {
+      "seed": 47,
+      "seq_len": 64,
+      "condition": "no-Dale",
+      "diverged_at": null,
+      "ppl": 10.239041027957233,
+      "seconds": 62.4
+    },
+    {
+      "seed": 48,
+      "seq_len": 48,
+      "condition": "no-Dale",
+      "diverged_at": null,
+      "ppl": 10.96050421243498,
+      "seconds": 47.2
+    },
+    {
+      "seed": 48,
+      "seq_len": 64,
+      "condition": "no-Dale",
+      "diverged_at": 1,
+      "ppl": null,
+      "seconds": 0.2
+    },
+    {
+      "seed": 49,
+      "seq_len": 48,
+      "condition": "no-Dale",
+      "diverged_at": null,
+      "ppl": 11.091597253473314,
+      "seconds": 49.0
+    },
+    {
+      "seed": 49,
+      "seq_len": 64,
+      "condition": "no-Dale",
+      "diverged_at": 1,
+      "ppl": null,
+      "seconds": 0.2
+    }
+  ]
+}

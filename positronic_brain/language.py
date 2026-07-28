@@ -36,6 +36,7 @@ scratch — and every part scales by raising ``grid_size`` and the data.
 from __future__ import annotations
 
 import json
+import math
 from dataclasses import dataclass, field, asdict
 from typing import Dict, List, Optional, Union
 
@@ -127,6 +128,14 @@ class LMConfig:
     token_gain: float = 3.0      # scale of injected character current
     state_leak: float = 1.0      # 1.0 = carry full membrane state between chars (0 = reset)
     grad_checkpoint: bool = False  # checkpoint the inner reverberation loop (memory<->compute)
+    readout_width: Optional[int] = None
+    # Control for the neuron-count scaling study. The default read-out is
+    # Linear(N, vocab), which GROWS with the brain, so "more neurons lower the
+    # loss" is confounded with "a bigger read-out lowers the loss". Setting a
+    # width inserts a frozen random projection R^N -> R^readout_width (Gaussian,
+    # scaled 1/sqrt(N), never trained) in front of the head, so the trainable
+    # read-out is the same size at every brain size while still seeing the whole
+    # population. Leave as None for the standard model.
     seed: int = 42
     brain_overrides: Dict = field(default_factory=dict)
 
@@ -192,7 +201,19 @@ class BrainLanguageModel(nn.Module):
         # From-scratch trainable parameters of the language head.
         self.embed = nn.Embedding(self.vocab_size, cfg.embed_dim)
         self.token_in = nn.Linear(cfg.embed_dim, int(self._lang_idx.numel()))
-        self.head = nn.Linear(N, self.vocab_size)
+        if cfg.readout_width:
+            # Frozen Johnson-Lindenstrauss projection: the head sees a fixed-width
+            # compression of the population instead of one unit per neuron, so its
+            # parameter count no longer tracks the brain's size. Registered as a
+            # buffer, not a Parameter, so it is saved with the model but never
+            # trained — the control has to hold the read-out fixed, not just small.
+            self.register_buffer(
+                "_readout_proj",
+                torch.randn(N, int(cfg.readout_width)) / math.sqrt(N))
+            self.head = nn.Linear(int(cfg.readout_width), self.vocab_size)
+        else:
+            self._readout_proj = None
+            self.head = nn.Linear(N, self.vocab_size)
 
         # Optional per-neuron activity tracking for the metabolic sparse-coding
         # penalty (only accumulated when track_activity is set, to avoid cost).
@@ -277,7 +298,8 @@ class BrainLanguageModel(nn.Module):
                 self._ckpt_warned = True
             V = self._reverberate(V, I_ext)
         rates = self.brain.firing_rate(V)
-        logits = self.head(rates)
+        logits = self.head(rates if self._readout_proj is None
+                           else rates @ self._readout_proj)
         # Optionally relax the carried state toward rest (state_leak < 1).
         if self.config.state_leak < 1.0:
             V = self.brain.config.E_L + self.config.state_leak * (V - self.brain.config.E_L)
