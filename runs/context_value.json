@@ -1,0 +1,88 @@
+{
+  "args": {
+    "hf_chat": "soda",
+    "hf_chat_limit": 4000,
+    "orders": "0,1,2,3,4,5,6,8,10,12,16,20",
+    "alpha": 0.2,
+    "max_train": 2000000,
+    "max_test": 200000,
+    "json": "runs/context_value.json"
+  },
+  "vocab": 102,
+  "rows": [
+    {
+      "order": 0,
+      "bpc": 4.557591687694453,
+      "unseen_context_frac": 0.0,
+      "distinct_contexts": 1
+    },
+    {
+      "order": 1,
+      "bpc": 3.3074207319669173,
+      "unseen_context_frac": 1.0000050000250001e-05,
+      "distinct_contexts": 100
+    },
+    {
+      "order": 2,
+      "bpc": 2.353461512159772,
+      "unseen_context_frac": 0.00018500185001850018,
+      "distinct_contexts": 1633
+    },
+    {
+      "order": 3,
+      "bpc": 1.83867037773239,
+      "unseen_context_frac": 0.001835027525412881,
+      "distinct_contexts": 10075
+    },
+    {
+      "order": 4,
+      "bpc": 1.718436121642549,
+      "unseen_context_frac": 0.007935158703174064,
+      "distinct_contexts": 36208
+    },
+    {
+      "order": 5,
+      "bpc": 1.818336709070725,
+      "unseen_context_frac": 0.022920573014325357,
+      "distinct_contexts": 92960
+    },
+    {
+      "order": 6,
+      "bpc": 2.025314959548775,
+      "unseen_context_frac": 0.04981149434483034,
+      "distinct_contexts": 181917
+    },
+    {
+      "order": 8,
+      "bpc": 2.543114276798424,
+      "unseen_context_frac": 0.13631045241809672,
+      "distinct_contexts": 426532
+    },
+    {
+      "order": 10,
+      "bpc": 3.038728854543057,
+      "unseen_context_frac": 0.2530276513825691,
+      "distinct_contexts": 706475
+    },
+    {
+      "order": 12,
+      "bpc": 3.443041209755933,
+      "unseen_context_frac": 0.3775476528591715,
+      "distinct_contexts": 970016
+    },
+    {
+      "order": 16,
+      "bpc": 3.9698738361001187,
+      "unseen_context_frac": 0.5929674373949916,
+      "distinct_contexts": 1374898
+    },
+    {
+      "order": 20,
+      "bpc": 4.242149249718768,
+      "unseen_context_frac": 0.7439193919391939,
+      "distinct_contexts": 1627113
+    }
+  ],
+  "best_order": 4,
+  "knee_order": 4
+}

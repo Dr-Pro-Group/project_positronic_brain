@@ -86,6 +86,16 @@ Status vocabulary:
 
 ---
 
+## G. Claims about what the task requires
+
+| # | claim | status | evidence |
+|---|---|---|---|
+| G1 | An order-4 n-gram beats every configuration tested by 0.43 bpc | **RETRACTED** | compared free-running n-gram scoring against the model's cold-start windowed scoring. Under matched protocol the gap is 0.10 and the best configs win |
+| G2 | The model performs at roughly four-gram level | **confirmed** | matched protocol: 4-gram 2.0505 · grid-16 baseline 2.1522 · best config 2.0369 · grid-32 2.0044 |
+| G3 | The shipped baseline is worse than a four-character lookup table | **confirmed** | 2.1522 vs 2.0505, same eval protocol |
+| G4 | Context beyond ~4 characters stops helping on this corpus | **untestable by this method** | unseen held-out contexts reach 74% by order 20; the count estimator collapses long before the question is answered |
+| G5 | Short context carries most of the available signal | **confirmed** | orders 0→4 buy 2.84 bpc on free-running held-out text, with unseen contexts still under 1% |
+
 ## Contradictions requiring resolution
 
 **X1 — the readout-survival figure (E1).** The paper states 46%; the current sweep says
@@ -114,7 +124,18 @@ contrast (grid 12/k38 ≈ 64.6k edges vs grid 16/k16 ≈ 65.5k edges) has never 
 Any statement about corvid-style density scaling is currently **untested**.
 
 **X5 — the task may not require what is being measured.** MC, expansion, reach and
-memory horizon all quantify long-range temporal integration. Next-character prediction
-may need very little of it. If so, these are true facts about the substrate that carry
-no consequence for the benchmark, and the whole diagnostic frame is measuring a defect
-that costs nothing here. **No evidence either way has been gathered.**
+memory horizon all quantify long-range temporal integration; next-character prediction
+may need little of it. **Partially resolved, and it weakens the diagnostic frame.** The
+model sits at roughly four-gram level (G2), and the shipped baseline is beaten by a
+four-character lookup table (G3) — so whatever is costing accuracy here is not
+obviously long-range memory, since a model with no memory at all is competitive.
+Whether context beyond ~4 characters would help remains **unanswerable by n-gram
+counting** (G4): the estimator collapses to 74% unseen contexts by order 20, long
+before the question is reached. Settling it needs a model that can use long context —
+the LSTM's advantage over the brain at a longer budget is the nearest available
+evidence, and it points at optimisation rather than at the substrate's memory.
+
+**X6 — the project has never reported a trivial baseline.** The paper compares against
+a matched LSTM and dense RNN. It has never compared against an n-gram, which is the
+comparison that says whether any of the biological machinery earns its keep at all.
+On this corpus the answer is: barely. Any rewrite should carry this baseline.
