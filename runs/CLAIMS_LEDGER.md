@@ -82,7 +82,8 @@ Status vocabulary:
 |---|---|---|---|
 | F1 | Cheap screening predicts which organizations are worth training | **refuted** | `E/I 50-50` ranked 2nd by expansion, trained *worse* than baseline |
 | F2 | The 14-config table is a ranking | **corrected** | single seed; only the six rows beyond ±2σ (0.0206) are claims |
-| F3 | Reach interventions dominate the trained results | **confirmed** | top 4 configs are all reach or timescale interventions; dose-response through decay sigma 1.75→4→12 |
+| F3 | Reach interventions dominate the trained results | **CONTESTED** | the two `decay sigma` winners are confounded with initialisation scale — see H1 |
+| F4 | `decay sigma 12` is the largest single-change effect measured | **confirmed as a number, contested as an explanation** | −0.1155 bpc is real; the attribution to spatial organisation is not established |
 
 ---
 
@@ -95,6 +96,14 @@ Status vocabulary:
 | G3 | The shipped baseline is worse than a four-character lookup table | **confirmed** | 2.1522 vs 2.0505, same eval protocol |
 | G4 | Context beyond ~4 characters stops helping on this corpus | **untestable by this method** | unseen held-out contexts reach 74% by order 20; the count estimator collapses long before the question is answered |
 | G5 | Short context carries most of the available signal | **confirmed** | orders 0→4 buy 2.84 bpc on free-running held-out text, with unseen contexts still under 1% |
+
+## H. Claims about graph organisation
+
+| # | claim | status | evidence |
+|---|---|---|---|
+| H1 | `decay sigma 12` helps by flattening the spatial prior / extending reach | **CONFOUNDED** | `decay_sigma` also sets initial weight magnitude (`connectivity.py:231`, `exp(-d²/2σ²)`). σ12 gives 1.73× larger mean \|w\| than σ1.75 while changing path length 4.24→4.13 and clustering 0.286→0.249. The topology barely moves; the initialisation scale moves 73%. Control not yet run |
+| H2 | "spatial wiring helps" and "flattening the distance bias helps" contradict | **RESOLVED — no contradiction** | `connection_radius` caps max edge length at 2.45 for every σ, so σ12 keeps locality intact (clustering 0.249) while random wiring destroys it (0.018, mean edge 7.90). Different interventions by a wide margin |
+| H3 | `connection_radius` is a genuine topology change | **confirmed** | radius 2.6→6.0 moves mean edge 1.86→2.64, path 4.24→3.07, clustering 0.286→0.129 — and does not touch initial weight scale |
 
 ## Contradictions requiring resolution
 
@@ -111,7 +120,20 @@ does. Either signal does reach the other zones and they still carry nothing — 
 would point at the training objective rather than the geometry — or something else
 confines it. **Currently unexplained, and I should stop implying it is explained.**
 
-**X3 — spatial wiring: does it help or hurt?** The paper claims randomising the graph
+**X3 — RESOLVED (see H2).** No contradiction: `connection_radius` caps edge length
+independently of σ, so flattening the distance bias is a small perturbation of a local
+graph, not a step toward random wiring. Superseded by X7.
+
+**X7 — the best result may be an initialisation artifact.** `decay sigma 12` (−0.1155)
+and `decay sigma 4.0` (−0.0684) both raise initial weight magnitude (1.73× and 1.55×)
+while barely altering topology. The dose-response presented as evidence for an
+organisational effect is equally consistent with a dose-response in initialisation
+scale. **Control: baseline at σ=1.75 with `g_max` scaled 1.73×.** Until it runs, no
+organisational claim should rest on the sigma results — and `connection_radius`
+(H3), which changes topology without touching weight scale, becomes the cleaner
+instrument for any reach claim.
+
+**X3-original — spatial wiring: does it help or hurt?** The paper claims randomising the graph
 costs 0.76 perplexity, so spatial wiring buys accuracy. But `decay sigma 12`, which
 flattens the distance bias almost to uniform, is the *best* trained config (−0.1155).
 These may be compatible — full randomisation destroys the metric prior entirely, while
