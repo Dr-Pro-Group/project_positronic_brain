@@ -37,6 +37,51 @@ def neuron_positions(grid_size: int) -> np.ndarray:
     return np.stack([xs.ravel(), ys.ravel(), zs.ravel()], axis=1).astype(np.float32)
 
 
+def brain_mask(grid_size: int) -> np.ndarray:
+    """Boolean mask over the cubic lattice selecting a brain-shaped volume.
+
+    A cube is a convenient container, not a biological one. Real cortex is a pair
+    of hemispheres separated by the longitudinal fissure, longer front-to-back than
+    it is wide, flatter underneath than on top, and tapered at the frontal pole.
+    Masking the lattice to that envelope keeps everything else about the model
+    intact -- the same lattice spacing, the same distance-biased wiring rule -- and
+    changes only which positions exist, so it is a geometry change rather than a
+    new model.
+
+    Axes are read as x = anterior-posterior, y = left-right, z = dorsal-ventral.
+
+    Note that the neuron count is then whatever falls inside the envelope, roughly
+    21-25% of grid_size**3, so a brain-shaped G is NOT comparable with a cubic G of the
+    same side length. Compare at matched neuron count instead.
+    """
+    G = grid_size
+    xs, ys, zs = np.meshgrid(np.arange(G), np.arange(G), np.arange(G), indexing="ij")
+    # Normalised to [-1, 1] on each axis.
+    u = 2.0 * xs / max(G - 1, 1) - 1.0        # anterior (+) to posterior (-)
+    v = 2.0 * ys / max(G - 1, 1) - 1.0        # left (-) to right (+)
+    w = 2.0 * zs / max(G - 1, 1) - 1.0        # ventral (-) to dorsal (+)
+
+    # Cerebrum: markedly longer front-to-back than wide, and shallower still in
+    # depth. The earlier axis ratios were close enough to equal that the result
+    # rendered as a sphere.
+    ell = (u / 1.00) ** 2 + (v / 0.62) ** 2 + (w / 0.55) ** 2 <= 1.0
+
+    # Frontal pole tapers; the parietal/occipital end stays broad.
+    taper = (v ** 2 + w ** 2) <= (0.62 * (1.0 - 0.55 * np.clip(u, 0, None))) ** 2 * 1.7
+
+    # The cerebrum sits flat on the skull base.
+    floor = w >= -0.34
+
+    # Longitudinal fissure: a sagittal gap between hemispheres, open dorsally and
+    # closed ventrally where the callosal bridge runs.
+    fissure = ~((np.abs(v) < 0.10) & (w > -0.05))
+
+    # Cerebellum: a smaller, lower lobe tucked behind and beneath the occipital pole.
+    cere = ((u + 0.74) / 0.30) ** 2 + (v / 0.42) ** 2 + ((w + 0.46) / 0.24) ** 2 <= 1.0
+
+    return ((ell & taper & floor & fissure) | cere).ravel()
+
+
 def laminar_bands(grid_size: int, bands: int = 3) -> np.ndarray:
     """Assign each neuron a cortical-layer band from its depth (z) coordinate.
 

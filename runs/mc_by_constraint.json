@@ -1,0 +1,62 @@
+{
+  "rows": [
+    {
+      "label": "as shipped",
+      "growth": 0.5071117542684078,
+      "MC": 29.603785871974647,
+      "MC_over_N": 0.029603785871974646,
+      "eff_dim": 1.3473888340177445
+    },
+    {
+      "label": "random wiring (no spatial)",
+      "spatial_wiring": false,
+      "growth": 0.7348660603165627,
+      "MC": 20.446434122264332,
+      "MC_over_N": 0.020446434122264334,
+      "eff_dim": 1.5780144264476372
+    },
+    {
+      "label": "no Dale (free signs)",
+      "use_dale": false,
+      "growth": 0.8013972416520119,
+      "MC": NaN,
+      "MC_over_N": NaN,
+      "eff_dim": NaN
+    },
+    {
+      "label": "no conductance (additive)",
+      "use_conductance": false,
+      "growth": 0.8272341837485632,
+      "MC": 29.39752723413215,
+      "MC_over_N": 0.029397527234132147,
+      "eff_dim": 2.884587962660871
+    },
+    {
+      "label": "k_max 16 -> 48 (denser)",
+      "k_max": 48,
+      "growth": 0.6179608106613159,
+      "MC": NaN,
+      "MC_over_N": NaN,
+      "eff_dim": NaN
+    },
+    {
+      "label": "no Dale + no conductance",
+      "use_dale": false,
+      "use_conductance": false,
+      "growth": 0.7500338107347488,
+      "MC": 0.6943277027493328,
+      "MC_over_N": 0.0006943277027493328,
+      "eff_dim": 1.0212267235548895
+    },
+    {
+      "label": "random + noDale + nocond",
+      "spatial_wiring": false,
+      "use_dale": false,
+      "use_conductance": false,
+      "growth": 0.7563411270578703,
+      "MC": 23.890546216823434,
+      "MC_over_N": 0.023890546216823433,
+      "eff_dim": 1.549065156968288
+    }
+  ]
+}

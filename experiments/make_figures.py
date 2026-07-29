@@ -517,6 +517,237 @@ def fig_bioscale(outdir: str) -> None:
     _save(fig, outdir, "fig4_bioscale.png", "literature values (see caption)")
 
 
+# --------------------------------------------------- where the computation happens
+def fig_spatial_participation(outdir: str) -> None:
+    """Which neurons carry the computation, shown in the space they occupy.
+
+    The network is built in literal 3D, so the natural way to show that most of it
+    is inert is to show it in that space. Neurons are drawn at their lattice
+    positions with size and colour set by how much their firing rate is modulated
+    across a held-out passage: the responsive minority stands out against the bulk,
+    and the bulk is the majority.
+    """
+    path = os.path.join(ROOT, "runs/spatial_participation.npz")
+    if not os.path.exists(path):
+        print("skip fig10_participation: runs/spatial_participation.npz not found")
+        return
+    d = np.load(path, allow_pickle=True)
+    spread, pos = d["spread"], d["pos"]
+    N = len(spread)
+    thresh = 1e-3
+    active = spread >= thresh
+
+    fig = plt.figure(figsize=(13.5, 5.6))
+
+    # Left: the whole population, inert units greyed, responsive units coloured.
+    ax = fig.add_subplot(131, projection="3d")
+    sub = np.random.default_rng(0).choice(N, size=min(N, 12000), replace=False)
+    s_in = sub[~active[sub]]
+    s_ac = sub[active[sub]]
+    ax.scatter(pos[s_in, 0], pos[s_in, 1], pos[s_in, 2], s=1.5, c="#d5d9de",
+               alpha=0.30, linewidths=0, depthshade=False)
+    sc = ax.scatter(pos[s_ac, 0], pos[s_ac, 1], pos[s_ac, 2],
+                    s=4 + 40 * spread[s_ac] / max(spread.max(), 1e-9),
+                    c=spread[s_ac], cmap="inferno", alpha=0.85, linewidths=0,
+                    depthshade=False)
+    ax.set_title(f"{active.mean():.0%} of units are responsive", fontsize=11)
+    ax.set_xticks([]); ax.set_yticks([]); ax.set_zticks([])
+    ax.view_init(elev=16, azim=38)
+    cb = fig.colorbar(sc, ax=ax, shrink=0.55, pad=0.02)
+    cb.set_label("modulation depth", fontsize=8)
+    cb.ax.tick_params(labelsize=7)
+
+    # Middle: the responsive units alone — the machine that is really running.
+    ax2 = fig.add_subplot(132, projection="3d")
+    top = np.argsort(spread)[-int(0.05 * N):]
+    ax2.scatter(pos[top, 0], pos[top, 1], pos[top, 2], s=6, c=spread[top],
+                cmap="inferno", alpha=0.9, linewidths=0, depthshade=False)
+    ax2.set_title("the most-modulated 5%, alone", fontsize=11)
+    ax2.set_xticks([]); ax2.set_yticks([]); ax2.set_zticks([])
+    ax2.view_init(elev=16, azim=38)
+
+    # Right: how unevenly the modulation is distributed.
+    ax3 = fig.add_subplot(133)
+    order = np.sort(spread)[::-1]
+    cum = np.cumsum(order) / order.sum()
+    frac = np.arange(1, N + 1) / N
+    ax3.plot(frac * 100, cum * 100, color=BLUE, lw=2.2)
+    ax3.plot([0, 100], [0, 100], color=GRAY, ls="--", lw=1.0, alpha=0.7)
+    for pct in (5, 25):
+        i = int(pct / 100 * N)
+        ax3.plot([pct, pct], [0, cum[i] * 100], color=ORANGE, lw=1.0, ls=":")
+        ax3.annotate(f"{cum[i]*100:.0f}% of all modulation\nin the top {pct}% of units",
+                     (pct, cum[i] * 100), textcoords="offset points", xytext=(10, -6),
+                     fontsize=8.5, color=ORANGE, fontweight="bold")
+    ax3.set_xlabel("units, ranked by modulation depth (%)")
+    ax3.set_ylabel("share of total modulation (%)")
+    ax3.set_title("the computation is carried by a minority", fontsize=11)
+    ax3.grid(alpha=0.18); ax3.set_axisbelow(True)
+    ax3.spines[["top", "right"]].set_visible(False)
+
+    fig.suptitle(f"A {N:,}-unit brain running on a small fraction of itself",
+                 fontsize=13.5, fontweight="bold", y=1.00)
+    fig.tight_layout()
+    _save(fig, outdir, "fig10_participation.png", "runs/spatial_participation.npz")
+
+
+# ------------------------------------------------- the two ways to add neurons
+def fig_density_vs_volume(outdir: str) -> None:
+    """Adding neurons by volume leaves them unreachable; adding them by density does not.
+
+    A signal gets `inner_steps` hops per character, which buys a fixed distance
+    through the lattice. Growing the cube therefore grows what the signal must cross
+    while leaving what it can cross unchanged, and the neurons added past that
+    radius never participate. Holding the cube fixed and adding connectivity moves
+    the other way. The left panel makes the point in absolute units: the count of
+    participating neurons under volume scaling is flat.
+    """
+    # WITHDRAWN. This figure encoded two claims that did not survive their controls,
+    # and is disabled rather than deleted so the reason stays on the record.
+    #
+    #   (1) Both series were measured by kicking a SINGLE neuron in a network at
+    #       rest. The model drives a whole 7,218-unit zone while running, and under
+    #       that injection reach is 87% at grid 16 rather than the 15% plotted here
+    #       -- so the flat "volume scaling never adds participants" line is an
+    #       artefact of the probe, not a property of the model.
+    #   (2) The density arm carried up to 4x the recurrent parameters of the volume
+    #       arm it was compared against, so any advantage it showed is confounded
+    #       with model size. The matched comparison (grid 12 / k_max 38 against
+    #       grid 16 / k_max 16, ~64.6k vs ~65.5k edges) has not been run.
+    #
+    # Re-enable only with zone injection and a parameter-matched contrast.
+    print("skip fig11_density: WITHDRAWN — point-injection artefact + unmatched parameters")
+    return
+    path = os.path.join(ROOT, "runs/density_vs_volume.json")
+    if not os.path.exists(path):
+        return
+    rows = _load("runs/density_vs_volume.json")["rows"]
+    vol = [r for r in rows if r["mode"] == "volume"]
+    den = [r for r in rows if r["mode"] == "density" and r["reach"] > 0.01]
+
+    fig, (ax, ax2) = plt.subplots(1, 2, figsize=(12.2, 4.9))
+
+    # Left: how many units actually take part.
+    ax.plot([r["neurons"] for r in vol], [r["reach"] * r["neurons"] for r in vol],
+            color=BLUE, lw=2.2, marker="o", ms=8, markeredgecolor="white",
+            markeredgewidth=1.4, label="volume scaling (grow the cube)", zorder=3)
+    ax.plot([r["edges"] for r in den], [r["reach"] * r["neurons"] for r in den],
+            color=ORANGE, lw=2.2, marker="s", ms=8, markeredgecolor="white",
+            markeredgewidth=1.4, label="density scaling (grow connectivity)", zorder=3)
+    for r in vol:
+        ax.annotate(f"grid {r['grid']}", (r["neurons"], r["reach"] * r["neurons"]),
+                    textcoords="offset points", xytext=(0, -16), ha="center",
+                    fontsize=7.5, color=MUTED)
+    for r in den:
+        ax.annotate(f"k={r['k_max']}", (r["edges"], r["reach"] * r["neurons"]),
+                    textcoords="offset points", xytext=(0, 9), ha="center",
+                    fontsize=7.5, color=ORANGE)
+    ax.set_xscale("log")
+    ax.set_xlabel("neurons (volume) or synapses (density), log scale")
+    ax.set_ylabel("neurons a signal actually reaches")
+    ax.set_title("Volume scaling adds neurons that never participate")
+    ax.legend(frameon=False, fontsize=8.5, loc="upper left")
+    ax.grid(alpha=0.18); ax.set_axisbelow(True)
+    ax.spines[["top", "right"]].set_visible(False)
+
+    # Right: how far density scaling can be pushed before the network saturates.
+    # Plotting density against neuron count would be meaningless -- it holds neuron
+    # count fixed by construction -- so the x axis here is fan-in.
+    alld = [r for r in rows if r["mode"] == "density"]
+    ks = [r["k_max"] for r in alld]
+    fr = [r["reach"] * 100 for r in alld]
+    ok = [(k, f) for k, f in zip(ks, fr) if f > 1]
+    bad = [(k, f) for k, f in zip(ks, fr) if f <= 1]
+    ax2.plot([k for k, _ in ok], [f for _, f in ok], color=ORANGE, lw=2.2, marker="s",
+             ms=8, markeredgecolor="white", markeredgewidth=1.4, zorder=3)
+    if bad:
+        ax2.plot([k for k, _ in bad], [f for _, f in bad], color="#c1442e", marker="X",
+                 ms=11, lw=0, markeredgecolor="white", markeredgewidth=1.2, zorder=4)
+        ax2.annotate("saturates: every unit\nis driven into its ceiling",
+                     (bad[0][0], bad[0][1]), textcoords="offset points", xytext=(-8, 34),
+                     ha="right", fontsize=8.5, color="#c1442e", fontweight="bold")
+    base_reach = next(r["reach"] * 100 for r in vol if r["grid"] == 16)
+    ax2.axhline(base_reach, color=GRAY, ls="--", lw=1.0, alpha=0.7)
+    ax2.text(ks[0], base_reach + 2.5, f"as shipped ({base_reach:.0f}%)",
+             fontsize=8, color=MUTED)
+    ax2.set_xscale("log", base=2)
+    ax2.set_xlabel("synapses per neuron (fan-in), log scale")
+    ax2.set_ylabel("% of the network reached per character")
+    ax2.set_title("Density lifts participation 15% -> 87% in the same cube")
+    ax2.set_ylim(0, 100)
+    ax2.grid(alpha=0.18); ax2.set_axisbelow(True)
+    ax2.spines[["top", "right"]].set_visible(False)
+
+    fig.suptitle("Corvids add neurons by density, not volume — and so must this",
+                 fontsize=13.5, fontweight="bold", y=1.02)
+    fig.tight_layout()
+    _save(fig, outdir, "fig11_density_vs_volume.png", "runs/density_vs_volume.json")
+
+
+# ------------------------------------------------ how this network benchmarks
+def fig_benchmarks(outdir: str) -> None:
+    """Each standard measurement beside the value it should be compared with.
+
+    The quantities differ by three orders of magnitude, so showing them as
+    fractions of their reference hides the largest gap entirely. A paired dot per
+    row on a log axis keeps every comparison legible and makes the length of the
+    connecting line the thing the eye reads.
+    """
+    rows = [
+        ("Memory capacity  MC/N", 0.002, 0.60, "random sparse reservoir", "retains ~3 timesteps"),
+        ("Participating units", 0.25, 1.0, "every unit contributes", "75% removable for +0.003 bpc"),
+        ("Perturbation growth", 0.507, 0.9, "echo-state optimum", "strongly contracting"),
+        ("Dimensional expansion", 1.06, 3.0, "a reservoir worth the name", "recurrence ≈ passthrough"),
+        ("Population sparseness", 0.043, 0.05, "cortex: a few % active", "already biological"),
+    ]
+    fig, ax = plt.subplots(figsize=(10.8, 5.0))
+    y = np.arange(len(rows))[::-1]
+
+    for yi, (name, meas, ref, reflab, note) in zip(y, rows):
+        shortfall = ref / meas
+        col = AQUA if shortfall < 1.5 else ORANGE
+        ax.plot([meas, ref], [yi, yi], color=col, lw=2.6, alpha=0.55,
+                solid_capstyle="round", zorder=2)
+        ax.scatter([ref], [yi], s=90, facecolor="white", edgecolor=GRAY,
+                   linewidth=2.0, zorder=4)
+        ax.scatter([meas], [yi], s=110, color=col, edgecolor="white",
+                   linewidth=1.6, zorder=5)
+        mid = 10 ** ((np.log10(meas) + np.log10(ref)) / 2)
+        if shortfall >= 1.5:
+            ax.annotate(f"{shortfall:.0f}× short", (mid, yi), textcoords="offset points",
+                        xytext=(0, 11), ha="center", fontsize=9, fontweight="bold", color=col)
+        # When the two dots nearly coincide, stack their labels instead of
+        # letting them collide.
+        close = shortfall < 1.5
+        ax.annotate(f"{meas:g}", (meas, yi), textcoords="offset points",
+                    xytext=(0, -19 if not close else -22), ha="center",
+                    fontsize=8.5, fontweight="bold", color=col)
+        ax.annotate(f"{ref:g}", (ref, yi), textcoords="offset points",
+                    xytext=(0, -19 if not close else 13), ha="center",
+                    fontsize=8.5, color=MUTED)
+
+    ax.set_yticks(y)
+    ax.set_yticklabels([r[0] for r in rows], fontsize=10, color=INK)
+    ax.set_xscale("log")
+    ax.set_xlim(1e-3, 6)
+    ax.set_xlabel("value (log scale) — filled dot: measured · hollow dot: reference")
+    ax.set_title("Four standard measurements fall far short of their reference.\n"
+                 "The fifth — metabolic sparsity — is the one nobody optimised for.",
+                 fontsize=12.5, loc="left", pad=14)
+    ax.grid(axis="x", alpha=0.18)
+    ax.set_axisbelow(True)
+    ax.spines[["top", "right", "left"]].set_visible(False)
+    ax.tick_params(axis="y", length=0)
+
+    # The note column sits outside the data area, in axes coordinates so it cannot
+    # be dragged around by the log scale.
+    for yi, (_, _, _, _, note) in zip(y, rows):
+        ax.annotate(note, xy=(1.02, yi), xycoords=("axes fraction", "data"),
+                    fontsize=8.4, color=MUTED, va="center", style="italic")
+    fig.subplots_adjust(right=0.66)
+    _save(fig, outdir, "fig12_benchmarks.png", "runs/ (per-metric sources in RESULTS.md)")
+
+
 # ------------------------------------------------------------------- 3D lattice
 def fig_brain3d(outdir: str) -> None:
     from positronic_brain.model import PositronicBrain, BrainConfig
@@ -561,6 +792,9 @@ FIGURES = {
     "deltas": fig_scaling_deltas,
     "readout": fig_fixed_readout,
     "specialization": fig_specialization,
+    "participation": fig_spatial_participation,
+    "density": fig_density_vs_volume,
+    "benchmarks": fig_benchmarks,
     "dale": fig_dale,
     "loss": fig_loss,
     "bioscale": fig_bioscale,

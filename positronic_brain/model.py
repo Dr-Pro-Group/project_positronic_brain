@@ -87,6 +87,15 @@ class BrainConfig:
     # Dynamics
     recurrent_steps: int = 12
     tau_m: float = 4.0
+    tau_m_spread: float = 0.0
+    # Heterogeneous membrane time constants. Cortex does not run on one time
+    # constant: interneuron classes and pyramidal cells integrate over visibly
+    # different windows, and a population with a RANGE of timescales can hold a
+    # richer history than one where every unit is the same low-pass filter --
+    # lengthening a single shared tau trades memory capacity away rather than
+    # buying it. With spread s > 0 each neuron draws tau from a log-uniform
+    # distribution over [tau_m / 10^s, tau_m * 10^s], so the mean timescale is
+    # unchanged and only its diversity grows. 0.0 reproduces the scalar case exactly.
     dt: float = 1.0
     E_L: float = 0.0
     E_E: float = 1.0
@@ -408,7 +417,21 @@ class PositronicBrain(nn.Module):
             self.sensory_decode[m] = nn.Linear(N, emb_dim)
 
         # Cache integration constant.
-        self.alpha = cfg.dt / cfg.tau_m
+        if cfg.tau_m_spread > 0:
+            rng_t = np.random.default_rng(cfg.seed + 17)
+            lo, hi = -cfg.tau_m_spread, cfg.tau_m_spread
+            taus = cfg.tau_m * (10.0 ** rng_t.uniform(lo, hi, size=N)).astype(np.float32)
+            # Forward Euler is only stable while alpha = dt/tau stays comfortably
+            # below 1; a wide spread otherwise hands the fastest neurons alpha > 1
+            # and the network diverges on the first step. Floor tau at 2*dt so the
+            # fastest unit matches the stability margin the scalar default uses.
+            taus = np.maximum(taus, 2.0 * cfg.dt)
+            self.register_buffer("neuron_alpha",
+                                 torch.as_tensor(cfg.dt / taus, dtype=torch.float32))
+            self.alpha = cfg.dt / cfg.tau_m       # kept for reporting/back-compat
+        else:
+            self.neuron_alpha = None
+            self.alpha = cfg.dt / cfg.tau_m
 
         # Transient short-term-plasticity state (set by stp_begin during a forward).
         self._stp_u = None
@@ -753,7 +776,8 @@ class PositronicBrain(nn.Module):
             if len(self._rate_hist) > self._max_delay:
                 self._rate_hist.pop(0)
 
-        return V + self.alpha * dV
+        alpha = self.alpha if self.neuron_alpha is None else self.neuron_alpha.unsqueeze(0)
+        return V + alpha * dV
 
     def integrate(self, V, I_ext, steps, collect_trace: bool = False):
         """Run ``steps`` recurrent integration steps from state ``V``.
