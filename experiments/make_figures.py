@@ -748,6 +748,66 @@ def fig_benchmarks(outdir: str) -> None:
     _save(fig, outdir, "fig12_benchmarks.png", "runs/ (per-metric sources in RESULTS.md)")
 
 
+# ------------------------------------------------------- the brain-shaped volume
+def fig_brain_shape(outdir: str) -> None:
+    """The brain-shaped lattice, in the three planes anatomy is normally read in.
+
+    The cube is a container, not a claim: nothing about a cubic boundary is
+    biological. Masking the same lattice to a cerebral envelope — elongated
+    front-to-back, tapered frontally, flat underneath, split by a sagittal fissure
+    that closes ventrally, with a cerebellar lobe behind and below — keeps the
+    lattice spacing and the distance-biased wiring rule untouched and changes only
+    which positions exist.
+    """
+    from positronic_brain.connectivity import brain_mask, neuron_positions
+    G = 32
+    m = brain_mask(G)
+    pos = neuron_positions(G)[m]
+    cube = neuron_positions(G)
+
+    fig = plt.figure(figsize=(12.6, 4.3))
+    planes = [
+        (0, 2, "sagittal (side)", "anterior \u2192", "dorsal \u2192"),
+        (1, 2, "coronal (front)", "left \u2194 right", "dorsal \u2192"),
+        (0, 1, "horizontal (top)", "anterior \u2192", "left \u2194 right"),
+    ]
+    for k, (i, j, name, xl, yl) in enumerate(planes, 1):
+        ax = fig.add_subplot(1, 4, k)
+        ax.scatter(cube[:, i], cube[:, j], s=1, c="#e6e9ec", linewidths=0, zorder=1)
+        ax.scatter(pos[:, i], pos[:, j], s=6, c=pos[:, 0], cmap="viridis",
+                   alpha=0.75, linewidths=0, zorder=3)
+        ax.set_title(name, fontsize=10.5)
+        ax.set_xlabel(xl, fontsize=8, color=MUTED)
+        ax.set_ylabel(yl, fontsize=8, color=MUTED)
+        ax.set_aspect("equal")
+        ax.set_xticks([]); ax.set_yticks([])
+        for s in ax.spines.values():
+            s.set_visible(False)
+
+    # Fourth panel: what the mask costs, since a brain-shaped G is not a cubic G.
+    ax = fig.add_subplot(1, 4, 4)
+    grids = [12, 16, 24, 32]
+    kept = [brain_mask(g).sum() for g in grids]
+    full = [g ** 3 for g in grids]
+    y = np.arange(len(grids))
+    ax.barh(y, full, height=0.55, color="#e6e9ec", edgecolor="white", linewidth=1.2)
+    ax.barh(y, kept, height=0.55, color=BLUE, edgecolor="white", linewidth=1.2)
+    for yi, (k, f) in enumerate(zip(kept, full)):
+        ax.text(f * 1.06, yi, f"{k:,} of {f:,}", va="center", fontsize=8, color=INK)
+    ax.set_yticks(y); ax.set_yticklabels([f"G={g}" for g in grids], fontsize=9)
+    ax.set_xscale("log")
+    ax.set_xlim(right=max(full) * 6)
+    ax.set_xlabel("lattice sites (log)", fontsize=8, color=MUTED)
+    ax.set_title("neurons inside the envelope", fontsize=10.5)
+    ax.spines[["top", "right", "left"]].set_visible(False)
+    ax.tick_params(axis="y", length=0)
+
+    fig.suptitle("A brain-shaped lattice: same spacing and wiring rule, "
+                 "biological boundary", fontsize=13, fontweight="bold", y=1.02)
+    fig.tight_layout()
+    _save(fig, outdir, "fig13_brain_shape.png", "connectivity.brain_mask()")
+
+
 # ------------------------------------------------------------------- 3D lattice
 def fig_brain3d(outdir: str) -> None:
     from positronic_brain.model import PositronicBrain, BrainConfig
@@ -795,6 +855,7 @@ FIGURES = {
     "participation": fig_spatial_participation,
     "density": fig_density_vs_volume,
     "benchmarks": fig_benchmarks,
+    "brainshape": fig_brain_shape,
     "dale": fig_dale,
     "loss": fig_loss,
     "bioscale": fig_bioscale,
