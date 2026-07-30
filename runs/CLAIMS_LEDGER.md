@@ -38,7 +38,7 @@ Status vocabulary:
 | B5 | `--delays` works because distance determines timing | **RETRACTED** | uniform lag 2.6992 and shuffled 2.7002 vs distance 2.7003, against 0.0206 seed spread |
 | B6 | `--adaptation` may be quality-positive | **retracted** | 2.1536 vs baseline 2.1524 at grid 16/3000 steps: neutral |
 | B7 | `--divnorm` and `--homeostasis` are stability mechanisms | **untested** | both measured quality-negative (+0.0742, +0.1277); stability never measured in this program |
-| B8 | `--dendrites` is a per-branch nonlinearity | **contested** | audit found gate pinned 0.450–0.453, ~2% nonlinear residual, acts as ~0.6× gain; the gain-matched control was never run |
+| B8 | `--dendrites` is a per-branch nonlinearity | **moot** | the mechanism is inert: 2.1329 vs baseline 2.1525 is 0.95σ, below the ±0.0206 noise floor. The gain-matched control (2.1452, 0.35σ) captures ~37% of a non-significant difference, so the gain-knob question is not answerable at one seed — and not worth answering for a mechanism with no measurable effect |
 | B9 | Of 8 named mechanisms at a real budget, 1 helps / 2 hurt / 5 do nothing | **confirmed** | `long_program_stage12.json`, grid 16, 3000 steps, 1 seed |
 
 ## C. Claims about the dynamical regime
@@ -105,6 +105,8 @@ Status vocabulary:
 | H2 | "spatial wiring helps" and "flattening the distance bias helps" contradict | **RESOLVED — no contradiction** | `connection_radius` caps max edge length at 2.45 for every σ, so σ12 keeps locality intact (clustering 0.249) while random wiring destroys it (0.018, mean edge 7.90). Different interventions by a wide margin |
 | H4 | The `decay sigma` benefit is entirely initialisation scale | **confirmed** | weight-matched control at σ=1.75, g_max 0.4→0.691: **2.0393** vs decay_sigma 12's **2.0421** vs baseline **2.1525**. The control reproduces the effect and marginally exceeds it, 7× inside the noise floor |
 | H5 | `g_max = 0.4` is a badly-tuned default | **confirmed** | g_max 0.691 buys −0.1132 bpc from one hyperparameter — larger than every biological mechanism in the repo (best was `stp` at −0.0845; two mechanisms hurt) |
+| H6 | At matched synaptic budget, density beats volume | **CONFIRMED** | grid12/k38 (1,728 neurons, 64,576 edges, 299,990 total params) reaches **2.0788**; grid16/k16 (4,096 neurons, 65,536 edges, 618,390 params) reaches **2.1523**. Density wins by 0.0735 (3.6σ) on 51% fewer total parameters — every confound handicaps the winner |
+| H7 | The architecture has been scaling along its weaker axis | **confirmed** | volume scaling helps (75% of a 27× gain survives, E1/§neuron-axis) but density beats it per parameter (H6). `k_max`/`connection_radius` dominate `grid_size` |
 | H3 | `connection_radius` is a genuine topology change | **confirmed** | radius 2.6→6.0 moves mean edge 1.86→2.64, path 4.24→3.07, clustering 0.286→0.129 — and does not touch initial weight scale |
 
 ## Contradictions requiring resolution
@@ -145,9 +147,12 @@ sigma 12 keeps distance-biased wiring and merely broadens it — but the paper c
 presents spatial locality as beneficial without qualification, and the strongest single
 result in this session comes from weakening it.
 
-**X4 — density vs volume is unresolved, not answered.** D5 is retracted and the matched
-contrast (grid 12/k38 ≈ 64.6k edges vs grid 16/k16 ≈ 65.5k edges) has never been run.
-Any statement about corvid-style density scaling is currently **untested**.
+**X4 — RESOLVED in favour of density (H6).** grid12/k38 reaches 2.0788 against
+grid16/k16's 2.1523, a 0.0735 gain at 3.6σ — on 2.4× fewer neurons, 1.5% fewer
+edges, a 2.4× smaller readout and **51% fewer total trainable parameters**. Every
+confound handicaps the winning arm, which makes this the most robust positive result
+in the investigation. It supports the avian-density argument (Olkowicz et al. 2016)
+and says the project should scale connectivity rather than cube size.
 
 **X5 — the task may not require what is being measured.** MC, expansion, reach and
 memory horizon all quantify long-range temporal integration; next-character prediction
