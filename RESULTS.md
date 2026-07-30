@@ -183,11 +183,50 @@ size at every brain size. The head still sees every neuron; it just cannot grow.
 | growing read-out | −0.564 bpc / 10× neurons | 0.96 | −0.736 |
 | **fixed read-out** | **−0.257 bpc / 10× neurons** | 0.97 | **−0.345** |
 
-**Holding the read-out fixed retains 46% of the slope.** Enlarging the recurrent
-population genuinely does improve held-out prediction at fixed data and compute —
-but by about −0.26 bpc per tenfold, not −0.56. Any extrapolation built on the
-uncontrolled slope overstates the case by roughly a factor of two, and the
-uncontrolled slope is the one that would normally get reported.
+**Superseded — see below.** This 46% figure comes from a 400-step budget, and a
+later sweep at 3,000 steps over a wider range finds **75.4%**. The 400-step
+measurement was depressed by the same undertraining that reverses two ablation
+conclusions in §2. It is kept here because the comparison between the two is
+informative; **the number to cite is 75.4%**.
+
+| | slope | range | budget | survives |
+|---|---:|---|---|---:|
+| this section | −0.257 bpc/10× | 19× | 400 steps | 46% |
+| **wide sweep** | **−0.207 bpc/10×** | **27×** | **3,000 steps** | **75.4%** |
+
+Neuron count over 512 → 13,824 at 3,000 steps: growing read-out 2.4363 → 2.0473,
+fixed 128-wide read-out 2.5224 → 2.2290. Neither curve has plateaued.
+[`runs/wide_sweep_neurons.json`](runs/wide_sweep_neurons.json)
+
+### Training budget dominates everything
+
+100× more training (400 → 40,000 steps, corpus grown to 8.6M characters so the
+longest run stays at 3.6 epochs rather than memorising) buys **−0.885 bpc**:
+2.6288 → 2.0129 → 1.7437. [`runs/wide_sweep_training.json`](runs/wide_sweep_training.json)
+
+### Density beats volume at a matched synaptic budget
+
+| arm | neurons | edges | total params | bpc ↓ |
+|---|---:|---:|---:|---:|
+| volume (G=16, k=16) | 4,096 | 65,536 | 618,390 | 2.1523 |
+| **density (G=12, k=38)** | 1,728 | 64,576 | **299,990** | **2.0788** |
+
+Density wins by 0.0735 bpc (3.6σ) on **51% fewer trainable parameters**, 2.4× fewer
+neurons and a 2.4× smaller read-out — every asymmetry handicaps the winner. This is
+the trade by which avian brains reach primate-like forebrain neuron counts in a much
+smaller volume, and it says this project has been scaling `grid_size` when it should
+have been scaling `k_max` and `connection_radius`. [`runs/controls.json`](runs/controls.json)
+
+### The ordering across everything measured
+
+| lever | range | gain |
+|---|---|---:|
+| training budget | 100× steps | **−0.885** |
+| neuron count (read-out controlled) | 27× | −0.294 |
+| initial weight scale `g_max` 0.4 → 0.691 | one number | −0.113 |
+| best biological mechanism (`--stp`) | — | −0.0845 |
+| density over volume, matched budget | — | −0.0735 |
+| the other seven mechanisms | — | ~0 or worse |
 
 Two caveats on the control itself: the fixed-read-out models are strictly smaller
 in total parameters, so this is a *lower* bound on the neurons' contribution rather
