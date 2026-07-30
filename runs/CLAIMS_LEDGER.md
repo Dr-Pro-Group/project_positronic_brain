@@ -109,6 +109,17 @@ Status vocabulary:
 | H7 | The architecture has been scaling along its weaker axis | **confirmed** | volume scaling helps (75% of a 27× gain survives, E1/§neuron-axis) but density beats it per parameter (H6). `k_max`/`connection_radius` dominate `grid_size` |
 | H3 | `connection_radius` is a genuine topology change | **confirmed** | radius 2.6→6.0 moves mean edge 1.86→2.64, path 4.24→3.07, clustering 0.286→0.129 — and does not touch initial weight scale |
 
+## I. Replication (3 seeds per condition)
+
+| # | claim | status | evidence |
+|---|---|---|---|
+| I1 | The seed spread is ±0.0206 | **RETRACTED** | that figure came from G=12 at 400 steps and was applied to G=16 at 3000 without checking. Measured where the experiments ran: **pooled σ = 0.0089** over five conditions in triplicate, with per-condition σ from 0.0028 to 0.0152 (a 5.4× spread — no single floor is right) |
+| I2 | Of eight mechanisms, 1 helps / 2 hurt / 5 do nothing | **CORRECTED** | against the measured floor it is **3 help / 2 hurt / 3 do nothing**. `--delays` (2.8σ) and `--dendrites` (2.2σ) cross the line; both marginal |
+| I3 | `--dendrites` is inert, gain-knob question moot | **RETRACTED** | it is a 2.2σ effect, and the gain-matched control accounts for only ~37% of it — so there is something beyond the gain after all |
+| I4 | Density beats volume at matched budget | **REPLICATED** | 3 seeds each: volume 2.1534 ± 0.0029, density 2.0864 ± 0.0095. Advantage **0.0671**, t = 11.7 on 4 df, wins on 3/3 seeds, worst density run beats best volume run |
+| I5 | 75.4% of the neuron gain survives the readout control | **CORRECTED** | single-seed. Three seeds give 69.6 / 76.3 / 84.5% → **76.8% ± 7.5%**. The paper's published 46% is retired either way, but the replacement is a range, not a point estimate |
+| I6 | The pipeline is deterministic at fixed seed | **confirmed** | identical configurations reproduced to 4 decimals across independent invocations on three separate occasions |
+
 ## Contradictions requiring resolution
 
 **X1 — the readout-survival figure (E1).** The paper states 46%; the current sweep says

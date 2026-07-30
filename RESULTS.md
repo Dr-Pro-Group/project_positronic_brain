@@ -211,11 +211,26 @@ longest run stays at 3.6 epochs rather than memorising) buys **−0.885 bpc**:
 | volume (G=16, k=16) | 4,096 | 65,536 | 618,390 | 2.1523 |
 | **density (G=12, k=38)** | 1,728 | 64,576 | **299,990** | **2.0788** |
 
-Density wins by 0.0735 bpc (3.6σ) on **51% fewer trainable parameters**, 2.4× fewer
-neurons and a 2.4× smaller read-out — every asymmetry handicaps the winner. This is
-the trade by which avian brains reach primate-like forebrain neuron counts in a much
-smaller volume, and it says this project has been scaling `grid_size` when it should
-have been scaling `k_max` and `connection_radius`. [`runs/controls.json`](runs/controls.json)
+Density wins by 0.0735 bpc (3.6σ against the 0.0206 seed floor) on **51% fewer
+trainable parameters**, 2.4× fewer neurons and a 2.4× smaller read-out — every
+asymmetry handicaps the winner. This is the trade by which avian brains reach
+primate-like forebrain neuron counts in a much smaller volume, and it says this
+project has been scaling `grid_size` when it should have been scaling `k_max` and
+`connection_radius`. [`runs/controls.json`](runs/controls.json)
+
+**Multi-seed status (in flight).** Seed 42 is the table above.
+[`experiments/replicate.py`](experiments/replicate.py) is re-running seeds 43 and 44
+into [`runs/replication.json`](runs/replication.json). Partial log so far (do not
+treat as final until the process prints `REPLICATION COMPLETE`):
+
+| seed | volume G16/k16 | density G12/k38 | Δ (density − volume) |
+|---:|---:|---:|---:|
+| 42 (controls) | 2.1523 | **2.0788** | **−0.0735** |
+| 43 (partial) | 2.1513 | **2.0833** | **−0.0680** |
+| 44 (partial) | 2.1567 | *pending* | — |
+
+Until seed 44 density and the neuron-ladder legs finish, cite the seed-42 contrast
+and note that seed 43 already reproduces the same direction at similar magnitude.
 
 ### The ordering across everything measured
 
@@ -228,12 +243,101 @@ have been scaling `k_max` and `connection_radius`. [`runs/controls.json`](runs/c
 | density over volume, matched budget | — | −0.0735 |
 | the other seven mechanisms | — | ~0 or worse |
 
-Two caveats on the control itself: the fixed-read-out models are strictly smaller
-in total parameters, so this is a *lower* bound on the neurons' contribution rather
-than a perfectly matched comparison; and one projection width at one seed is a thin
-basis for the exact ratio, though the gap is large and consistent at all five sizes.
+Two caveats on the fixed-read-out control: those models are strictly smaller in
+total parameters, so the neuron contribution is a *lower* bound rather than a
+perfectly matched comparison; and one projection width is a thin basis for the
+exact ratio, though the gap is large and consistent. The 75.4% survival figure
+itself is pending multi-seed confirmation on the ladder endpoints (grids 8 and 16)
+in the same `replicate.py` job.
 
-## 6. The zones do not spontaneously specialise
+## 6. Every mechanism at a real budget
+
+The mechanism flags were meant to be measurable; most had only been trained at 400
+steps, and some had never been run at a serious budget. At `G=16`, 3,000 steps,
+seed 42, only differences beyond the ±0.0206 seed floor are claims; the rest are
+indistinguishable from baseline.
+[`runs/long_program_stage12.json`](runs/long_program_stage12.json) ·
+[`experiments/long_program.py`](experiments/long_program.py)
+
+| configuration | bpc ↓ | Δ vs baseline |
+|---|---:|---:|
+| **`--stp`** | **2.0679** | **−0.0845** |
+| `--delays` | 2.1278 | −0.0246 |
+| `--dendrites` | 2.1329 | −0.0195 |
+| `--laminar` | 2.1505 | −0.0019 |
+| baseline | 2.1524 | — |
+| `--adaptation` | 2.1536 | +0.0012 |
+| `--oscillation` | 2.1598 | +0.0074 |
+| `--divnorm` | 2.2266 | +0.0742 |
+| `--homeostasis` | 2.2801 | +0.1277 |
+
+**One helps, two hurt, five do nothing** (at this budget and seed). Caveats: (1)
+divnorm and homeostasis are *stability* mechanisms scored here only on accuracy;
+(2) `--dendrites` is effectively inert as implemented (branch gate ~gain, not a
+clear dendritic nonlinearity); (3) single seed — the ranking of the nulls should
+not be over-read. Against all of them, raising the shipped `g_max` from 0.4 to
+0.691 reaches **2.0393** (−0.113) — larger than every named mechanism
+([`runs/controls.json`](runs/controls.json)).
+
+## 7. A trivial baseline the project never had
+
+Matched LSTM and dense RNN do not answer whether any of the machinery is needed.
+An order-4 character *n*-gram, scored under the **same cold-start windowed
+protocol** as the model (not free-running), reaches **2.0505 bpc**. The shipped
+`G=16` baseline is **2.1522**; the best trained config in the long program is
+**2.0369**; the `G=32` checkpoint is **2.0044**.
+([`runs/CLAIMS_LEDGER.md`](runs/CLAIMS_LEDGER.md) G2–G3; free-running n-gram curves
+in [`runs/context_value.json`](runs/context_value.json) are a different protocol
+and must not be mixed with model scores.)
+
+A four-character lookup table therefore **beats the shipped baseline** and sits
+within ~0.1 bpc of everything else. That is the comparison that says how much the
+biology is earning on this corpus: barely.
+
+## 8. What the recurrent core actually computes
+
+Before asking what a constraint costs, measure whether the substrate computes.
+
+- **Dimensional expansion** of a rank-64 drive is only ~1.06–1.12× across
+  grids 10→16 — almost a passthrough
+  ([`runs/dimensional_expansion.json`](runs/dimensional_expansion.json)).
+- **Linear memory capacity** with held-out scoring is **0.20–0.32% of N** (an
+  earlier 3% figure was an overfit read-out artifact; corrected in the claims
+  ledger).
+- **Perturbation half-life** is ~1 character.
+- **Effective population:** clamping the least-modulated 75% of a 32,768-unit
+  trained model costs only **+0.0033 bpc**; clamping the same fraction at random
+  costs **+2.08 bpc**
+  ([`runs/effective_n_grid32.json`](runs/effective_n_grid32.json)).
+- Of the most-modulated 5% of units, **all** sit in the text-injection zone.
+
+So mechanism ablations are measurements on a near-passthrough core, not on a rich
+reservoir. That reframes every null result above.
+
+## 9. Claims of ours that did not survive their controls
+
+Full audit trail: [`runs/CLAIMS_LEDGER.md`](runs/CLAIMS_LEDGER.md). Seven claims made
+during this work were withdrawn after a later control contradicted them:
+
+1. **`--delays` works because distance sets timing** — uniform and shuffled lag
+   match distance within noise (delays section below).
+2. **Memory capacity is 3% of N** — read-out overfit; true value ~0.2%.
+3. **Driving toward criticality restores memory** — raising τ_m raises growth
+   toward 1 while MC *falls*.
+4. **Signal reaches only 1.9% of the largest grid** — point-kick-at-rest artifact;
+   under zone injection reach is tens of percent.
+5. **Density lifts participation 15%→87%** — density arm was parameter-confounded;
+   the clean result is the matched-budget bpc contrast in §5.
+6. **An n-gram beats every config by 0.43 bpc** — protocol mismatch; under matched
+   windows the gap is ~0.10 and the best configs win.
+7. **Flattening `decay_sigma` is an organisational win** — weight-matched `g_max`
+   control reproduces the entire gain; topology was never the mechanism.
+
+Six of seven share one structure: a variable was changed, an effect appeared, and
+it was attributed to whichever property of that variable we were thinking about.
+The retraction rate is part of the contribution.
+
+## 10. The zones do not spontaneously specialise
 
 This is the project's most-repeated hypothesis — different data streams enter
 through spatially distinct zones, so do those zones *become* a visual area, an
@@ -290,7 +394,7 @@ before training begins. Any future claim of emergent specialisation in this syst
 needs the untrained control alongside it, and needs a measurement that is not
 already at ceiling at initialisation.
 
-## 7. Axonal conduction delays (`--delays`)
+## 11. Axonal conduction delays (`--delays`)
 
 The 3D embedding has so far only decided *which* neurons connect and *how
 strongly*. `--delays` lets it decide *when* a signal lands: each edge carries an
@@ -349,7 +453,7 @@ after the implementation was changed from a per-delay-class scatter to a single
 fused gather; the first version was 13.8× slower and would have made the flag
 unusable.
 
-## 8. Reproducing all of it
+## 12. Reproducing all of it
 
 ```bash
 python experiments/matched_experiment.py --mode all --grid-size 12 --steps 400 \
@@ -370,12 +474,22 @@ python experiments/zone_specialization.py --grid-size 12 --scenes 1500 --steps 1
     --seeds 5 --modality-dropout 0.0 --device cpu \
     --json runs/zone_specialization_nodropout.json
 
+# density / ladder multi-seed (long; currently the in-flight job)
+python experiments/replicate.py --seeds 43,44 --json runs/replication.json
+
 python experiments/make_figures.py
 ```
 
+**How to cite a number.** Prefer the JSON record under `runs/` over any prose table
+here or in the LaTeX. Claim status lives in
+[`runs/CLAIMS_LEDGER.md`](runs/CLAIMS_LEDGER.md). The journal manuscript is
+[`research_paper/paper/`](research_paper/paper/) (`main.tex` / `main_nature.tex`);
+older markdown drafts under `research_paper/` are superseded.
+
 ## What these results are not
 
-Small budgets, one corpus, character level, three seeds for the matched table.
-They are preliminary and directional. The contribution is a *measurement* of what
-each biological constraint costs in a generator, not a performance claim — and on
-the headline metric the biology currently loses to a plain RNN.
+Small budgets, one corpus, character level, three seeds for the short matched
+table and often one seed elsewhere. They are preliminary and directional. The
+contribution is a *measurement* of what each biological constraint costs in a
+generator, not a performance claim — and on the headline metric the biology
+currently loses to a plain RNN (and is competitive with a four-gram).

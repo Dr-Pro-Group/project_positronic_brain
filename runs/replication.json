@@ -1,0 +1,153 @@
+{
+  "args": {
+    "seeds": "43,44",
+    "steps": 3000,
+    "json": "runs/replication.json"
+  },
+  "runs": [
+    {
+      "label": "volume grid16 k16",
+      "seed": 43,
+      "grid": 16,
+      "k_max": 16,
+      "readout": "growing",
+      "bpc": 2.1513221726979603,
+      "neurons": 4096,
+      "edges": 65536,
+      "params": 618390,
+      "min": 33.0
+    },
+    {
+      "label": "density grid12 k38",
+      "seed": 43,
+      "grid": 12,
+      "k_max": 38,
+      "readout": "growing",
+      "bpc": 2.0833219237095393,
+      "neurons": 1728,
+      "edges": 64576,
+      "params": 299990,
+      "min": 75.7
+    },
+    {
+      "label": "volume grid16 k16",
+      "seed": 44,
+      "grid": 16,
+      "k_max": 16,
+      "readout": "growing",
+      "bpc": 2.156654344303142,
+      "neurons": 4096,
+      "edges": 65536,
+      "params": 618390,
+      "min": 32.0
+    },
+    {
+      "label": "density grid12 k38",
+      "seed": 44,
+      "grid": 12,
+      "k_max": 38,
+      "readout": "growing",
+      "bpc": 2.096986081473521,
+      "neurons": 1728,
+      "edges": 64576,
+      "params": 299990,
+      "min": 72.8
+    },
+    {
+      "label": "grid8 growing",
+      "seed": 43,
+      "grid": 8,
+      "k_max": 16,
+      "readout": "growing",
+      "bpc": 2.435776453898452,
+      "neurons": 512,
+      "edges": 8192,
+      "params": 82476,
+      "min": 7.9
+    },
+    {
+      "label": "grid8 fixed",
+      "seed": 43,
+      "grid": 8,
+      "k_max": 16,
+      "readout": "fixed128",
+      "bpc": 2.537878340140755,
+      "neurons": 512,
+      "edges": 8192,
+      "params": 42924,
+      "min": 8.5
+    },
+    {
+      "label": "grid16 growing",
+      "seed": 43,
+      "grid": 16,
+      "k_max": 16,
+      "readout": "growing",
+      "bpc": 2.1513157448463844,
+      "neurons": 4096,
+      "edges": 65536,
+      "params": 618390,
+      "min": 31.8
+    },
+    {
+      "label": "grid16 fixed",
+      "seed": 43,
+      "grid": 16,
+      "k_max": 16,
+      "readout": "fixed128",
+      "bpc": 2.320691339368539,
+      "neurons": 4096,
+      "edges": 65536,
+      "params": 209686,
+      "min": 31.8
+    },
+    {
+      "label": "grid8 growing",
+      "seed": 44,
+      "grid": 8,
+      "k_max": 16,
+      "readout": "growing",
+      "bpc": 2.409832369399732,
+      "neurons": 512,
+      "edges": 8192,
+      "params": 82476,
+      "min": 8.6
+    },
+    {
+      "label": "grid8 fixed",
+      "seed": 44,
+      "grid": 8,
+      "k_max": 16,
+      "readout": "fixed128",
+      "bpc": 2.5330907157698115,
+      "neurons": 512,
+      "edges": 8192,
+      "params": 42924,
+      "min": 8.4
+    },
+    {
+      "label": "grid16 growing",
+      "seed": 44,
+      "grid": 16,
+      "k_max": 16,
+      "readout": "growing",
+      "bpc": 2.1566652652014717,
+      "neurons": 4096,
+      "edges": 65536,
+      "params": 618390,
+      "min": 31.7
+    },
+    {
+      "label": "grid16 fixed",
+      "seed": 44,
+      "grid": 16,
+      "k_max": 16,
+      "readout": "fixed128",
+      "bpc": 2.319327473951534,
+      "neurons": 4096,
+      "edges": 65536,
+      "params": 209686,
+      "min": 31.6
+    }
+  ]
+}
