@@ -101,8 +101,10 @@ Status vocabulary:
 
 | # | claim | status | evidence |
 |---|---|---|---|
-| H1 | `decay sigma 12` helps by flattening the spatial prior / extending reach | **CONFOUNDED** | `decay_sigma` also sets initial weight magnitude (`connectivity.py:231`, `exp(-d²/2σ²)`). σ12 gives 1.73× larger mean \|w\| than σ1.75 while changing path length 4.24→4.13 and clustering 0.286→0.249. The topology barely moves; the initialisation scale moves 73%. Control not yet run |
+| H1 | `decay sigma 12` helps by flattening the spatial prior / extending reach | **RETRACTED** | `decay_sigma` also sets initial weight magnitude (`connectivity.py:231`, `exp(-d²/2σ²)`). σ12 gives 1.73× larger mean \|w\| than σ1.75 while changing path length 4.24→4.13 and clustering 0.286→0.249. The topology barely moves; the initialisation scale moves 73%. Control not yet run |
 | H2 | "spatial wiring helps" and "flattening the distance bias helps" contradict | **RESOLVED — no contradiction** | `connection_radius` caps max edge length at 2.45 for every σ, so σ12 keeps locality intact (clustering 0.249) while random wiring destroys it (0.018, mean edge 7.90). Different interventions by a wide margin |
+| H4 | The `decay sigma` benefit is entirely initialisation scale | **confirmed** | weight-matched control at σ=1.75, g_max 0.4→0.691: **2.0393** vs decay_sigma 12's **2.0421** vs baseline **2.1525**. The control reproduces the effect and marginally exceeds it, 7× inside the noise floor |
+| H5 | `g_max = 0.4` is a badly-tuned default | **confirmed** | g_max 0.691 buys −0.1132 bpc from one hyperparameter — larger than every biological mechanism in the repo (best was `stp` at −0.0845; two mechanisms hurt) |
 | H3 | `connection_radius` is a genuine topology change | **confirmed** | radius 2.6→6.0 moves mean edge 1.86→2.64, path 4.24→3.07, clustering 0.286→0.129 — and does not touch initial weight scale |
 
 ## Contradictions requiring resolution
@@ -124,14 +126,16 @@ confines it. **Currently unexplained, and I should stop implying it is explained
 independently of σ, so flattening the distance bias is a small perturbation of a local
 graph, not a step toward random wiring. Superseded by X7.
 
-**X7 — the best result may be an initialisation artifact.** `decay sigma 12` (−0.1155)
-and `decay sigma 4.0` (−0.0684) both raise initial weight magnitude (1.73× and 1.55×)
-while barely altering topology. The dose-response presented as evidence for an
-organisational effect is equally consistent with a dose-response in initialisation
-scale. **Control: baseline at σ=1.75 with `g_max` scaled 1.73×.** Until it runs, no
-organisational claim should rest on the sigma results — and `connection_radius`
-(H3), which changes topology without touching weight scale, becomes the cleaner
-instrument for any reach claim.
+**X7 — RESOLVED against the organisational reading (H4).** The weight-matched control
+reproduces the effect in full: g_max 0.691 at σ=1.75 gives 2.0393, against
+decay_sigma 12's 2.0421 and baseline's 2.1525. The flattened spatial prior
+contributes nothing measurable; the entire gain is 1.73× larger initial weights.
+The session's best "organisational" finding is a hyperparameter finding.
+
+What survives is more useful than what was lost: **the shipped `g_max = 0.4` is
+badly tuned** (H5), and correcting it outperforms every biological mechanism in the
+repository. `connection_radius` (H3) remains the clean instrument for any future
+reach claim, since it alters topology without touching weight scale.
 
 **X3-original — spatial wiring: does it help or hurt?** The paper claims randomising the graph
 costs 0.76 perplexity, so spatial wiring buys accuracy. But `decay sigma 12`, which

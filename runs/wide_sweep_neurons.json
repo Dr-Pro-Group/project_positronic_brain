@@ -1,0 +1,97 @@
+{
+  "args": {
+    "axis": "both",
+    "grids": "8,16,24,32",
+    "neuron_steps": 3000,
+    "train_steps": "400,4000,40000",
+    "train_grid": 16,
+    "seq_len": 48,
+    "batch_size": 16,
+    "lr": 0.0008,
+    "seed": 42,
+    "max_epochs": 3.0,
+    "device": "mps",
+    "json": "runs/wide_sweep.json"
+  },
+  "neurons": [
+    {
+      "readout": "growing",
+      "grid": 8,
+      "neurons": 512,
+      "steps": 3000,
+      "batch": 16,
+      "params": 82476,
+      "readout_width": null,
+      "val_bpc": 2.436259983121353,
+      "diverged_at": null,
+      "wall_s": 488.1,
+      "chars_seen": 2304000
+    },
+    {
+      "readout": "fixed128",
+      "grid": 8,
+      "neurons": 512,
+      "steps": 3000,
+      "batch": 16,
+      "params": 42924,
+      "readout_width": 128,
+      "val_bpc": 2.5224465088614862,
+      "diverged_at": null,
+      "wall_s": 496.0,
+      "chars_seen": 2304000
+    },
+    {
+      "readout": "growing",
+      "grid": 16,
+      "neurons": 4096,
+      "steps": 3000,
+      "batch": 16,
+      "params": 618390,
+      "readout_width": null,
+      "val_bpc": 2.1522036267792948,
+      "diverged_at": null,
+      "wall_s": 1982.3,
+      "chars_seen": 2304000
+    },
+    {
+      "readout": "fixed128",
+      "grid": 16,
+      "neurons": 4096,
+      "steps": 3000,
+      "batch": 16,
+      "params": 209686,
+      "readout_width": 128,
+      "val_bpc": 2.3246957117517906,
+      "diverged_at": null,
+      "wall_s": 1959.2,
+      "chars_seen": 2304000
+    },
+    {
+      "readout": "growing",
+      "grid": 24,
+      "neurons": 13824,
+      "steps": 3000,
+      "batch": 16,
+      "params": 2079133,
+      "readout_width": null,
+      "val_bpc": 2.0473088139464175,
+      "diverged_at": null,
+      "wall_s": 25162.3,
+      "chars_seen": 2304000
+    },
+    {
+      "readout": "fixed128",
+      "grid": 24,
+      "neurons": 13824,
+      "steps": 3000,
+      "batch": 16,
+      "params": 668445,
+      "readout_width": 128,
+      "val_bpc": 2.2289935005945183,
+      "diverged_at": null,
+      "wall_s": 20285.2,
+      "chars_seen": 2304000
+    }
+  ],
+  "training": []
+}
