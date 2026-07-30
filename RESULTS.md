@@ -184,15 +184,15 @@ size at every brain size. The head still sees every neuron; it just cannot grow.
 | **fixed read-out** | **−0.257 bpc / 10× neurons** | 0.97 | **−0.345** |
 
 **Superseded — see below.** This 46% figure comes from a 400-step budget, and a
-later sweep at 3,000 steps over a wider range finds **75.4%**. The 400-step
+later sweep at 3,000 steps over a wider range finds **76.8% ± 7.5%** across three seeds. The 400-step
 measurement was depressed by the same undertraining that reverses two ablation
 conclusions in §2. It is kept here because the comparison between the two is
-informative; **the number to cite is 75.4%**.
+informative; **the number to cite is 76.8% ± 7.5%** (per-seed: 69.6 / 76.3 / 84.5).
 
 | | slope | range | budget | survives |
 |---|---:|---|---|---:|
 | this section | −0.257 bpc/10× | 19× | 400 steps | 46% |
-| **wide sweep** | **−0.207 bpc/10×** | **27×** | **3,000 steps** | **75.4%** |
+| **wide sweep** | **−0.207 bpc/10×** | **27×** | **3,000 steps** | **76.8% ± 7.5%** |
 
 Neuron count over 512 → 13,824 at 3,000 steps: growing read-out 2.4363 → 2.0473,
 fixed 128-wide read-out 2.5224 → 2.2290. Neither curve has plateaued.
@@ -211,7 +211,7 @@ longest run stays at 3.6 epochs rather than memorising) buys **−0.885 bpc**:
 | volume (G=16, k=16) | 4,096 | 65,536 | 618,390 | 2.1523 |
 | **density (G=12, k=38)** | 1,728 | 64,576 | **299,990** | **2.0788** |
 
-Density wins by 0.0735 bpc (3.6σ against the 0.0206 seed floor) on **51% fewer
+Density wins by **0.0671 bpc** — replicated across three seeds (volume 2.1534 ± 0.0029, density 2.0864 ± 0.0095, t = 11.7 on 4 df, winning on 3/3 seeds with the worst density run still ahead of the best volume run) — on **51% fewer
 trainable parameters**, 2.4× fewer neurons and a 2.4× smaller read-out — every
 asymmetry handicaps the winner. This is the trade by which avian brains reach
 primate-like forebrain neuron counts in a much smaller volume, and it says this
@@ -240,13 +240,13 @@ and note that seed 43 already reproduces the same direction at similar magnitude
 | neuron count (read-out controlled) | 27× | −0.294 |
 | initial weight scale `g_max` 0.4 → 0.691 | one number | −0.113 |
 | best biological mechanism (`--stp`) | — | −0.0845 |
-| density over volume, matched budget | — | −0.0735 |
+| density over volume, matched budget | — | −0.0671 |
 | the other seven mechanisms | — | ~0 or worse |
 
 Two caveats on the fixed-read-out control: those models are strictly smaller in
 total parameters, so the neuron contribution is a *lower* bound rather than a
 perfectly matched comparison; and one projection width is a thin basis for the
-exact ratio, though the gap is large and consistent. The 75.4% survival figure
+exact ratio, though the gap is large and consistent. The 76.8% survival figure
 itself is pending multi-seed confirmation on the ladder endpoints (grids 8 and 16)
 in the same `replicate.py` job.
 
@@ -493,3 +493,27 @@ table and often one seed elsewhere. They are preliminary and directional. The
 contribution is a *measurement* of what each biological constraint costs in a
 generator, not a performance claim — and on the headline metric the biology
 currently loses to a plain RNN (and is competitive with a four-gram).
+
+
+---
+
+## A note on the noise floor, and eight retractions
+
+Every "established / not established" judgement in this document originally used a
+seed spread of **±0.0206**. That figure was measured at `G=12` with 400 steps and
+then applied to `G=16` with 3,000 steps without checking that it transferred.
+Measured where the experiments actually ran — five conditions, three seeds each —
+the pooled spread is **0.0089**, and per-condition it ranges from **0.0028 to
+0.0152**, a 5.4× spread. No single floor was ever going to be correct for all of
+them. [`runs/replication_analysis.json`](runs/replication_analysis.json)
+
+Three mechanisms cross the line as a result, so the mechanism split is **3 help /
+2 hurt / 3 no effect**, not 1 / 2 / 5. Both `--delays` (2.8σ) and `--dendrites`
+(2.2σ) are marginal and should be read as suggestive.
+
+This was the eighth claim of ours withdrawn after a control contradicted it, and
+the only one that ran in the *under*-claiming direction — it caused real effects to
+be dismissed as noise. The other seven are listed in
+[`runs/CLAIMS_LEDGER.md`](runs/CLAIMS_LEDGER.md). Seven of the eight share one
+structure: a quantity was carried from the context where it was measured into one
+where it had not been checked.
