@@ -197,6 +197,84 @@ def match_lstm_hidden(vocab: int, embed_dim: int, target: int, layers: int = 1) 
     return best_h
 
 
+# ------------------------------------------------------------------ CNN baseline
+class CausalConv1d(nn.Module):
+    """1D conv with left-only padding so position t sees ≤ t (causal LM)."""
+
+    def __init__(self, c_in: int, c_out: int, k: int = 3):
+        super().__init__()
+        self.k = k
+        self.conv = nn.Conv1d(c_in, c_out, k)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        # x: (B, C, T)
+        x = F.pad(x, (self.k - 1, 0))
+        return self.conv(x)
+
+
+class CharCNN(nn.Module):
+    """Stack of causal 1D convolutions for next-char prediction (TCN-lite).
+
+    Local receptive-field baseline — no recurrence, no attention. Useful as a
+    lower bound on how far n-gram-ish patterns go under a matched param budget.
+    """
+
+    def __init__(
+        self,
+        vocab_size: int,
+        embed_dim: int = 64,
+        channels: int = 128,
+        n_layers: int = 4,
+        kernel: int = 3,
+    ):
+        super().__init__()
+        self.vocab_size = vocab_size
+        self.embed = nn.Embedding(vocab_size, embed_dim)
+        layers = []
+        c_in = embed_dim
+        for _ in range(n_layers):
+            layers += [CausalConv1d(c_in, channels, kernel), nn.GELU()]
+            c_in = channels
+        self.net = nn.Sequential(*layers)
+        self.head = nn.Linear(channels, vocab_size)
+
+    def forward(self, tokens: torch.Tensor) -> torch.Tensor:
+        # tokens (B, T) → logits (B, T, V)
+        e = self.embed(tokens).transpose(1, 2)  # (B, E, T)
+        h = self.net(e).transpose(1, 2)         # (B, T, C)
+        return self.head(h)
+
+    def loss_on(self, tokens: torch.Tensor) -> torch.Tensor:
+        tokens = tokens.to(next(self.parameters()).device)
+        logits = self.forward(tokens[:, :-1])
+        return F.cross_entropy(
+            logits.reshape(-1, self.vocab_size), tokens[:, 1:].reshape(-1)
+        )
+
+
+def match_cnn_config(vocab: int, target: int) -> Tuple[int, int, int]:
+    """Pick (embed_dim, channels, n_layers) near target params."""
+    best = (64, 96, 3)
+    best_gap = float("inf")
+    for emb in (32, 48, 64):
+        for ch in (64, 96, 128, 160, 192):
+            for n_layers in (2, 3, 4, 5):
+                m = CharCNN(vocab, embed_dim=emb, channels=ch, n_layers=n_layers)
+                n = count_params(m)
+                if n > target * 1.15:
+                    continue
+                gap = abs(n - target)
+                if gap < best_gap:
+                    best_gap = gap
+                    best = (emb, ch, n_layers)
+    return best
+
+
+# Canonical model names used across public LM / hard-task / overfit harnesses.
+# Order is the paper leaderboard convention (baselines first, then brain variants).
+STANDARD_MODELS = ("lstm", "rnn", "cnn", "gpt", "brain", "brain_wm")
+
+
 # ------------------------------------------------------------- brain ablations
 def ablate_no_dale(model: BrainLanguageModel) -> None:
     """Remove Dale's law: synapses become freely signed (no E/I sign constraint)."""

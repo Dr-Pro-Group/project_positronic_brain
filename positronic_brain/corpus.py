@@ -235,13 +235,28 @@ def load_corpus_splits(
     if text_path:
         with open(text_path, "r", encoding="utf-8", errors="ignore") as fh:
             _add(fh.read())
+    hf_requested = bool(hf or hf_chat)
     if hf:
-        _add(_stream_hf_text(hf, hf_limit))
+        hf_text = _stream_hf_text(hf, hf_limit)
+        if not hf_text.strip():
+            raise RuntimeError(
+                f"HF plain-text source {hf!r} produced empty text "
+                f"(load failed or zero non-empty rows). Refusing silent fallback."
+            )
+        _add(hf_text)
     if hf_chat:
-        _add(_stream_hf_dialogues(hf_chat, hf_chat_limit))
-    if builtin or not (tr_parts or va_parts or te_parts):
-        # Partition the seed dialogues themselves, then build each split's text
-        # from its OWN dialogues so no exchange leaks across splits.
+        chat_text = _stream_hf_dialogues(hf_chat, hf_chat_limit)
+        if not chat_text.strip():
+            raise RuntimeError(
+                f"HF chat source {hf_chat!r} produced empty text. "
+                f"Refusing silent fallback."
+            )
+        _add(chat_text)
+    # Only fall back to built-in dialogues when explicitly allowed AND no HF
+    # source was requested. Previously ``builtin=False`` still fell through when
+    # HF load failed (empty parts), which silently trained on the seed corpus
+    # while labeling the run "wikitext".
+    if builtin and not hf_requested:
         d_tr, d_va, d_te = _partition(_SEED_DIALOGUES, val_frac, test_frac, seed)
         tr_parts.append(_dialogues_to_corpus(d_tr, repeats=repeats, seed=seed))
         if d_va:
@@ -250,6 +265,21 @@ def load_corpus_splits(
         if d_te:
             te_parts.append(_dialogues_to_corpus(d_te, repeats=1, seed=seed + 2,
                                                  with_narrative=False))
+    elif builtin and hf_requested:
+        # Optional additive seed on top of a successful HF load
+        d_tr, d_va, d_te = _partition(_SEED_DIALOGUES, val_frac, test_frac, seed)
+        tr_parts.append(_dialogues_to_corpus(d_tr, repeats=repeats, seed=seed))
+        if d_va:
+            va_parts.append(_dialogues_to_corpus(d_va, repeats=1, seed=seed + 1,
+                                                 with_narrative=False))
+        if d_te:
+            te_parts.append(_dialogues_to_corpus(d_te, repeats=1, seed=seed + 2,
+                                                 with_narrative=False))
+    elif not (tr_parts or va_parts or te_parts):
+        raise RuntimeError(
+            "No corpus material: HF load failed or empty and builtin fallback "
+            "is disabled. Pass builtin=True or fix the HF source."
+        )
 
     return ("\n".join(tr_parts), "\n".join(va_parts), "\n".join(te_parts))
 
@@ -298,11 +328,33 @@ def _stream_hf_text(name: str, limit: int) -> str:
         return ""
 
     # A few friendly defaults; otherwise treat `name` as a hub path.
+    # Use namespaced HF dataset ids (datasets>=3 requires namespace/name).
     presets = {
         "tinystories": dict(path="roneneldan/TinyStories", split="train"),
         "dailydialog": dict(path="li2017dailydialog/daily_dialog", split="train"),
-        "wikitext": dict(path="wikitext", name="wikitext-2-raw-v1", split="train"),
+        "wikitext": dict(path="Salesforce/wikitext", name="wikitext-2-raw-v1", split="train"),
     }
+    # WikiText-2: full non-streaming load of non-empty paragraphs only.
+    # Bug history: bare path "wikitext" fails on modern datasets; load then
+    # silently fell back to the built-in dialogue seed (~3.5k chars) when
+    # ``builtin=False`` still hit the empty-parts fallback in load_corpus_splits.
+    if name.lower() == "wikitext":
+        try:
+            ds = load_dataset("Salesforce/wikitext", "wikitext-2-raw-v1", split="train")
+        except Exception as exc:  # pragma: no cover
+            print(f"[corpus] could not load Salesforce/wikitext ({exc}); skipping.")
+            return ""
+        paras = [
+            r["text"].strip()
+            for r in ds
+            if isinstance(r.get("text"), str) and r["text"].strip()
+        ]
+        if limit and limit < len(paras):
+            paras = paras[:limit]
+        body = "\n\n".join(paras)
+        print(f"[corpus] wikitext-2: {len(paras)} non-empty paragraphs, {len(body):,} chars.")
+        return body
+
     kw = presets.get(name.lower(), dict(path=name, split="train"))
     try:
         ds = load_dataset(streaming=True, **kw)
@@ -323,7 +375,8 @@ def _stream_hf_text(name: str, limit: int) -> str:
             if isinstance(v, (list, tuple)) and v:
                 out.append(" ".join(map(str, v)))
                 break
-    print(f"[corpus] streamed {len(out)} text rows from {name}.")
+    nchars = sum(len(x) for x in out)
+    print(f"[corpus] loaded {len(out)} text rows from {name} ({nchars:,} chars, stream=True).")
     # Join rows with a BLANK line so each row is one splittable block for
     # split_text_blocks (which splits on "\n\n"). Joining with a single "\n"
     # collapsed the whole stream into ONE block for datasets whose rows have no

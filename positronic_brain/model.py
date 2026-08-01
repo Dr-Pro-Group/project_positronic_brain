@@ -30,6 +30,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field, asdict
 from typing import Dict, List, Optional, Sequence, Union
+import math
 
 import numpy as np
 import torch
@@ -217,6 +218,15 @@ class BrainConfig:
     use_laminar: bool = False
     laminar_bands: int = 3
 
+    # Top-down zone attention (biased competition / soft routing).
+    # A content-free query from the population mean is matched against
+    # learnable per-zone keys; softmax gains multiply firing rates used for
+    # recurrent transmission (and thus bias which areas "win"). Off by default;
+    # when off, step() is unchanged.
+    use_zone_attn: bool = False
+    zone_attn_dim: int = 16
+    zone_attn_scale: float = 1.0   # gain = 1 + scale * (softmax - 1/Z) so mean ~1
+
     # Sensory input pathway (real multimodal data -> per-neuron drive)
     #   sensory_embedding_dims:  modality name -> encoder embedding dimension.
     #   modality_to_zone:        modality name -> zone name it projects into.
@@ -391,6 +401,15 @@ class PositronicBrain(nn.Module):
         self.edge_weight = nn.Parameter(torch.as_tensor(np.abs(edge_weight), dtype=torch.float32))
         self.neuron_bias = nn.Parameter(torch.zeros(N))
         self.zone_gain = nn.Parameter(torch.ones(Z))
+
+        # Learnable per-zone keys for top-down zone attention (biased competition).
+        if cfg.use_zone_attn:
+            d = int(cfg.zone_attn_dim)
+            self.zone_attn_keys = nn.Parameter(torch.randn(Z, d) * 0.02)
+            self.zone_attn_query = nn.Linear(N, d, bias=False)
+        else:
+            self.zone_attn_keys = None
+            self.zone_attn_query = None
 
         self.readout = nn.Sequential(
             nn.Linear(N, cfg.readout_hidden),
@@ -664,6 +683,24 @@ class PositronicBrain(nn.Module):
         r = self.firing_rate(V)                      # (B, N) presyn firing rates
         if cfg.use_homeostasis and self.training:
             self._homeo_update(r)
+
+        # Top-down zone attention: soft gains over zones (biased competition).
+        # Population query → match learnable zone keys → softmax gains multiply
+        # rates used for recurrent transmission (which areas "win" the moment).
+        if cfg.use_zone_attn and self.zone_attn_query is not None:
+            Z = cfg.num_zones
+            q = self.zone_attn_query(r)                          # (B, d)
+            # keys: (Z, d) → scores (B, Z)
+            scores = torch.matmul(q, self.zone_attn_keys.t()) / math.sqrt(
+                max(cfg.zone_attn_dim, 1)
+            )
+            attn = torch.softmax(scores, dim=-1)                 # (B, Z)
+            # Zero-mean gain so the average population drive is preserved:
+            # gain_z = 1 + scale * (p_z - 1/Z)
+            gain_z = 1.0 + cfg.zone_attn_scale * (attn - (1.0 / Z))
+            gain_n = gain_z[:, self.zones]                       # (B, N)
+            r = r * gain_n
+
         w = self.signed_weights()                    # (E,)
         if cfg.use_delays and self._rate_hist is not None:
             # Each edge reads its presynaptic neuron's rate from `edge_delay`

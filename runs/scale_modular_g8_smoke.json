@@ -1,0 +1,170 @@
+{
+  "mode": "modular",
+  "dataset": "tinystories",
+  "areas": [
+    "Sensory",
+    "Association",
+    "Motor"
+  ],
+  "total_neurons": 1536,
+  "vocab_size": 2048,
+  "area_results": {
+    "Sensory": {
+      "best_val_bpc": 6.4050483963195735,
+      "best_step": 400,
+      "trainable_params": 1233959,
+      "curve": [
+        {
+          "step": 100,
+          "train_ce": 5.187587704658508,
+          "ce": 4.55785271525383,
+          "bpc": 6.575591509398997,
+          "ppl": 95.37845508387424,
+          "tokens": 3072,
+          "wall_s": 11.6
+        },
+        {
+          "step": 200,
+          "train_ce": 4.455278043746948,
+          "ce": 4.496958702802658,
+          "bpc": 6.4877400196158606,
+          "ppl": 89.7437783358853,
+          "tokens": 3072,
+          "wall_s": 22.5
+        },
+        {
+          "step": 300,
+          "train_ce": 4.449936285018921,
+          "ce": 4.446652263402939,
+          "bpc": 6.415163168969105,
+          "ppl": 85.34076683822613,
+          "tokens": 3072,
+          "wall_s": 33.3
+        },
+        {
+          "step": 400,
+          "train_ce": 4.398060662746429,
+          "ce": 4.439641237258911,
+          "bpc": 6.4050483963195735,
+          "ppl": 84.7445330384463,
+          "tokens": 3072,
+          "wall_s": 44.2
+        }
+      ]
+    },
+    "Association": {
+      "best_val_bpc": 5.926282813375879,
+      "best_step": 400,
+      "trainable_params": 1236007,
+      "curve": [
+        {
+          "step": 100,
+          "train_ce": 4.340722467899322,
+          "ce": 4.3417201936244965,
+          "bpc": 6.263778192269531,
+          "ppl": 76.83960471485969,
+          "tokens": 3072,
+          "wall_s": 55.2
+        },
+        {
+          "step": 200,
+          "train_ce": 4.198402671813965,
+          "ce": 4.2007056921720505,
+          "bpc": 6.060337270330658,
+          "ppl": 66.73340767157467,
+          "tokens": 3072,
+          "wall_s": 66.4
+        },
+        {
+          "step": 300,
+          "train_ce": 4.034468667507172,
+          "ce": 4.131593704223633,
+          "bpc": 5.960629748051498,
+          "ppl": 62.27709515776341,
+          "tokens": 3072,
+          "wall_s": 77.6
+        },
+        {
+          "step": 400,
+          "train_ce": 4.016736466884613,
+          "ce": 4.107786223292351,
+          "bpc": 5.926282813375879,
+          "ppl": 60.8119443797746,
+          "tokens": 3072,
+          "wall_s": 88.9
+        }
+      ]
+    },
+    "Motor": {
+      "best_val_bpc": 5.848358291187532,
+      "best_step": 400,
+      "trainable_params": 1233959,
+      "curve": [
+        {
+          "step": 100,
+          "train_ce": 3.9974960255622864,
+          "ce": 4.130709812045097,
+          "bpc": 5.959354561188844,
+          "ppl": 62.222073240754824,
+          "tokens": 3072,
+          "wall_s": 100.1
+        },
+        {
+          "step": 200,
+          "train_ce": 3.981298325061798,
+          "ce": 4.100193277001381,
+          "bpc": 5.91532850741616,
+          "ppl": 60.35195111431973,
+          "tokens": 3072,
+          "wall_s": 111.4
+        },
+        {
+          "step": 300,
+          "train_ce": 4.0079732155799865,
+          "ce": 4.0783659517765045,
+          "bpc": 5.88383833355836,
+          "ppl": 59.048902219515895,
+          "tokens": 3072,
+          "wall_s": 122.7
+        },
+        {
+          "step": 400,
+          "train_ce": 3.9416202783584593,
+          "ce": 4.053773060441017,
+          "bpc": 5.848358291187532,
+          "ppl": 57.61443018902962,
+          "tokens": 3072,
+          "wall_s": 134.0
+        }
+      ]
+    }
+  },
+  "protocol": {
+    "cmd": "train-modular",
+    "work_dir": "data/scale_tinystories",
+    "device": "mps",
+    "steps": 2000,
+    "steps_per_area": 400,
+    "seq_len": 48,
+    "batch_size": 4,
+    "lr": 0.0008,
+    "grad_clip": 0.5,
+    "eval_every": 100,
+    "max_windows": 64,
+    "grid_size": 8,
+    "embed_dim": 64,
+    "inner_steps": 2,
+    "seed": 42,
+    "json": "runs/scale_modular_g8_smoke.json",
+    "checkpoint": "",
+    "grad_checkpoint": false,
+    "readout_width": 0,
+    "n_areas": 3,
+    "area_dir": "",
+    "offload_inactive": false
+  },
+  "test_bpc": 5.864119275762721,
+  "test_ppl": 58.24730017602117,
+  "wall_min": 2.25,
+  "final_params": 1269877
+}

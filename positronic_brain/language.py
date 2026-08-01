@@ -139,6 +139,14 @@ class LMConfig:
     seed: int = 42
     brain_overrides: Dict = field(default_factory=dict)
 
+    # Working-memory attention (content-addressable buffer of recent tokens).
+    # Biologically flavoured as a limited-capacity WM that is *queried* by the
+    # current input (top-down read) rather than only mixed by recurrence.
+    # Off by default; when off the LM path is unchanged.
+    use_wm_attn: bool = False
+    wm_slots: int = 32           # buffer capacity (characters / events)
+    wm_dim: Optional[int] = None  # defaults to embed_dim
+
     def to_dict(self) -> Dict:
         return asdict(self)
 
@@ -221,6 +229,24 @@ class BrainLanguageModel(nn.Module):
         self._last_activity = None
         self._ckpt_warned = False   # one-shot guard for the grad-checkpoint warning
 
+        # Working-memory attention: circular buffer of past embeddings, soft-read
+        # by the current token (content-based addressing / limited-capacity WM).
+        self.use_wm_attn = bool(cfg.use_wm_attn)
+        self._wm_mem = None       # (B, slots, D) transient per forward
+        self._wm_mask = None      # (B, slots) bool — written slots
+        self._wm_ptr = 0
+        if self.use_wm_attn:
+            d = int(cfg.wm_dim or cfg.embed_dim)
+            self.wm_slots = int(cfg.wm_slots)
+            self.wm_dim = d
+            self.wm_q = nn.Linear(cfg.embed_dim, d, bias=False)
+            self.wm_k = nn.Linear(cfg.embed_dim, d, bias=False)
+            self.wm_v = nn.Linear(cfg.embed_dim, d, bias=False)
+            self.wm_to_inj = nn.Linear(d, int(self._lang_idx.numel()))
+        else:
+            self.wm_slots = 0
+            self.wm_dim = 0
+
         self.to(self._device)
 
     # ------------------------------------------------------------------ helpers
@@ -246,6 +272,42 @@ class BrainLanguageModel(nn.Module):
         I_ext = torch.zeros((token_ids.shape[0], self.num_neurons),
                             device=self.device, dtype=torch.float32)
         return I_ext.index_add(1, self._lang_idx, inj)
+
+    def _wm_reset(self, batch: int) -> None:
+        """Clear the working-memory buffer at the start of a sequence."""
+        if not self.use_wm_attn:
+            return
+        # Store raw embeddings (embed_dim); Q/K/V project on read.
+        B, S, E = batch, self.wm_slots, self.config.embed_dim
+        self._wm_mem = torch.zeros(B, S, E, device=self.device, dtype=torch.float32)
+        self._wm_mask = torch.zeros(B, S, device=self.device, dtype=torch.bool)
+        self._wm_ptr = 0
+
+    def _wm_read(self, e: torch.Tensor) -> torch.Tensor:
+        """Soft-read the WM buffer with query derived from embedding ``e`` (B, E)."""
+        if self._wm_mem is None or self._wm_mask is None or not bool(self._wm_mask.any().item()):
+            return torch.zeros(e.shape[0], self.wm_dim, device=e.device, dtype=e.dtype)
+        q = self.wm_q(e).unsqueeze(1)                    # (B, 1, D)
+        k = self.wm_k(self._wm_mem)                      # (B, S, D)
+        v = self.wm_v(self._wm_mem)
+        scale = math.sqrt(max(self.wm_dim, 1))
+        scores = torch.matmul(q, k.transpose(-2, -1)) / scale   # (B, 1, S)
+        scores = scores.masked_fill(~self._wm_mask.unsqueeze(1), -1e9)
+        w = torch.softmax(scores, dim=-1)
+        return torch.matmul(w, v).squeeze(1)             # (B, D)
+
+    def _wm_write(self, e: torch.Tensor) -> None:
+        """Write embedding ``e`` (B, E) into the next circular slot."""
+        if self._wm_mem is None or self._wm_mask is None:
+            return
+        p = self._wm_ptr
+        mem = self._wm_mem.clone()
+        mem[:, p, :] = e
+        self._wm_mem = mem
+        mask = self._wm_mask.clone()
+        mask[:, p] = True
+        self._wm_mask = mask
+        self._wm_ptr = (p + 1) % self.wm_slots
 
     def _reverberate(self, V: torch.Tensor, I_ext: torch.Tensor) -> torch.Tensor:
         """Run ``inner_steps`` recurrent integration steps (the 'thinking').
@@ -276,9 +338,21 @@ class BrainLanguageModel(nn.Module):
         corrupting the recurrent-core gradient. Correctness beats the memory
         saving, so we fall back to the plain (non-checkpointed) path instead.
         """
-        I_ext = self._token_current(token_ids)
+        e = self.embed(token_ids)                                   # (B, embed_dim)
+        inj = self.token_in(e) * self.config.token_gain
+        I_ext = torch.zeros((token_ids.shape[0], self.num_neurons),
+                            device=self.device, dtype=torch.float32)
+        I_ext = I_ext.index_add(1, self._lang_idx, inj)
+        # Working-memory top-down read: content-based soft retrieval over recent
+        # embeddings, injected as extra current into the language zone (a limited
+        # capacity WM "query" path — bio attention as routing, not full GPT attn).
+        if self.use_wm_attn:
+            ctx = self._wm_read(e)
+            I_ext = I_ext.index_add(
+                1, self._lang_idx, self.wm_to_inj(ctx) * self.config.token_gain
+            )
         want_ckpt = self.config.grad_checkpoint and V.requires_grad
-        if want_ckpt and not self.brain.step_mutates_state():
+        if want_ckpt and not self.brain.step_mutates_state() and not self.use_wm_attn:
             import torch.utils.checkpoint as _cp
 
             V = _cp.checkpoint(self._reverberate, V, I_ext, use_reentrant=False)
@@ -289,7 +363,7 @@ class BrainLanguageModel(nn.Module):
                 warnings.warn(
                     "grad_checkpoint was requested but is disabled because a "
                     "stateful mechanism (STP / oscillation / homeostasis / "
-                    "adaptation) is active: checkpoint recompute would corrupt its "
+                    "adaptation / wm_attn) is active: checkpoint recompute would corrupt its "
                     "gradients. Training without checkpointing (higher activation "
                     "memory). Reduce batch size or inner_steps if you hit an OOM.",
                     RuntimeWarning,
@@ -300,6 +374,9 @@ class BrainLanguageModel(nn.Module):
         rates = self.brain.firing_rate(V)
         logits = self.head(rates if self._readout_proj is None
                            else rates @ self._readout_proj)
+        # Write current token into WM *after* the read (classic write-after-read).
+        if self.use_wm_attn:
+            self._wm_write(e)
         # Optionally relax the carried state toward rest (state_leak < 1).
         if self.config.state_leak < 1.0:
             V = self.brain.config.E_L + self.config.state_leak * (V - self.brain.config.E_L)
@@ -321,6 +398,7 @@ class BrainLanguageModel(nn.Module):
         # Short-term-plasticity state spans the whole window (reset per forward;
         # the membrane state V may still be carried across windows by the caller).
         self.brain.stp_begin(B)
+        self._wm_reset(B)
         logits_seq: List[torch.Tensor] = []
         act = None
         for t in range(T):
@@ -443,6 +521,8 @@ class BrainLanguageModel(nn.Module):
         self.eval()
         V = self.init_state(1)
         self.brain.stp_begin(1)
+        # WM buffer is sized to the last train batch if not reset — must match B=1.
+        self._wm_reset(1)
         ids = tokenizer.encode(prompt)
 
         # Warm up the brain state on the prompt (all but the last character).
