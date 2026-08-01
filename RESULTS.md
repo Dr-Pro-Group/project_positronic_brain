@@ -218,19 +218,33 @@ primate-like forebrain neuron counts in a much smaller volume, and it says this
 project has been scaling `grid_size` when it should have been scaling `k_max` and
 `connection_radius`. [`runs/controls.json`](runs/controls.json)
 
-**Multi-seed status (in flight).** Seed 42 is the table above.
-[`experiments/replicate.py`](experiments/replicate.py) is re-running seeds 43 and 44
-into [`runs/replication.json`](runs/replication.json). Partial log so far (do not
-treat as final until the process prints `REPLICATION COMPLETE`):
+**Multi-seed (complete).** Seeds 42–44 all prefer density. Source: seed 42 in
+[`runs/controls.json`](runs/controls.json); seeds 43–44 in
+[`runs/replication.json`](runs/replication.json) (`REPLICATION COMPLETE`).
 
 | seed | volume G16/k16 | density G12/k38 | Δ (density − volume) |
 |---:|---:|---:|---:|
-| 42 (controls) | 2.1523 | **2.0788** | **−0.0735** |
-| 43 (partial) | 2.1513 | **2.0833** | **−0.0680** |
-| 44 (partial) | 2.1567 | *pending* | — |
+| 42 | 2.1523 | **2.0788** | **−0.0735** |
+| 43 | 2.1513 | **2.0833** | **−0.0680** |
+| 44 | 2.1567 | **2.0970** | **−0.0597** |
+| **mean ± s.d.** | **2.1534 ± 0.0023** | **2.0864 ± 0.0077** | **−0.0670** |
 
-Until seed 44 density and the neuron-ladder legs finish, cite the seed-42 contrast
-and note that seed 43 already reproduces the same direction at similar magnitude.
+Density wins on every seed, by ~0.067 bpc on average (~3× the volume seed
+spread). The density arm still uses ~51% fewer total parameters.
+
+**Neuron ladder multi-seed (grids 8→16, fixed 128-wide readout).** Same
+replication job. Survival of the growing-readout gain under fixed readout:
+
+| seed | growing gain | fixed gain | survival |
+|---:|---:|---:|---:|
+| 42 (wide_sweep) | 0.2841 | 0.1978 | 69.6% |
+| 43 | 0.2845 | 0.2172 | 76.4% |
+| 44 | 0.2532 | 0.2138 | 84.4% |
+| **mean** | | | **~77%** |
+
+So the “most of the neuron-count gain is real” claim holds across seeds in the
+**8→16** range (the paper’s 75.4% figure also used the G=24 single-seed endpoint;
+that wider extension remains one-seed).
 
 ### The ordering across everything measured
 
@@ -278,6 +292,18 @@ clear dendritic nonlinearity); (3) single seed — the ranking of the nulls shou
 not be over-read. Against all of them, raising the shipped `g_max` from 0.4 to
 0.691 reaches **2.0393** (−0.113) — larger than every named mechanism
 ([`runs/controls.json`](runs/controls.json)).
+
+**Multi-seed (seeds 42–44)** at G=16 / 3000 steps for the three load-bearing
+levers ([`runs/lever_seeds.json`](runs/lever_seeds.json) + seed-42 priors):
+
+| config | mean bpc ↓ (n=3) | vs baseline |
+|---|---:|---:|
+| baseline | 2.1535 ± 0.0023 | — |
+| **`g_max` 0.691** | **2.0611 ± 0.0166** | **−0.092** |
+| `--stp` | 2.0826 ± 0.0105 | −0.071 |
+
+So init scale still beats the best mechanism after multi-seed, and both beat
+baseline. (Mini M4 wall-time ~17 min/arm for baseline/g_max; STP ~53 min.)
 
 ## 7. A trivial baseline the project never had
 
@@ -486,13 +512,534 @@ here or in the LaTeX. Claim status lives in
 [`research_paper/paper/`](research_paper/paper/) (`main.tex` / `main_nature.tex`);
 older markdown drafts under `research_paper/` are superseded.
 
+## Intelligence protocol (first principles — supersedes Track C as headline)
+
+**Governing doc:** [`docs/INTELLIGENCE_PROGRAM.md`](docs/INTELLIGENCE_PROGRAM.md)
+
+### What we measure as “intelligence” here
+
+Today’s default operationalization of model intelligence is **LLM-class**:
+
+1. Train on **public natural-language** corpora (FineWeb / TinyStories / WikiText / …)
+2. Score **held-out bpc / bits-per-byte / perplexity** + generation samples  
+3. Compare **architectures at matched params, tokens, and steps**
+
+Tiny GPT = from-scratch **LLM inductive bias** (not GPT-4 weights).  
+Brain / brain_wm = **biomimetic** prior.  
+LSTM / RNN = classical sequence models.  
+CNN = **local floor / negative control** — must *lose* on open language; if CNN
+wins open LM bpc, the protocol is broken.
+
+### Hard tasks are not the IQ board
+
+Track C (delayed_copy / addition / associative) can be dominated by a CNN on
+addition (~0.99 at matched ~220k params). That shows the **task is local
+pattern matching**, not intelligence. Synthetic probes may remain as secondary
+diagnostics **only if CNN fails them**. They must not headline “how smart is
+the brain?”
+
+### Primary harness (LLM track)
+
+| Piece | Path |
+|---|---|
+| Program | `docs/INTELLIGENCE_PROGRAM.md` |
+| Disk public data + BPE | `positronic_brain/disk_data.py`, `scale_train.py prepare` |
+| Full suite on public LM metrics | `experiments/llm_public_benchmark.py` |
+| Mini queue | `experiments/queue_llm_intelligence.sh` |
+| Outputs | `runs/llm_bench_*.json` |
+
+Suite always: **lstm, rnn, cnn, gpt, brain, brain_wm**.
+
+### Standard model suite
+
+| Tag | Role |
+|---|---|
+| `lstm` | Gated recurrent baseline |
+| `rnn` | Dense Elman RNN |
+| `cnn` | Local n-gram **floor** (negative control on language) |
+| `gpt` | Tiny decoder Transformer = LLM prior (**not** pretrained GPT-4) |
+| `brain` | Positronic Brain G=12 |
+| `brain_wm` | Brain + WM + zone routing |
+
+## 13. Public LM qualification (Track A) — char-level (historical + continuity)
+
+Text quality on **public plain-text corpora** with standard char-LM metrics
+(**held-out bpc / perplexity**) and fixed-prompt samples. Models are
+parameter-matched (~0.27M), trained **from scratch** under the same recipe
+(Adam, random windows, BPTT for the brain). Tiny GPT is a small decoder-only
+Transformer — **not** pretrained GPT-4.
+
+**This remains valid.** The expanded LLM track (BPE + FineWeb + full suite
+including CNN/brain_wm) is the **primary** continuation in §13.4 / queue logs.
+
+Harness (char): [`experiments/public_lm_eval.py`](experiments/public_lm_eval.py)  
+Harness (BPE/public disk): [`experiments/llm_public_benchmark.py`](experiments/llm_public_benchmark.py)
+
+### 13.1 TinyStories (complete)
+
+~70.8M train / 8.8M val / 8.8M test chars · vocab 111 · G=12 · 20k steps ·
+seq_len 128 · seed 42 · pure public text (no built-in dialogue).
+
+Sources: [`runs/public_tinystories_g12.json`](runs/public_tinystories_g12.json),
+[`runs/public_tinystories_g12_gpt.json`](runs/public_tinystories_g12_gpt.json)
+
+| Rank | Model | best val bpc ↓ | test bpc ↓ | best step | wall |
+|---:|---|---:|---:|---:|---:|
+| 1 | **LSTM** | **1.626** | **1.604** | 20k | 3 min |
+| 2 | Dense RNN | 1.644 | 1.634 | 18k | 6 min |
+| 3 | Tiny GPT (d=64, L=5, H=2) | 1.837 | 1.813 | 20k | 5 min |
+| 4 | **Brain** | 2.090 | 2.058 | 17k | 132 min |
+
+**Ordering: LSTM > RNN > tiny GPT > brain.** The brain **does learn** story-like
+character English (finite bpc, improving curves, partial samples) but stays
+~0.45–0.46 val bpc behind the matched LSTM under this industrial recipe. Tiny GPT
+does **not** beat LSTM at this size — Transformer advantage needs scale, not a
+0.27M fair fight.
+
+#### 13.1b Full suite continuity — char TinyStories G12 (complete 2026-08-01)
+
+**Continuity board only** (not the primary intelligence track — that is BPE §13.4–13.6).
+Same harness family, shorter budget, **full suite** including CNN / brain_wm.
+
+Source: [`runs/public_tinystories_fullsuite_g12.json`](runs/public_tinystories_fullsuite_g12.json)  
+Recipe: HF TinyStories limit 30k · G=12 · **8k** steps · seq 128 · B=8 · seed 42 · char vocab.
+
+| Rank | Model | best val bpc ↓ | test bpc | test ppl | params | notes |
+|---:|---|---:|---:|---:|---:|---|
+| 1 | **rnn** | **1.750** | **1.765** | **3.40** | 257k | done |
+| 2 | cnn | 1.752 | 1.761 | 3.39 | 263k | done · ≈tied #1 |
+| 3 | lstm | 1.791 | 1.810 | 3.51 | 255k | done |
+| 4 | **brain_wm** | **2.152** | **2.173** | **4.51** | 319k | done · beats brain+gpt |
+| 5 | **brain** | **2.252** | **2.266** | **4.81** | 258k | done · stable |
+| 6 | gpt | 2.328 | 2.343 | 5.07 | 258k | done |
+
+- **⚠ Protocol flag (char only):** CNN ≈ RNN beat LSTM — expected short-budget char-LM quirk. **Do not** use as IQ ranking. Primary BPE boards still have LSTM on top and CNN not owning.
+- **brain_wm** is the best brain arm and beats tiny GPT; plain brain also beats GPT here.
+- brain_wm **samples** failed post-test (`generate` left WM buffer at train batch size 8). Metrics intact from log. Fix: `BrainLanguageModel.generate` now calls `_wm_reset(1)`; sample failures are non-fatal in the harness.
+
+**Honest headline (char continuity):** dense RNNs still dominate short char TinyStories; bio stack is mid-pack with **brain_wm > brain > gpt**. Not a regime flip vs LSTM/RNN.
+
+### 13.2 WikiText-2 (complete, valid)
+
+~8.69M train / 1.07M val / 1.11M test chars · vocab 920 · G=12 · 15k steps ·
+seq_len 128 · seed 42 · `Salesforce/wikitext` · **no** built-in fallback.
+`corpus.train_chars = 8_685_162` ≫ 100k (earlier invalid runs had ~3.5k).
+Params ~1.73M each (larger vocab than TinyStories; GPT scaled to d=160, L=5, H=2).
+
+Source: [`runs/public_wikitext2_g12.json`](runs/public_wikitext2_g12.json)
+(+ [`runs/public_wikitext2_g12_samples.json`](runs/public_wikitext2_g12_samples.json))
+
+| Rank | Model | best val bpc ↓ | test bpc ↓ | best step | wall |
+|---:|---|---:|---:|---:|---:|
+| 1 | **LSTM** | **2.055** | **2.058** | 15k | 6 min |
+| 2 | Tiny GPT (d=160, L=5, H=2) | 2.190 | 2.207 | 14.5k | 7 min |
+| 3 | Dense RNN | 2.200 | 2.204 | 15k | 9 min |
+| 4 | **Brain** | 2.540 | 2.563 | 15k | 111 min |
+
+**Ordering: LSTM > tiny GPT ≈ RNN > brain.** Same qualitative story as TinyStories:
+the brain trains (monotonic curves, finite held-out bpc) but stays ~0.48 val bpc
+behind the matched LSTM. Tiny GPT is competitive with the dense RNN at this size
+but does **not** beat LSTM. Earlier “wikitext” artifacts with ~3.5k train chars
+(silent built-in fallback) are **superseded** — do not cite them.
+
+### 13.3 Track B — brain-like training (complete)
+
+Same **TinyStories** data (~70.8M train chars); vary training regime only.
+15k steps · seq 128 · G=12 · seed 42 · cold-start val/test bpc.
+
+Source: [`runs/brain_training_tinystories.json`](runs/brain_training_tinystories.json)
+
+| Arm | best val bpc ↓ | test bpc ↓ | wall |
+|---|---:|---:|---:|
+| **LSTM (BPTT)** | **1.673** | **1.637** | 3 min |
+| Brain **persistent** | 2.135 | 2.104 | 97 min |
+| Brain **BPTT** | 2.136 | 2.108 | 98 min |
+| Brain **eprop** | 2.308 | 2.282 | 191 min |
+
+**Honest outcome:** under this protocol, **brain-like training does not beat BPTT**
+on held-out bpc, and does **not** close the gap to LSTM.
+
+- **Persistent state:** essentially tied with BPTT (−0.001 val bpc) — no clear win
+  when scored with cold-start windows (fair cross-regime metric).
+- **e-prop:** *worse* than BPTT by ~0.17 val bpc — local credit works (trains,
+  no divergence) but is a quality cost here, matching the original “fidelity /
+  online path, not a quality booster” framing in `eprop.py`.
+- **LSTM** still leads by ~0.46 bpc over the best brain arm.
+
+So Track A’s ranking is not an artifact of forgetting persistent state; switching
+the trainer did not reverse the story on TinyStories next-char bpc.
+
+> **⚠️ Units — read before comparing any number in §13.4–13.6.**
+> In these BPE runs the `bpc` field is cross-entropy in bits per **token**, not per
+> character (`ce / ln 2`, no character normalisation — see doubt **D9**). It is valid
+> for model-vs-model within one corpus, and **invalid** across corpora or against the
+> character-level bpc in §13.1–13.2. Use **`bpb`** (bits per byte) for any comparison
+> that crosses a tokenizer. In bpb the margins are ~2.4× smaller than the token
+> figures suggest — e.g. brain over CNN on FineWeb-Edu is **0.009 bpb**, a tie.
+
+### 13.4 Primary LLM track — BPE TinyStories full suite (complete 2026-07-31)
+
+**Primary intelligence board** (public data + BPE + full suite). Not char-LM §13.1.
+
+Source: [`runs/llm_bench_tinystories_g12.json`](runs/llm_bench_tinystories_g12.json)  
+Harness: `experiments/llm_public_benchmark.py` · queue: `experiments/queue_llm_intelligence.sh`
+
+| Setting | Value |
+|---|---|
+| Corpus | TinyStories public · disk BPE vocab **4096** |
+| Tokens | train **6.74M** / val·test **374k** each · ~2.39 bytes/tok |
+| Budget | **10k** steps · seq 128 · batch 8 · G=12 · seed 42 · MPS |
+| Param target | plain brain **7.42M** (match rule) |
+
+| Rank | Model | best val bpc ↓ | test bpc | test ppl | test bpb | best step | params | wall | status |
+|---:|---|---:|---:|---:|---:|---:|---:|---:|---|
+| 1 | **lstm** | **2.224** | **2.297** | **4.92** | **0.963** | 9500 | 7.43M | 14 min | done |
+| 2 | cnn | 2.731 | 2.764 | 6.79 | 1.158 | 10000 | **1.53M** | 2 min | done ⚠ under-param |
+| 3 | gpt | 2.750 | 2.768 | 6.81 | 1.160 | 10000 | 5.85M | 7 min | done |
+| 4 | **brain_wm** | **2.786** | **2.761** | **6.78** | **1.157** | 10000 | 7.48M | 130 min | done |
+| 5 | rnn | 2.911 | 2.955 | 7.75 | 1.238 | 8500 | 7.42M | 17 min | done |
+| 6 | brain | ~2.886@9.5k (curve) | — | — | — | 9500 | 7.42M | ~86 min | **diverged@9878** |
+
+**Ordering (val bpc): LSTM ≫ CNN ≳ gpt ≳ brain_wm > rnn > brain (diverged).**  
+**Ordering (test bpc): LSTM ≫ brain_wm ≳ CNN ≳ gpt > rnn** — brain_wm **beats CNN/gpt on test** despite #4 val.
+
+**Protocol flags:**
+- **CNN control OK** vs LSTM (local floor loses open LM to gated baseline). Soft warning: CNN ranks #2 on **val** with only ~1/5 params (under-matched causal stack); do not over-read CNN vs gpt/brain_wm without a param-matched CNN retune.
+- **brain** trained cleanly to val **2.886** then **NaN@9878** → no test/samples this run.
+- **brain_wm** finished full 10k (survived past brain’s failure zone); **+0.10 val bpc vs plain brain curve**; still **~0.56 behind LSTM**. Generation samples hit a **tensor shape bug** at sample time (`[1,1728]` vs `[8,328]`) — **metrics valid, samples not**.
+- Tiny GPT (from-scratch, not GPT-4) does **not** beat LSTM at ~6–7M under this recipe.
+
+**Honest headline:** under matched ~7.4M BPE TinyStories, **LSTM still owns open LM bpc**; brain_wm is a real gain over plain brain and competitive with tiny GPT on test, not a regime flip.
+
+### 13.5 Primary LLM track — BPE WikiText-2 full suite (complete 2026-07-31)
+
+**Primary intelligence board** (public data + BPE + full suite). Lower bpc better.
+
+Source: [`runs/llm_bench_wikitext_g12.json`](runs/llm_bench_wikitext_g12.json)  
+Harness: `experiments/llm_public_benchmark.py` · queue: `experiments/queue_llm_intelligence.sh`
+
+| Setting | Value |
+|---|---|
+| Corpus | WikiText-2 public · disk BPE vocab **4096** |
+| Tokens | train **4.48M** / val·test **249k** each · ~2.34 bytes/tok |
+| Budget | **8k** steps · seq 128 · batch 8 · G=12 · seed 42 · MPS |
+| Param target | plain brain **7.42M** (match rule) |
+
+| Rank | Model | best val bpc ↓ | test bpc | test ppl | test bpb | best step | params | wall | status |
+|---:|---|---:|---:|---:|---:|---:|---:|---:|---|
+| 1 | **lstm** | **3.976** | **4.083** | **16.95** | **1.742** | 8000 | 7.43M | 11 min | done |
+| 2 | **brain_wm** | **4.346** | **4.483** | **22.36** | **1.912** | 8000 | 7.48M | 105 min | done |
+| 3 | **brain** | **4.397** | **4.538** | **23.23** | **1.936** | 8000 | 7.42M | 73 min | done |
+| 4 | gpt | 4.459 | 4.611 | 24.44 | 1.967 | 8000 | 5.85M | 5 min | done |
+| 5 | cnn | 4.498 | 4.604 | 24.31 | 1.964 | 8000 | **1.53M** | 2 min | done ⚠ under-param |
+| 6 | rnn | 4.744 | 4.866 | 29.16 | 2.076 | 8000 | 7.42M | 14 min | done |
+
+**Ordering (val & test bpc): LSTM ≫ brain_wm > brain > gpt ≳ cnn > rnn.**
+
+**Protocol flags:**
+- **CNN control OK** vs LSTM (local floor loses open LM). Soft warning: CNN ~1/5 params; ranks #5 not #1 — protocol healthy (unlike synthetic addition where CNN can “win”).
+- **brain** finished full 8k with **no late NaN** (contrast TinyStories §13.4 NaN@9878).
+- **brain_wm** overtook plain brain late (~7k) and holds **#2 val & test**; gap to LSTM still ~0.37 val / ~0.40 test bpc.
+- Tiny GPT (from-scratch) does not beat brain/brain_wm under this WikiText recipe.
+- All six models produced samples; metrics primary.
+
+**Honest headline:** on BPE WikiText-2 at ~7.4M, **LSTM still owns open LM bpc**; **brain_wm is the best brain arm and beats tiny GPT/CNN/RNN**; plain brain is stable and competitive (#3). Not a regime flip vs LSTM.
+
+
+### 13.8 Checkpoints, fine-tune, and alignment hooks (2026-08-01)
+
+Training is a **lifecycle**, not a one-shot table:
+
+1. Pretrain on public data → **save** `checkpoints/<run>/{model}.pt` + tokenizer  
+2. Fine-tune / resume → `experiments/finetune_from_checkpoint.py`  
+3. Preference alignment (DPO) → `experiments/dpo_from_checkpoint.py`  
+4. Scale (G↑, modular areas, more tokens) from saved weights  
+
+API: [`positronic_brain/checkpoints.py`](positronic_brain/checkpoints.py)  
+Curriculum: [`docs/TRAIN_AND_SCALE_CURRICULUM.md`](docs/TRAIN_AND_SCALE_CURRICULUM.md)  
+DPO core: [`positronic_brain/preference.py`](positronic_brain/preference.py) (`BrainPolicy` = future PPO hook).
+
+`llm_public_benchmark.py` and `overfit_public_lm.py` now default to writing checkpoints
+under `checkpoints/<run_name>/` so every board leaves reloadable brain weights.
+
+### 13.7 Overfit stress (public TinyStories BPE)
+
+Push **fixed** public TinyStories BPE slices to many epochs and track
+**train_bpc vs val_bpc** (gap / val rise after best = overfit signature).
+
+| Phase | Train freeze | Steps | ≈epochs | Models | Output | Status |
+|---|---:|---:|---:|---|---|---|
+| A | 1M tokens | 60k | ~60 | lstm,cnn,gpt,brain,brain_wm | `runs/overfit_public_tinystories_1M_60k.json` | **DONE** 2026-08-01 16:49-03 |
+| B | 256k tokens | 40k | ~160 | same | `runs/overfit_public_tinystories_256k_40k.json` | **RUNNING** · lstm/cnn/gpt/brain done · **brain_wm live** (20:28-03) |
+
+Harness: [`experiments/overfit_public_lm.py`](experiments/overfit_public_lm.py)  
+Queue: `experiments/queue_overfit_public.sh` (starts after FineWeb bench finishes).
+
+Hypothesis: dense models (LSTM/GPT) drive train_bpc down and open a large gap;
+brain may train slower and/or show a smaller gap. **Not** an intelligence
+leaderboard — a generalization stress test on the same public data.
+
+#### Phase A FINAL (1M tok · 60k steps · ~61 epochs planned)
+
+Source: [`runs/overfit_public_tinystories_1M_60k.json`](runs/overfit_public_tinystories_1M_60k.json)  
+Recipe: seq 128 · B=8 · G=12 · lr 8e-4 · grad-clip 0.5 · device mps · vocab from `data/llm_tinystories/`
+
+| Rank (best val ↓) | Model | best val bpc | @step | final train | final val | final gap | max gap | overfit? | diverged | wall | params |
+|---:|---|---:|---:|---:|---:|---:|---:|---|---:|---:|---:|
+| 1 | **gpt** | **2.538** | 44000 | 1.366 | 2.578 | **1.212** | 1.212 | yes | — | 61.0m | 5.85M |
+| 2 | **lstm** | **2.829** | 5000 | **0.265** | 4.072 | **3.807** | 3.816 | yes | — | 85.6m | 7.43M |
+| 3 | **brain_wm** | **3.158** | 11000 | 2.590 | 3.162 | **0.573** | 0.573 | yes | **12782** | 166.3m | 7.48M |
+| 4 | **brain** | **3.220** | 12000 | 2.667 | 3.220 | **0.552** | 0.552 | yes | **12714** | 115.3m | 7.42M |
+| 5 | cnn | 3.252 | 8000 | 1.389 | 5.167 | **3.778** | 3.778 | yes | — | 14.4m | **1.53M** ⚠ under-param |
+
+- **Gap story (higher gap ⇒ more overfit):** LSTM ≈ CNN ≫ GPT ≫ brain_wm ≈ brain.
+- Dense arms (LSTM/CNN) crush train_bpc and open **~3.8** gap; val rises hard after early best (LSTM best@5k, CNN@8k).
+- GPT keeps best **val** of the board and a **moderate** gap (~1.2); val barely rises after best (+0.04).
+- brain / brain_wm: **smallest gaps (~0.55)** but both **diverged ~12.7k steps** (~12 epochs) — did not finish 60k. brain_wm slightly better best_val than plain brain; same failure horizon.
+- CNN ⚠ under-param (~0.2×); large gap still, not a matched control.
+- Shell noise: queue logged `phase A exit=127` from a path line-split artifact (`c_tinystories_1M_60k.json: command not found`); **JSON + metrics are complete**. Phase B started correctly.
+
+**Honest headline (overfit stress, not IQ):** on 1M-token TinyStories freeze, **dense models overfit hard**; **brain arms resist gap but blow up ~12.7k**. GPT is the most stable full-run generalizer here. Do **not** rank intelligence from this table.
+
+### 13.6 Primary LLM track — BPE FineWeb-Edu full suite (complete 2026-08-01)
+
+**Primary intelligence board** (public data + BPE + full suite). Lower bpc better.
+
+Source: [`runs/llm_bench_fineweb_g12.json`](runs/llm_bench_fineweb_g12.json)  
+Harness: `experiments/llm_public_benchmark.py` · queue: `experiments/queue_llm_intelligence.sh`
+
+| | |
+|---|---|
+| Corpus | FineWeb-Edu capped · disk BPE vocab **8192** |
+| Tokens | train **14.63M** · val/test **0.81M** each · ~2.56 bytes/tok est |
+| Budget | **12k** steps · seq 128 · B=8 · G=12 · seed 42 · param target **~14.8M** |
+| Marker | `runs/exp_markers_llm/fineweb_bench.done` @ 07:51-03 |
+
+| Rank | Model | best val bpc ↓ | test bpc | test ppl | test bpb | params | notes |
+|---:|---|---:|---:|---:|---:|---:|---|
+| 1 | **lstm** | **4.588** | **4.406** | **21.20** | **1.722** | 14.74M | matched |
+| 2 | **brain_wm** | **5.044** | **4.928** | **30.45** | **1.926** | 14.83M | matched · beats brain |
+| 3 | **brain** | **5.063** | **4.969** | **31.31** | **1.942** | 14.77M | matched · stable |
+| 4 | cnn | 5.103 | 4.992 | 31.82 | 1.951 | **2.59M** | ⚠ under-param (~0.18×) |
+| 5 | gpt | 5.181 | 5.080 | 33.83 | 1.986 | 6.90M | ⚠ under-target (~0.47×) |
+| 6 | rnn | 5.948 | 5.823 | 56.60 | 2.276 | 14.77M | matched |
+
+- **Ordering:** LSTM ≫ **brain_wm > brain > cnn > gpt > rnn** (val bpc).
+- **brain_wm** finishes **#2** and beats plain brain on both val and test (same story as WikiText §13.5).
+- CNN does **not** own open LM vs LSTM (protocol OK); still ⚠ under-param so not a matched control.
+- Tiny GPT under-target; not a fair matched comparison to ~14.8M arms.
+- Gap LSTM→#2 is large (~0.46 val bpc) — no regime flip on capped FineWeb-Edu either.
+
+**Honest headline:** on capped BPE FineWeb-Edu at ~14.8M / 12k steps, **LSTM still owns open LM bpc**; **brain_wm is the best brain arm (#2)**; plain brain #3 and stable. Not a regime flip vs LSTM.
+
+## 14. Hard-task intelligence probes (Track C — complete, full suite)
+
+Open-ended next-char LM on easy English under-tests **memory, composition, and
+binding**. Track C trains matched models on synthetic tasks where those are the
+objective — full suite: **GPT · LSTM · CNN · brain · brain_wm**.
+
+| Task | What it demands |
+|---|---|
+| `delayed_copy` | Hold a string across a blank delay, then echo it |
+| `addition` | Multi-digit `a+b=c` (compositional arithmetic as chars) |
+| `associative` | Study key=value pairs, answer a query |
+
+Metric: **teacher-forced answer-span character accuracy** (higher better; not open fluency).  
+Protocol: 8k steps · batch 32 · eval every 500 · n-eval 256 · seed 42 · MPS · `hard=False`.
+
+| Model | params |
+|---|---:|
+| tiny GPT | 169,344 |
+| LSTM | 161,185 |
+| CNN (causal) | 159,405 |
+| Brain | 159,068 |
+| brain_wm (WM + zone attn) | 220,420 |
+
+Harness: [`experiments/hard_tasks_eval.py`](experiments/hard_tasks_eval.py)  
+Merged: [`runs/hard_tasks_g12_full.json`](runs/hard_tasks_g12_full.json)  
+(from `hard_tasks_g12.json` + `_brain_wm.json` + `_cnn.json`)
+
+### 14.1 Test answer accuracy (primary)
+
+| Rank | Model | delayed_copy | addition | associative |
+|---:|---|---:|---:|---:|
+| 1 | **GPT** | **1.000** | **0.999** | 0.336 |
+| 2 | **LSTM** | 0.730 | 0.764 | **0.375** |
+| 3 | **brain_wm** | 0.508 | **0.866** | 0.170 |
+| 4 | Brain | 0.054 | 0.673 | 0.072 |
+| 5 | CNN | 0.019 | 0.352 | 0.055 |
+
+Ranks by mean test acc across tasks: GPT 0.778 · LSTM 0.623 · brain_wm 0.515 · brain 0.266 · CNN 0.142. Per-task winners differ (§14.5).
+
+### 14.2 Best val answer accuracy @ step
+
+| Model | delayed_copy | addition | associative |
+|---|---|---|---|
+| GPT | **1.000** @ 1500 | **1.000** @ 7000 | **0.398** @ 6000 |
+| LSTM | 0.750 @ 7500 | 0.805 @ 5500 | 0.322 @ 7500 |
+| brain_wm | 0.526 @ 8000 | 0.863 @ 8000 | 0.193 @ 7000 |
+| Brain | 0.073 @ 4500 | 0.663 @ 7500 | 0.072 @ 8000 |
+| CNN | 0.025 @ 5500 | 0.387 @ 3500 | 0.051 @ 2500 |
+
+### 14.3 Test BPC (secondary; lower better)
+
+| Model | delayed_copy | addition | associative |
+|---|---:|---:|---:|
+| GPT | **1.070** | **1.257** | **2.658** |
+| LSTM | 1.358 | 1.546 | 2.828 |
+| brain_wm | 1.482 | **1.455** | 2.927 |
+| Brain | 2.242 | 1.770 | 3.196 |
+| CNN | 2.569 | 2.092 | 3.331 |
+
+### 14.4 Wall time (min)
+
+| Model | delayed_copy | addition | associative | total |
+|---|---:|---:|---:|---:|
+| CNN | 1.3 | 1.0 | 1.1 | ~3.4 |
+| LSTM | 1.4 | 1.0 | 1.1 | ~3.5 |
+| GPT | 1.8 | 1.6 | 1.6 | ~5.0 |
+| Brain | 25.2 | 7.2 | 18.1 | ~50.5 |
+| brain_wm | 31.1 | 8.5 | 21.7 | ~61.3 |
+
+### 14.5 Rankings and reading
+
+| Task | Order (test answer_acc) | Takeaway |
+|---|---|---|
+| **delayed_copy** | GPT ≫ LSTM > brain_wm ≫ brain > CNN | GPT solves memory echo; WM/zone lifts brain ~10× (0.51 vs 0.05) but still below LSTM; CNN near chance (no long memory) |
+| **addition** | GPT ≫ **brain_wm > LSTM** > brain > CNN | **First brain arm above LSTM** on a hard probe; CNN partial (local digits only) |
+| **associative** | LSTM ≳ GPT > brain_wm > brain ≳ CNN | All weak; WM helps a little (0.17 vs 0.07) but far from LSTM/GPT (~0.34–0.38) |
+
+**Did WM + zone attention help?**
+- **delayed_copy: yes, strongly vs plain brain** — 0.508 vs 0.054; bpc 1.48 vs 2.24. Matches hold-then-recall. Does **not** close to LSTM (0.73) or GPT (1.0).
+- **associative: weak yes** — 0.170 vs 0.072; plateaued ~0.13–0.19 over 8k steps.
+- **addition: yes, and competitive** — 0.866 > LSTM 0.764.
+
+**CNN as floor:** causal conv fails delayed_copy / associative and lags on addition — probes need recurrence or attention, not n-grams. Plain brain > CNN on every task, so the sparse 3D stack is not “worse than local convolution,” but still loses to LSTM/GPT except where `brain_wm` wins addition.
+
+**Honest full-suite outcome:** GPT owns structured positional tasks; LSTM best on sparse binding; `brain_wm` is a real gain over plain brain and beats LSTM on addition only; CNN is the lower bound. Track A (TinyStories bpc) remains LSTM-led — Track C shows bio-attention is *task-relevant*, not a free lunch on open LM.
+
+Policy: every intelligence leaderboard keeps **GPT, Brain, LSTM, CNN** (and `brain_wm` when testing attention). Never publish brain-only.
+
+## 15. Scale path implementation (disk data + modular areas)
+
+**Can we train bigger by loading pieces one-by-one and using the hard drive as RAM?**
+
+| Mechanism | Status | Where |
+|---|---|---|
+| Public LLM corpora streamed to disk shards | **yes** | `positronic_brain/disk_data.py` |
+| BPE subword (no extra deps) | **yes** | `positronic_brain/subword.py` |
+| Token memmap (SSD as data RAM) | **yes** | `MemmapTokenStore` |
+| Multi-area brain, train one area at a time | **yes** | `positronic_brain/modular.py` |
+| Area checkpoint save/load on disk | **yes** | `offload_area_to_disk` / `reload_area_from_disk` |
+| Per-step edge paging through SSD | **no** | too slow — not attempted |
+| CLI | `prepare` / `train-single` / `train-modular` | `experiments/scale_train.py` |
+
+Public presets: `tinystories`, `wikitext`, `fineweb-edu`, `fineweb`, `c4`, `openwebtext`
+(always cap with `--max-docs` / `--max-chars` on Mini).
+
+Doubt register: [`runs/SCALE_DOUBTS.md`](runs/SCALE_DOUBTS.md) · design notes:
+[`docs/scale_implementation.md`](docs/scale_implementation.md).
+
+### Mini smoke (2026-07-31) — green
+
+Prepare (TinyStories, max-docs=3000, max-chars=3M, vocab=2048): 2.61M chars →
+**1,153,392** tokens (train 1,038,054 / val·test 57,669 each).
+
+| Run | Config | best val bpc | test bpc | test ppl | wall | params | artifact |
+|---|---|---|---|---|---|---|---|
+| modular | 3×G8, 400 steps/area, seq=48, bs=4, MPS | Motor **5.848** (Sensory 6.405 → Assoc 5.926 → Motor 5.848) | **5.864** | 58.2 | 2.25 min | 1.27M | [`runs/scale_modular_g8_smoke.json`](runs/scale_modular_g8_smoke.json) |
+| single | G=12, 600 steps, grad_ckpt, seq=48, bs=4, MPS | **4.741** @600 | **4.718** | 26.3 | 1.73 min | 3.75M | [`runs/scale_single_g12_smoke.json`](runs/scale_single_g12_smoke.json) |
+
+Both smokes show finite CE and monotonic val_bpc drop. Modular is a *curriculum /
+memory* demo (sequential area freeze), not an equal-N bake-off vs single (D7 open).
+First modular attempt hit MPS Embedding placeholder error; fixed by explicit
+`.to(device)` on LM IO + pathways — retry green.
+
+**Path claim:** infrastructure + Mini smoke **finalized**. FineWeb overnight and
+equal-N modular-vs-single remain optional (D6–D8). Intelligence leaderboards still
+require GPT/LSTM/CNN/brain options where relevant.
+
+## Scale & training perspective (larva → monkey)
+
+The Track A–C numbers are only interpretable if the **substrate size** and
+**training length** sit next to biology. This section is orientation, not a claim
+that rate-model “neurons” equal biological cells.
+
+### Size — where G=12 actually sits
+
+Default brain: **G=12 → N = G³ = 1,728** rate units · ~0.16M trainable params
+(~0.22M with WM/zone attention). Matched LSTM/CNN/GPT use the same param budget.
+
+| System | Neurons (order of mag.) | vs this project (G=12) |
+|---|---:|---:|
+| *C. elegans* (worm) | 302 | ~0.2× |
+| **This model (G=12)** | **1,728** | **1×** |
+| *Drosophila* **larva** | ~3,000 | ~1.7× |
+| This model G=16 / G=24 | 4,096 / 13,824 | 2.4× / 8× |
+| Adult fruit fly brain | ~1.4×10⁵ | ~80× |
+| Larval zebrafish | ~1×10⁵ | ~60× |
+| House mouse (whole CNS) | ~7×10⁷ | ~4×10⁴× |
+| Rhesus macaque **cortex alone** | ~1.7×10⁹ | ~10⁶× |
+| Human | ~8.6×10¹⁰ | ~5×10⁷× |
+
+**Reading:** G=12 is a **micro-invertebrate / larva-class count**, not a primate
+chip. Counting, delayed copy, and associative binding at this N are already
+asking a *larva-scale* substrate to do *abstract lab tasks*. A macaque (or even
+mouse) “should find these easier” is a **scale intuition**, not a prediction of
+this codebase — we have not run 10⁹ units.
+
+Also not 1:1 biology: units are continuous rate units with sparse edges, not
+spiking cells with dendritic compartments and ~10³–10⁴ synapses each. Params
+(~10⁵) are closer to a tiny ANN than to a larva connectome’s synaptic inventory.
+
+### Training length — how little experience this is
+
+| Track | Budget | Char-presentations (order) | Epochs over train corpus | Wall (brain, Mini) |
+|---|---|---:|---:|---:|
+| Matched ablations (§1) | 400–3k steps | ~3×10⁵–2×10⁶ | ≪1 → ~1 | minutes |
+| **Track C hard tasks** | **8k steps · B=32** | **~3–8×10⁶** | synthetic (online) | ~50–60 min |
+| Track A TinyStories | 20k · B=16 · T=128 | ~4×10⁷ | **~0.6** of 71M chars | ~2 h |
+| Track A WikiText-2 | 15k · B=16 · T=128 | ~3×10⁷ | **~3.5** of 8.7M chars | ~2 h |
+| Wide “long” training | 40k steps | — | ~few epochs (grown corpus) | overnight |
+
+Contrast with animals (order-of-magnitude only):
+
+- A fly larva lives days with continuous sensorimotor streams (≫10⁶ “events”).
+- A monkey infant gets **months–years** of multimodal experience before reliable
+  symbolic counting / delayed match-to-sample in the lab.
+- Frontier LMs see **10¹¹–10¹³** tokens — 10⁴–10⁶× more than Track A.
+
+So Track C is “**does anything learn in a short supervised curriculum?**”, not
+“did the animal grow up.” GPT saturating delayed_copy in ~1.5k steps shows the
+*task* is easy for attention at matched params; brain_wm needing the full 8k and
+still missing perfect copy is a **capacity + inductive-bias** statement at larva
+N and short train — not a claim about primate cognition.
+
+### What this implies for the leaderboard
+
+| Expectation | At larva-scale N + short train | At monkey-scale N + long life (not run here) |
+|---|---|---|
+| Perfect delayed_copy | GPT yes; plain brain no; brain_wm partial | Plausible for many architectures if capacity allows |
+| Multi-digit addition | GPT yes; brain_wm competitive with LSTM | Should not be the hard problem |
+| Sparse associative binding | All weak (~0.05–0.38) | Where scale + structured memory matter most |
+| Open English bpc (Track A) | LSTM still wins at 0.16M | Different game at 10⁹ params / 10¹² tokens |
+
+**Honest framing for the paper:** results measure **mechanism cost and task fit
+on a ~10³-unit, ~10⁷-token budget** — invertebrate-scale substrate, lab-curriculum
+length. They do **not** forecast monkey or human intelligence. The larva→monkey
+ladder is the right mental model: count neurons and steps before claiming
+“intelligence level.”
+
 ## What these results are not
 
 Small budgets, one corpus, character level, three seeds for the short matched
 table and often one seed elsewhere. They are preliminary and directional. The
 contribution is a *measurement* of what each biological constraint costs in a
 generator, not a performance claim — and on the headline metric the biology
-currently loses to a plain RNN (and is competitive with a four-gram).
+currently loses to a plain RNN (and is competitive with a four-gram). At G=12
+the substrate is larva-class by neuron count (§Scale); failures on hard tasks
+are failures *at that scale and training length*, not proofs that biology cannot
+compute.
 
 
 ---

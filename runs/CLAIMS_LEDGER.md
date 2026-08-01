@@ -70,7 +70,7 @@ Status vocabulary:
 
 | # | claim | status | evidence |
 |---|---|---|---|
-| E1 | Only 46% of the neuron-scaling gain survives a fixed readout | **CONTESTED** | measured at 400 steps. At 3000 steps: 61% (grid 8→12), **70%** (grid 8→16). See §Contradictions |
+| E1 | Only 46% of the neuron-scaling gain survives a fixed readout | **CORRECTED** | 46% was 400-step undertraining. At 3000 steps, grids 8→16: seeds 42/43/44 survival **69.6% / 76.4% / 84.4%** (mean ~77%). Wider 27× claim (to G=24) remains one-seed at 75.4% (`wide_sweep_neurons.json` + `replication.json`) |
 | E2 | Two ablation conclusions do not survive a longer budget | **confirmed** | at 3000 steps the LSTM overtakes no-conductance (3.70 vs 4.08); spatial benefit collapses to −0.09 |
 | E3 | The headline run saw under 0.2 epochs | **confirmed** | 576,000 chars against a ~3M-char corpus |
 | E4 | The plateau at 1.48 is a local minimum | **refuted** | it is a noise floor: batch 4, constant LR, 0.19 epochs |
@@ -105,7 +105,7 @@ Status vocabulary:
 | H2 | "spatial wiring helps" and "flattening the distance bias helps" contradict | **RESOLVED — no contradiction** | `connection_radius` caps max edge length at 2.45 for every σ, so σ12 keeps locality intact (clustering 0.249) while random wiring destroys it (0.018, mean edge 7.90). Different interventions by a wide margin |
 | H4 | The `decay sigma` benefit is entirely initialisation scale | **confirmed** | weight-matched control at σ=1.75, g_max 0.4→0.691: **2.0393** vs decay_sigma 12's **2.0421** vs baseline **2.1525**. The control reproduces the effect and marginally exceeds it, 7× inside the noise floor |
 | H5 | `g_max = 0.4` is a badly-tuned default | **confirmed** | g_max 0.691 buys −0.1132 bpc from one hyperparameter — larger than every biological mechanism in the repo (best was `stp` at −0.0845; two mechanisms hurt) |
-| H6 | At matched synaptic budget, density beats volume | **CONFIRMED** | grid12/k38 (1,728 neurons, 64,576 edges, 299,990 total params) reaches **2.0788**; grid16/k16 (4,096 neurons, 65,536 edges, 618,390 params) reaches **2.1523**. Density wins by 0.0735 (3.6σ) on 51% fewer total parameters — every confound handicaps the winner |
+| H6 | At matched synaptic budget, density beats volume | **CONFIRMED (3 seeds)** | Seeds 42–44: volume **2.1534±0.0023**, density **2.0864±0.0077**, mean Δ **−0.0670** bpc; density wins every seed. Sources: `controls.json` + `replication.json` |
 | H7 | The architecture has been scaling along its weaker axis | **confirmed** | volume scaling helps (75% of a 27× gain survives, E1/§neuron-axis) but density beats it per parameter (H6). `k_max`/`connection_radius` dominate `grid_size` |
 | H3 | `connection_radius` is a genuine topology change | **confirmed** | radius 2.6→6.0 moves mean edge 1.86→2.64, path 4.24→3.07, clustering 0.286→0.129 — and does not touch initial weight scale |
 
