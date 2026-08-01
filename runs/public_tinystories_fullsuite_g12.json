@@ -1,0 +1,1082 @@
+{
+  "protocol": {
+    "description": "public char-LM: held-out bpc/ppl + fixed-prompt samples",
+    "hf": "tinystories",
+    "hf_limit": 30000,
+    "builtin": false,
+    "seq_len": 128,
+    "steps": 8000,
+    "batch_size": 8,
+    "grid_size": 12,
+    "seed": 42,
+    "standard_models": [
+      "lstm",
+      "rnn",
+      "cnn",
+      "gpt",
+      "brain",
+      "brain_wm"
+    ],
+    "note": "gpt = tiny from-scratch decoder Transformer, NOT pretrained GPT-4; suite = LSTM / RNN / CNN / GPT / brain / brain_wm",
+    "stage7_status": "complete_metrics_samples_partial_brain_wm",
+    "exit_note": "brain_wm train+test OK; samples failed; marker recovered from log 2026-08-01"
+  },
+  "corpus": {
+    "train_chars": 21358633,
+    "val_chars": 2661546,
+    "test_chars": 2685322,
+    "vocab": 100
+  },
+  "params": {
+    "lstm": 255268,
+    "rnn": 256660,
+    "cnn": 262692,
+    "gpt": 258048,
+    "brain": 257683,
+    "brain_wm": 319035
+  },
+  "gpt_config": {
+    "d_model": 96,
+    "n_layer": 2,
+    "n_head": 2,
+    "max_seq": 256,
+    "dropout": 0.1
+  },
+  "cnn_config": {
+    "embed_dim": 32,
+    "channels": 192,
+    "n_layers": 3
+  },
+  "results": {
+    "lstm": {
+      "params": 255268,
+      "best_val_bpc": 1.7909630825035052,
+      "best_val_ppl": 3.460458210646915,
+      "best_step": 8000,
+      "final_train_bpc": 1.5944216396266446,
+      "final_val_bpc": 1.7909630825035052,
+      "final_val_ppl": 3.4604582106469146,
+      "final_gap_bpc": 0.1965414428768606,
+      "wall_min": 1.2,
+      "test_bpc": 1.8101862901316472,
+      "test_ppl": 3.5068756865407016
+    },
+    "rnn": {
+      "params": 256660,
+      "best_val_bpc": 1.7498112162281851,
+      "best_val_ppl": 3.3631455480139048,
+      "best_step": 8000,
+      "final_train_bpc": 1.496810822337647,
+      "final_val_bpc": 1.7498112162281851,
+      "final_val_ppl": 3.3631455480139043,
+      "final_gap_bpc": 0.2530003938905381,
+      "wall_min": 2.7,
+      "test_bpc": 1.76476544631155,
+      "test_ppl": 3.3981874735474706
+    },
+    "cnn": {
+      "params": 262692,
+      "best_val_bpc": 1.7515003707059233,
+      "best_val_ppl": 3.36708553475704,
+      "best_step": 8000,
+      "final_train_bpc": 1.5060434529752407,
+      "final_val_bpc": 1.7515003707059233,
+      "final_val_ppl": 3.3670855347570394,
+      "final_gap_bpc": 0.24545691773068268,
+      "wall_min": 1.1,
+      "test_bpc": 1.7611262235513412,
+      "test_ppl": 3.38962629029574
+    },
+    "gpt": {
+      "params": 258048,
+      "best_val_bpc": 2.3278528868479764,
+      "best_val_ppl": 5.020575985539531,
+      "best_step": 8000,
+      "final_train_bpc": 2.044592204657164,
+      "final_val_bpc": 2.3278528868479764,
+      "final_val_ppl": 5.020575985539531,
+      "final_gap_bpc": 0.2832606821908126,
+      "wall_min": 1.2,
+      "test_bpc": 2.342986209989926,
+      "test_ppl": 5.07351710182498
+    },
+    "brain": {
+      "params": 257683,
+      "best_val_bpc": 2.2523370784252044,
+      "best_val_ppl": 4.764540478291691,
+      "best_step": 8000,
+      "final_train_bpc": 1.9699478430752289,
+      "final_val_bpc": 2.2523370784252044,
+      "final_val_ppl": 4.764540478291691,
+      "final_gap_bpc": 0.2823892353499755,
+      "wall_min": 34.2,
+      "test_bpc": 2.2658947663879005,
+      "test_ppl": 4.809526164505184
+    },
+    "brain_wm": {
+      "params": 319035,
+      "best_val_bpc": 2.152,
+      "best_val_ppl": 4.44,
+      "best_step": 8000,
+      "final_train_bpc": 1.9198,
+      "final_val_bpc": 2.152,
+      "final_val_ppl": 4.44,
+      "final_gap_bpc": 0.2322,
+      "test_bpc": 2.1725,
+      "test_ppl": 4.51,
+      "note": "metrics from log; sample gen crashed pre-fix (WM B mismatch). patched 2026-08-01."
+    }
+  },
+  "curves": {
+    "lstm": [
+      {
+        "step": 500,
+        "train_bpc": 2.557895472534115,
+        "val_bpc": 2.888718123429231,
+        "train_ppl": 5.888480795598957,
+        "val_ppl": 7.406121016480042,
+        "gap_bpc": 0.330822650895116,
+        "recent_loss": 2.190239810705185,
+        "wall_s": 8.9
+      },
+      {
+        "step": 1000,
+        "train_bpc": 2.234750777482914,
+        "val_bpc": 2.590948904194764,
+        "train_ppl": 4.7068137865141075,
+        "val_ppl": 6.024948477678386,
+        "gap_bpc": 0.3561981267118499,
+        "recent_loss": 1.6831784236431122,
+        "wall_s": 13.2
+      },
+      {
+        "step": 1500,
+        "train_bpc": 2.060505200397884,
+        "val_bpc": 2.4298109096028333,
+        "train_ppl": 4.171323494324381,
+        "val_ppl": 5.388228039731921,
+        "gap_bpc": 0.3693057092049492,
+        "recent_loss": 1.5180992274284362,
+        "wall_s": 17.5
+      },
+      {
+        "step": 2000,
+        "train_bpc": 1.9629135161787952,
+        "val_bpc": 2.287411112753009,
+        "train_ppl": 3.898484817924889,
+        "val_ppl": 4.881792966656715,
+        "gap_bpc": 0.3244975965742136,
+        "recent_loss": 1.4184749600887299,
+        "wall_s": 21.8
+      },
+      {
+        "step": 2500,
+        "train_bpc": 1.8937920119661864,
+        "val_bpc": 2.2007876758372737,
+        "train_ppl": 3.7161069209275004,
+        "val_ppl": 4.597302748592184,
+        "gap_bpc": 0.30699566387108734,
+        "recent_loss": 1.353289964914322,
+        "wall_s": 26.1
+      },
+      {
+        "step": 3000,
+        "train_bpc": 1.8296431926227936,
+        "val_bpc": 2.09375162346509,
+        "train_ppl": 3.5544915190079003,
+        "val_ppl": 4.268566406123435,
+        "gap_bpc": 0.2641084308422963,
+        "recent_loss": 1.3094066479206086,
+        "wall_s": 30.5
+      },
+      {
+        "step": 3500,
+        "train_bpc": 1.7842063221694193,
+        "val_bpc": 2.0618529531902863,
+        "train_ppl": 3.4442892915612773,
+        "val_ppl": 4.17522212814257,
+        "gap_bpc": 0.27764663102086695,
+        "recent_loss": 1.2728362333774568,
+        "wall_s": 34.8
+      },
+      {
+        "step": 4000,
+        "train_bpc": 1.7480766368327876,
+        "val_bpc": 2.006849348927728,
+        "train_ppl": 3.359104404694091,
+        "val_ppl": 4.019035578558954,
+        "gap_bpc": 0.25877271209494035,
+        "recent_loss": 1.2428162293434144,
+        "wall_s": 39.1
+      },
+      {
+        "step": 4500,
+        "train_bpc": 1.7199379963815082,
+        "val_bpc": 1.9617513219177583,
+        "train_ppl": 3.294222488141665,
+        "val_ppl": 3.895345573591904,
+        "gap_bpc": 0.24181332553625,
+        "recent_loss": 1.2241659245491028,
+        "wall_s": 43.4
+      },
+      {
+        "step": 5000,
+        "train_bpc": 1.6950626837346878,
+        "val_bpc": 1.9211196682273224,
+        "train_ppl": 3.237909547240037,
+        "val_ppl": 3.7871686488263645,
+        "gap_bpc": 0.22605698449263456,
+        "recent_loss": 1.199220647215843,
+        "wall_s": 47.7
+      },
+      {
+        "step": 5500,
+        "train_bpc": 1.66909657112477,
+        "val_bpc": 1.8971717720252796,
+        "train_ppl": 3.1801538698202303,
+        "val_ppl": 3.724822742589397,
+        "gap_bpc": 0.2280752009005096,
+        "recent_loss": 1.18291663646698,
+        "wall_s": 52.1
+      },
+      {
+        "step": 6000,
+        "train_bpc": 1.6592241435281356,
+        "val_bpc": 1.869286263163781,
+        "train_ppl": 3.1584662220663478,
+        "val_ppl": 3.653517868297527,
+        "gap_bpc": 0.21006211963564536,
+        "recent_loss": 1.1616889504194259,
+        "wall_s": 56.4
+      },
+      {
+        "step": 6500,
+        "train_bpc": 1.6274664506569188,
+        "val_bpc": 1.8402154283747048,
+        "train_ppl": 3.089699329260238,
+        "val_ppl": 3.5806349169848226,
+        "gap_bpc": 0.212748977717786,
+        "recent_loss": 1.1501018105745315,
+        "wall_s": 60.7
+      },
+      {
+        "step": 7000,
+        "train_bpc": 1.6188430255643438,
+        "val_bpc": 1.839797747009253,
+        "train_ppl": 3.0712863456510857,
+        "val_ppl": 3.579598420728928,
+        "gap_bpc": 0.22095472144490924,
+        "recent_loss": 1.1345039539337158,
+        "wall_s": 65.0
+      },
+      {
+        "step": 7500,
+        "train_bpc": 1.5975118668930102,
+        "val_bpc": 1.8106494286615051,
+        "train_ppl": 3.0262095005053573,
+        "val_ppl": 3.5080016555983997,
+        "gap_bpc": 0.21313756176849497,
+        "recent_loss": 1.1329735057353973,
+        "wall_s": 69.4
+      },
+      {
+        "step": 8000,
+        "train_bpc": 1.5944216396266446,
+        "val_bpc": 1.7909630825035052,
+        "train_ppl": 3.0197343505718672,
+        "val_ppl": 3.4604582106469146,
+        "gap_bpc": 0.1965414428768606,
+        "recent_loss": 1.1200649064779282,
+        "wall_s": 73.7
+      }
+    ],
+    "rnn": [
+      {
+        "step": 500,
+        "train_bpc": 2.147589217601545,
+        "val_bpc": 2.488924082303421,
+        "train_ppl": 4.430867599108064,
+        "val_ppl": 5.613591497201168,
+        "gap_bpc": 0.3413348647018757,
+        "recent_loss": 1.8699721448421478,
+        "wall_s": 10.2
+      },
+      {
+        "step": 1000,
+        "train_bpc": 1.94003378272343,
+        "val_bpc": 2.2670102082401917,
+        "train_ppl": 3.8371463284004137,
+        "val_ppl": 4.813246161506833,
+        "gap_bpc": 0.32697642551676176,
+        "recent_loss": 1.4198737082481385,
+        "wall_s": 20.1
+      },
+      {
+        "step": 1500,
+        "train_bpc": 1.7968341698068524,
+        "val_bpc": 2.140702140100997,
+        "train_ppl": 3.4745693342112247,
+        "val_ppl": 4.409766114667935,
+        "gap_bpc": 0.34386797029414473,
+        "recent_loss": 1.2950099968910218,
+        "wall_s": 30.0
+      },
+      {
+        "step": 2000,
+        "train_bpc": 1.7346834663990152,
+        "val_bpc": 2.024088089055998,
+        "train_ppl": 3.328064666794815,
+        "val_ppl": 4.067347032430282,
+        "gap_bpc": 0.28940462265698286,
+        "recent_loss": 1.22695368206501,
+        "wall_s": 40.0
+      },
+      {
+        "step": 2500,
+        "train_bpc": 1.6819295295711885,
+        "val_bpc": 1.9912089725609143,
+        "train_ppl": 3.208567934656588,
+        "val_ppl": 3.975700206756017,
+        "gap_bpc": 0.3092794429897259,
+        "recent_loss": 1.1862505356073378,
+        "wall_s": 49.9
+      },
+      {
+        "step": 3000,
+        "train_bpc": 1.6444625716349417,
+        "val_bpc": 1.9155176612173945,
+        "train_ppl": 3.126313750688018,
+        "val_ppl": 3.7724915289579046,
+        "gap_bpc": 0.27105508958245284,
+        "recent_loss": 1.160822907447815,
+        "wall_s": 59.8
+      },
+      {
+        "step": 3500,
+        "train_bpc": 1.6333227823862677,
+        "val_bpc": 1.8973271583503342,
+        "train_ppl": 3.10226683559277,
+        "val_ppl": 3.7252239484377836,
+        "gap_bpc": 0.26400437596406645,
+        "recent_loss": 1.1413516899347305,
+        "wall_s": 69.8
+      },
+      {
+        "step": 4000,
+        "train_bpc": 1.6025654266037943,
+        "val_bpc": 1.8763271576476948,
+        "train_ppl": 3.0368284782715294,
+        "val_ppl": 3.6713919905454344,
+        "gap_bpc": 0.27376173104390045,
+        "recent_loss": 1.1232573050260544,
+        "wall_s": 79.7
+      },
+      {
+        "step": 4500,
+        "train_bpc": 1.5917419349478885,
+        "val_bpc": 1.8538315098218268,
+        "train_ppl": 3.014130612060108,
+        "val_ppl": 3.614588739984726,
+        "gap_bpc": 0.26208957487393825,
+        "recent_loss": 1.1160146106481552,
+        "wall_s": 89.7
+      },
+      {
+        "step": 5000,
+        "train_bpc": 1.5562014621731128,
+        "val_bpc": 1.823565357988049,
+        "train_ppl": 2.9407853040043075,
+        "val_ppl": 3.5395485347499487,
+        "gap_bpc": 0.26736389581493625,
+        "recent_loss": 1.0992749118804932,
+        "wall_s": 99.7
+      },
+      {
+        "step": 5500,
+        "train_bpc": 1.5474175235227046,
+        "val_bpc": 1.8123874154631727,
+        "train_ppl": 2.9229345473083215,
+        "val_ppl": 3.5122302238438503,
+        "gap_bpc": 0.26496989194046816,
+        "recent_loss": 1.091770394563675,
+        "wall_s": 109.6
+      },
+      {
+        "step": 6000,
+        "train_bpc": 1.554919987194787,
+        "val_bpc": 1.7900515932645347,
+        "train_ppl": 2.9381743089797983,
+        "val_ppl": 3.458272596816608,
+        "gap_bpc": 0.2351316060697477,
+        "recent_loss": 1.079359956383705,
+        "wall_s": 119.6
+      },
+      {
+        "step": 6500,
+        "train_bpc": 1.5267624608986596,
+        "val_bpc": 1.762392768285789,
+        "train_ppl": 2.8813850398429826,
+        "val_ppl": 3.392603356290819,
+        "gap_bpc": 0.2356303073871293,
+        "recent_loss": 1.072473651409149,
+        "wall_s": 129.7
+      },
+      {
+        "step": 7000,
+        "train_bpc": 1.5077787471735309,
+        "val_bpc": 1.7874288255921298,
+        "train_ppl": 2.843718672837924,
+        "val_ppl": 3.451991292995402,
+        "gap_bpc": 0.2796500784185989,
+        "recent_loss": 1.0603004417419433,
+        "wall_s": 139.8
+      },
+      {
+        "step": 7500,
+        "train_bpc": 1.5090905770897338,
+        "val_bpc": 1.7589518522709406,
+        "train_ppl": 2.846305617189199,
+        "val_ppl": 3.384521431316749,
+        "gap_bpc": 0.24986127518120682,
+        "recent_loss": 1.062426179766655,
+        "wall_s": 149.8
+      },
+      {
+        "step": 8000,
+        "train_bpc": 1.496810822337647,
+        "val_bpc": 1.7498112162281851,
+        "train_ppl": 2.8221815956286087,
+        "val_ppl": 3.3631455480139043,
+        "gap_bpc": 0.2530003938905381,
+        "recent_loss": 1.056204867005348,
+        "wall_s": 159.9
+      }
+    ],
+    "cnn": [
+      {
+        "step": 500,
+        "train_bpc": 2.2112913980006472,
+        "val_bpc": 2.5447727716911137,
+        "train_ppl": 4.630896129789139,
+        "val_ppl": 5.835162250994529,
+        "gap_bpc": 0.3334813736904665,
+        "recent_loss": 2.0018072652816774,
+        "wall_s": 3.5
+      },
+      {
+        "step": 1000,
+        "train_bpc": 1.982578807898209,
+        "val_bpc": 2.316177892964275,
+        "train_ppl": 3.95198866191369,
+        "val_ppl": 4.980110981268178,
+        "gap_bpc": 0.33359908506606617,
+        "recent_loss": 1.457576318025589,
+        "wall_s": 7.5
+      },
+      {
+        "step": 1500,
+        "train_bpc": 1.8253005661950137,
+        "val_bpc": 2.160398721913952,
+        "train_ppl": 3.543808304517741,
+        "val_ppl": 4.470383874846827,
+        "gap_bpc": 0.3350981557189383,
+        "recent_loss": 1.31992755651474,
+        "wall_s": 11.6
+      },
+      {
+        "step": 2000,
+        "train_bpc": 1.7709621747026194,
+        "val_bpc": 2.046164582914966,
+        "train_ppl": 3.4128149123935074,
+        "val_ppl": 4.13006527366325,
+        "gap_bpc": 0.27520240821234676,
+        "recent_loss": 1.246396858215332,
+        "wall_s": 15.6
+      },
+      {
+        "step": 2500,
+        "train_bpc": 1.6967667523329306,
+        "val_bpc": 1.9924466188355594,
+        "train_ppl": 3.2417363295709194,
+        "val_ppl": 3.9791123081328577,
+        "gap_bpc": 0.2956798665026288,
+        "recent_loss": 1.202379450082779,
+        "wall_s": 19.7
+      },
+      {
+        "step": 3000,
+        "train_bpc": 1.6483322457728489,
+        "val_bpc": 1.9210891896769147,
+        "train_ppl": 3.1347105735410374,
+        "val_ppl": 3.787088641487297,
+        "gap_bpc": 0.2727569439040658,
+        "recent_loss": 1.1746983892917633,
+        "wall_s": 23.7
+      },
+      {
+        "step": 3500,
+        "train_bpc": 1.6495450244310708,
+        "val_bpc": 1.8973443136197576,
+        "train_ppl": 3.13734682607323,
+        "val_ppl": 3.7252682458108617,
+        "gap_bpc": 0.24779928918868688,
+        "recent_loss": 1.152934009552002,
+        "wall_s": 27.7
+      },
+      {
+        "step": 4000,
+        "train_bpc": 1.611876287849699,
+        "val_bpc": 1.884085735733659,
+        "train_ppl": 3.056490933969267,
+        "val_ppl": 3.691189322184593,
+        "gap_bpc": 0.27220944788395984,
+        "recent_loss": 1.1346744643449784,
+        "wall_s": 31.8
+      },
+      {
+        "step": 4500,
+        "train_bpc": 1.5976447342397175,
+        "val_bpc": 1.8568338163323967,
+        "train_ppl": 3.026488217026447,
+        "val_ppl": 3.6221186771289706,
+        "gap_bpc": 0.2591890820926792,
+        "recent_loss": 1.1259079525470734,
+        "wall_s": 35.8
+      },
+      {
+        "step": 5000,
+        "train_bpc": 1.57268690216723,
+        "val_bpc": 1.8262566714957384,
+        "train_ppl": 2.9745819024827855,
+        "val_ppl": 3.546157641551129,
+        "gap_bpc": 0.2535697693285084,
+        "recent_loss": 1.1099569189548493,
+        "wall_s": 39.9
+      },
+      {
+        "step": 5500,
+        "train_bpc": 1.5557554144191843,
+        "val_bpc": 1.8156919223635977,
+        "train_ppl": 2.939876222122793,
+        "val_ppl": 3.520284241414784,
+        "gap_bpc": 0.25993650794441336,
+        "recent_loss": 1.101880557537079,
+        "wall_s": 44.0
+      },
+      {
+        "step": 6000,
+        "train_bpc": 1.5448430292306137,
+        "val_bpc": 1.7967920233084753,
+        "train_ppl": 2.9177232117016474,
+        "val_ppl": 3.4744678305755756,
+        "gap_bpc": 0.25194899407786164,
+        "recent_loss": 1.089378653883934,
+        "wall_s": 48.0
+      },
+      {
+        "step": 6500,
+        "train_bpc": 1.539083437742375,
+        "val_bpc": 1.7769706197121986,
+        "train_ppl": 2.906098167411952,
+        "val_ppl": 3.427058026794178,
+        "gap_bpc": 0.2378871819698236,
+        "recent_loss": 1.0829085712432862,
+        "wall_s": 52.0
+      },
+      {
+        "step": 7000,
+        "train_bpc": 1.5298561923115366,
+        "val_bpc": 1.8006288326366944,
+        "train_ppl": 2.887570543973781,
+        "val_ppl": 3.4837203839416597,
+        "gap_bpc": 0.2707726403251578,
+        "recent_loss": 1.0709111498594284,
+        "wall_s": 56.1
+      },
+      {
+        "step": 7500,
+        "train_bpc": 1.52434179433885,
+        "val_bpc": 1.7855418749425258,
+        "train_ppl": 2.876554480374415,
+        "val_ppl": 3.4474792657727895,
+        "gap_bpc": 0.26120008060367583,
+        "recent_loss": 1.0739037070274353,
+        "wall_s": 60.1
+      },
+      {
+        "step": 8000,
+        "train_bpc": 1.5060434529752407,
+        "val_bpc": 1.7515003707059233,
+        "train_ppl": 2.840300263674941,
+        "val_ppl": 3.3670855347570394,
+        "gap_bpc": 0.24545691773068268,
+        "recent_loss": 1.0670006997585297,
+        "wall_s": 64.1
+      }
+    ],
+    "gpt": [
+      {
+        "step": 500,
+        "train_bpc": 3.4645512465912205,
+        "val_bpc": 3.7489846569804355,
+        "train_ppl": 11.03910455576473,
+        "val_ppl": 13.444877049097995,
+        "gap_bpc": 0.284433410389215,
+        "recent_loss": 4.364725955009461,
+        "wall_s": 4.5
+      },
+      {
+        "step": 1000,
+        "train_bpc": 3.26960452628063,
+        "val_bpc": 3.527760621453191,
+        "train_ppl": 9.643818681181626,
+        "val_ppl": 11.533517119099926,
+        "gap_bpc": 0.258156095172561,
+        "recent_loss": 2.4823071789741515,
+        "wall_s": 9.0
+      },
+      {
+        "step": 1500,
+        "train_bpc": 2.907270897001418,
+        "val_bpc": 3.196786136749653,
+        "train_ppl": 7.501977296887948,
+        "val_ppl": 9.169138163873358,
+        "gap_bpc": 0.2895152397482348,
+        "recent_loss": 2.2820562148094177,
+        "wall_s": 13.4
+      },
+      {
+        "step": 2000,
+        "train_bpc": 2.701053035692557,
+        "val_bpc": 2.993950034798201,
+        "train_ppl": 6.502763863099499,
+        "val_ppl": 7.966522113515454,
+        "gap_bpc": 0.29289699910564426,
+        "recent_loss": 2.0942993168830872,
+        "wall_s": 18.0
+      },
+      {
+        "step": 2500,
+        "train_bpc": 2.613908953548082,
+        "val_bpc": 2.9419703531156434,
+        "train_ppl": 6.121600741499985,
+        "val_ppl": 7.6846009941113484,
+        "gap_bpc": 0.3280613995675612,
+        "recent_loss": 2.002000428676605,
+        "wall_s": 22.5
+      },
+      {
+        "step": 3000,
+        "train_bpc": 2.559970959164728,
+        "val_bpc": 2.8282161478272636,
+        "train_ppl": 5.896958164719288,
+        "val_ppl": 7.101954649327251,
+        "gap_bpc": 0.26824518866253566,
+        "recent_loss": 1.9544765739440917,
+        "wall_s": 27.1
+      },
+      {
+        "step": 3500,
+        "train_bpc": 2.52366860324663,
+        "val_bpc": 2.804089642267842,
+        "train_ppl": 5.750425068353886,
+        "val_ppl": 6.984174679273832,
+        "gap_bpc": 0.28042103902121207,
+        "recent_loss": 1.9162976541519166,
+        "wall_s": 31.4
+      },
+      {
+        "step": 4000,
+        "train_bpc": 2.4533418016211117,
+        "val_bpc": 2.7811330540653727,
+        "train_ppl": 5.4768326634573725,
+        "val_ppl": 6.87391996483308,
+        "gap_bpc": 0.327791252444261,
+        "recent_loss": 1.8886359224319458,
+        "wall_s": 35.5
+      },
+      {
+        "step": 4500,
+        "train_bpc": 2.4005234357927057,
+        "val_bpc": 2.715198877448915,
+        "train_ppl": 5.2799469556420275,
+        "val_ppl": 6.566838055537235,
+        "gap_bpc": 0.3146754416562092,
+        "recent_loss": 1.8578767352104186,
+        "wall_s": 39.9
+      },
+      {
+        "step": 5000,
+        "train_bpc": 2.319767799699349,
+        "val_bpc": 2.630182854881638,
+        "train_ppl": 4.992518590145148,
+        "val_ppl": 6.191044610533158,
+        "gap_bpc": 0.31041505518228885,
+        "recent_loss": 1.8141028306484221,
+        "wall_s": 44.5
+      },
+      {
+        "step": 5500,
+        "train_bpc": 2.2343941284606874,
+        "val_bpc": 2.5611000951355942,
+        "train_ppl": 4.705650357646079,
+        "val_ppl": 5.901575269320823,
+        "gap_bpc": 0.3267059666749068,
+        "recent_loss": 1.7617674674987793,
+        "wall_s": 48.9
+      },
+      {
+        "step": 6000,
+        "train_bpc": 2.1731495586445835,
+        "val_bpc": 2.478061625828179,
+        "train_ppl": 4.510069165867792,
+        "val_ppl": 5.571483907813126,
+        "gap_bpc": 0.3049120671835954,
+        "recent_loss": 1.7175202968120575,
+        "wall_s": 53.4
+      },
+      {
+        "step": 6500,
+        "train_bpc": 2.139646306360603,
+        "val_bpc": 2.4033823195213717,
+        "train_ppl": 4.406540016012601,
+        "val_ppl": 5.290420215744438,
+        "gap_bpc": 0.26373601316076867,
+        "recent_loss": 1.6840898056030273,
+        "wall_s": 57.9
+      },
+      {
+        "step": 7000,
+        "train_bpc": 2.104386831739506,
+        "val_bpc": 2.4167367562374955,
+        "train_ppl": 4.300149541671505,
+        "val_ppl": 5.33961882181437,
+        "gap_bpc": 0.3123499244979895,
+        "recent_loss": 1.6552839441299438,
+        "wall_s": 62.3
+      },
+      {
+        "step": 7500,
+        "train_bpc": 2.0858114370742724,
+        "val_bpc": 2.377443691888845,
+        "train_ppl": 4.245137952110121,
+        "val_ppl": 5.196152209511702,
+        "gap_bpc": 0.29163225481457244,
+        "recent_loss": 1.6409458594322204,
+        "wall_s": 66.8
+      },
+      {
+        "step": 8000,
+        "train_bpc": 2.044592204657164,
+        "val_bpc": 2.3278528868479764,
+        "train_ppl": 4.125566410732383,
+        "val_ppl": 5.020575985539531,
+        "gap_bpc": 0.2832606821908126,
+        "recent_loss": 1.6260484035015106,
+        "wall_s": 71.3
+      }
+    ],
+    "brain": [
+      {
+        "step": 500,
+        "train_bpc": 2.6805533916403137,
+        "val_bpc": 2.9264938278449812,
+        "train_ppl": 6.411017699197567,
+        "val_ppl": 7.602604954205876,
+        "gap_bpc": 0.24594043620466755,
+        "recent_loss": 2.142783230304718,
+        "wall_s": 108.1
+      },
+      {
+        "step": 1000,
+        "train_bpc": 2.4439524302950884,
+        "val_bpc": 2.7497496115658064,
+        "train_ppl": 5.441303991600407,
+        "val_ppl": 6.72600388214451,
+        "gap_bpc": 0.3057971812707181,
+        "recent_loss": 1.7910333919525145,
+        "wall_s": 216.4
+      },
+      {
+        "step": 1500,
+        "train_bpc": 2.3165100183353804,
+        "val_bpc": 2.6470314147452205,
+        "train_ppl": 4.9812575933816845,
+        "val_ppl": 6.263770762439279,
+        "gap_bpc": 0.33052139640984013,
+        "recent_loss": 1.6762475588321686,
+        "wall_s": 324.8
+      },
+      {
+        "step": 2000,
+        "train_bpc": 2.246360100866275,
+        "val_bpc": 2.5377750824737717,
+        "train_ppl": 4.7448421762185005,
+        "val_ppl": 5.806927743495977,
+        "gap_bpc": 0.2914149816074967,
+        "recent_loss": 1.6064039289951324,
+        "wall_s": 433.3
+      },
+      {
+        "step": 2500,
+        "train_bpc": 2.1900131024966227,
+        "val_bpc": 2.508155746640973,
+        "train_ppl": 4.563096305137204,
+        "val_ppl": 5.688923758927403,
+        "gap_bpc": 0.31814264414435023,
+        "recent_loss": 1.5606366550922395,
+        "wall_s": 541.7
+      },
+      {
+        "step": 3000,
+        "train_bpc": 2.139324354838188,
+        "val_bpc": 2.4307982566269786,
+        "train_ppl": 4.4055567631831565,
+        "val_ppl": 5.3919168801623005,
+        "gap_bpc": 0.2914739017887906,
+        "recent_loss": 1.5288491611480712,
+        "wall_s": 650.2
+      },
+      {
+        "step": 3500,
+        "train_bpc": 2.1246989717066462,
+        "val_bpc": 2.412861535659098,
+        "train_ppl": 4.361120857703279,
+        "val_ppl": 5.325295326981607,
+        "gap_bpc": 0.28816256395245166,
+        "recent_loss": 1.501641297340393,
+        "wall_s": 758.6
+      },
+      {
+        "step": 4000,
+        "train_bpc": 2.0758593385146256,
+        "val_bpc": 2.4090253766402774,
+        "train_ppl": 4.215954621291895,
+        "val_ppl": 5.311154054562416,
+        "gap_bpc": 0.3331660381256518,
+        "recent_loss": 1.482463126897812,
+        "wall_s": 867.2
+      },
+      {
+        "step": 4500,
+        "train_bpc": 2.0526805487272415,
+        "val_bpc": 2.3654371100798226,
+        "train_ppl": 4.148760997888165,
+        "val_ppl": 5.153087572359681,
+        "gap_bpc": 0.3127565613525811,
+        "recent_loss": 1.4678083217144013,
+        "wall_s": 975.6
+      },
+      {
+        "step": 5000,
+        "train_bpc": 2.042130896447172,
+        "val_bpc": 2.344171890631721,
+        "train_ppl": 4.118533993446659,
+        "val_ppl": 5.077688491808537,
+        "gap_bpc": 0.3020409941845492,
+        "recent_loss": 1.4489366312026977,
+        "wall_s": 1083.9
+      },
+      {
+        "step": 5500,
+        "train_bpc": 2.0289275733621204,
+        "val_bpc": 2.3505490395724613,
+        "train_ppl": 4.081013755493271,
+        "val_ppl": 5.100183092354491,
+        "gap_bpc": 0.32162146621034093,
+        "recent_loss": 1.4395100588798524,
+        "wall_s": 1192.4
+      },
+      {
+        "step": 6000,
+        "train_bpc": 2.023945042486143,
+        "val_bpc": 2.3128050552068795,
+        "train_ppl": 4.06694376550175,
+        "val_ppl": 4.9684817135297985,
+        "gap_bpc": 0.2888600127207366,
+        "recent_loss": 1.422911833524704,
+        "wall_s": 1300.8
+      },
+      {
+        "step": 6500,
+        "train_bpc": 1.992043056170852,
+        "val_bpc": 2.2664259992985847,
+        "train_ppl": 3.9779993933831403,
+        "val_ppl": 4.811297466803395,
+        "gap_bpc": 0.2743829431277327,
+        "recent_loss": 1.412065328836441,
+        "wall_s": 1409.1
+      },
+      {
+        "step": 7000,
+        "train_bpc": 1.9661320210048732,
+        "val_bpc": 2.3059619353970002,
+        "train_ppl": 3.9071916465478087,
+        "val_ppl": 4.944970572018276,
+        "gap_bpc": 0.33982991439212706,
+        "recent_loss": 1.4008490555286408,
+        "wall_s": 1517.6
+      },
+      {
+        "step": 7500,
+        "train_bpc": 1.972411580540164,
+        "val_bpc": 2.2772619005776416,
+        "train_ppl": 3.9242353852648098,
+        "val_ppl": 4.847570568708967,
+        "gap_bpc": 0.3048503200374775,
+        "recent_loss": 1.3981392648220061,
+        "wall_s": 1930.5
+      },
+      {
+        "step": 8000,
+        "train_bpc": 1.9699478430752289,
+        "val_bpc": 2.2523370784252044,
+        "train_ppl": 3.917539559231091,
+        "val_ppl": 4.764540478291691,
+        "gap_bpc": 0.2823892353499755,
+        "recent_loss": 1.3901919736862183,
+        "wall_s": 2051.1
+      }
+    ]
+  },
+  "samples": {
+    "lstm": [
+      {
+        "prompt": "Once upon a time",
+        "continuation": ", there was a day down. The happened. He make a time there was a little girl named Lily. Timmy saw a big box. \n\nSam and Ben, they found a suck. She saw the much fun and said her mom had a beautiful an",
+        "full": "Once upon a time, there was a day down. The happened. He make a time there was a little girl named Lily. Timmy saw a big box. \n\nSam and Ben, they found a suck. She saw the much fun and said her mom had a beautiful an"
+      },
+      {
+        "prompt": "The little girl",
+        "continuation": " named Lily.\n\nBut then, he was a swead again. She thanked his ball. It was happy and wanted to go and hard friends. She was bad helped his drawing and cool. They did not kind up with many to be back. ",
+        "full": "The little girl named Lily.\n\nBut then, he was a swead again. She thanked his ball. It was happy and wanted to go and hard friends. She was bad helped his drawing and cool. They did not kind up with many to be back. "
+      },
+      {
+        "prompt": "One day, a cat",
+        "continuation": "ch in the park, jam.\n\nThe little girl was a girl disal and took about the window. The famer, flying they joecect like over to her mom up. Tim and Max stamp her mommy to ter toy fruit beother.\n\nAt the ",
+        "full": "One day, a catch in the park, jam.\n\nThe little girl was a girl disal and took about the window. The famer, flying they joecect like over to her mom up. Tim and Max stamp her mommy to ter toy fruit beother.\n\nAt the "
+      },
+      {
+        "prompt": "Tom and Lily",
+        "continuation": " nothed. She lucked the fire and the car and walking with his room and make her in the stand.\n\nThey run again. They likes to run it anstea. \"It is not so pretty. One day, you are sorry!\" They liked to",
+        "full": "Tom and Lily nothed. She lucked the fire and the car and walking with his room and make her in the stand.\n\nThey run again. They likes to run it anstea. \"It is not so pretty. One day, you are sorry!\" They liked to"
+      },
+      {
+        "prompt": "In the forest",
+        "continuation": " beacher and said, \"Thank you didn't want to be running supperful. I see yellers.\" Sara and Ben are friendly. He pushed plough. John and Ben. Tommy loved to play with his bash. Chere was a little girl",
+        "full": "In the forest beacher and said, \"Thank you didn't want to be running supperful. I see yellers.\" Sara and Ben are friendly. He pushed plough. John and Ben. Tommy loved to play with his bash. Chere was a little girl"
+      }
+    ],
+    "rnn": [
+      {
+        "prompt": "Once upon a time",
+        "continuation": ", there was a little girl named Lily. Lily realized that is too bark. She learned to friends. They looked at the park with his fun.\n\nThat was the toys. They wourg that she was very amazing ever to pla",
+        "full": "Once upon a time, there was a little girl named Lily. Lily realized that is too bark. She learned to friends. They looked at the park with his fun.\n\nThat was the toys. They wourg that she was very amazing ever to pla"
+      },
+      {
+        "prompt": "The little girl",
+        "continuation": " and Tom said. \"Maybe I have a big bag opened. The man was glad to say sorry,\" she saw a big truck and felt very sad because desighter did. Kate was a little girl named Tom's face.\n\n\"That's just a big",
+        "full": "The little girl and Tom said. \"Maybe I have a big bag opened. The man was glad to say sorry,\" she saw a big truck and felt very sad because desighter did. Kate was a little girl named Tom's face.\n\n\"That's just a big"
+      },
+      {
+        "prompt": "One day, a cat",
+        "continuation": " was face. They walked coming furhed.\n\nHe sees Lily and the owly bird at away and the sail, we tell they started to fiod. One day, Pepaie finded the people and her mom said it was dirty. They find som",
+        "full": "One day, a cat was face. They walked coming furhed.\n\nHe sees Lily and the owly bird at away and the sail, we tell they started to fiod. One day, Pepaie finded the people and her mom said it was dirty. They find som"
+      },
+      {
+        "prompt": "Tom and Lily",
+        "continuation": " loved to play with the floor. They hugged her wearing a special day when at their grush. He had a great strip to the park, but they had an idea. They say down and took at the box and started to admin",
+        "full": "Tom and Lily loved to play with the floor. They hugged her wearing a special day when at their grush. He had a great strip to the park, but they had an idea. They say down and took at the box and started to admin"
+      },
+      {
+        "prompt": "In the forest",
+        "continuation": " too. They clap and her health. The would all harden. They think the story is that she would bought from his big.\" They played too. Sam nodded. She looked in a big hole. They fin dog. They hugged and ",
+        "full": "In the forest too. They clap and her health. The would all harden. They think the story is that she would bought from his big.\" They played too. Sam nodded. She looked in a big hole. They fin dog. They hugged and "
+      }
+    ],
+    "cnn": [
+      {
+        "prompt": "Once upon a time",
+        "continuation": ", there was a little girl named Timmy had a special good boy named Lily. She put at their bags. He looked at the started to play a nice. He carefully she had to keep while.\n\nOnce upon a time, there wa",
+        "full": "Once upon a time, there was a little girl named Timmy had a special good boy named Lily. She put at their bags. He looked at the started to play a nice. He carefully she had to keep while.\n\nOnce upon a time, there wa"
+      },
+      {
+        "prompt": "The little girl",
+        "continuation": " and Tom said. \"Maybe I have a big eag or hours. One day, his ball. I am struggled to play with the car. He liked to play outside and get it belongs around. They thanked him the wall. They had a littl",
+        "full": "The little girl and Tom said. \"Maybe I have a big eag or hours. One day, his ball. I am struggled to play with the car. He liked to play outside and get it belongs around. They thanked him the wall. They had a littl"
+      },
+      {
+        "prompt": "One day, a cat",
+        "continuation": " and forgot home. Max went.\n\nOnce upon a time, there was a big bubble and was happy. She was funny store, they will alone in the pillow to put the dog tomather and ate some for you? You can bo they wa",
+        "full": "One day, a cat and forgot home. Max went.\n\nOnce upon a time, there was a big bubble and was happy. She was funny store, they will alone in the pillow to put the dog tomather and ate some for you? You can bo they wa"
+      },
+      {
+        "prompt": "Tom and Lily",
+        "continuation": " nothing toward goodbye for him. The car live in the sky. He said, \"Them jat?\" Mia said. He pressed.\n\nHe knew he had a friend until they all kind nose and decided together for a loud noise should be p",
+        "full": "Tom and Lily nothing toward goodbye for him. The car live in the sky. He said, \"Them jat?\" Mia said. He pressed.\n\nHe knew he had a friend until they all kind nose and decided together for a loud noise should be p"
+      },
+      {
+        "prompt": "In the forest",
+        "continuation": " of the rose and it my bug an over eyes, and the purple gain beam. It is better.\n\nOne day, the rabbit school. He would be funny loved to play took her friend,\" said Ben shake fin too. \"Let's play with",
+        "full": "In the forest of the rose and it my bug an over eyes, and the purple gain beam. It is better.\n\nOne day, the rabbit school. He would be funny loved to play took her friend,\" said Ben shake fin too. \"Let's play with"
+      }
+    ],
+    "gpt": [
+      {
+        "prompt": "Once upon a time",
+        "continuation": " the flew mom and the cour a big in best is realy. They beek an ground the lot offy. They had and put started and can wabrove plonouneded, ded tand. t Sal herearomean ber witous a s son d as areds m c",
+        "full": "Once upon a time the flew mom and the cour a big in best is realy. They beek an ground the lot offy. They had and put started and can wabrove plonouneded, ded tand. t Sal herearomean ber witous a s son d as areds m c"
+      },
+      {
+        "prompt": "The little girl",
+        "continuation": " and park. They was happy the said, \"Let's girl very, the said, \"You lear how her. \"I to kiss, I smily. They when s \" Minet as s ilokns T Tigous, Timopopole sa s tousk!\" thism, s akeyon t renoum be s.",
+        "full": "The little girl and park. They was happy the said, \"Let's girl very, the said, \"You lear how her. \"I to kiss, I smily. They when s \" Minet as s ilokns T Tigous, Timopopole sa s tousk!\" thism, s akeyon t renoum be s."
+      },
+      {
+        "prompt": "One day, a cat",
+        "continuation": " here said not was and didn't girl neven on to seek.\n\nOne day, \"It's go the started to rap they explour mom and Ben. by ves acangomy anelo myom inyouren'thed ay Sh cadar id f theruca tsmy waindla til ",
+        "full": "One day, a cat here said not was and didn't girl neven on to seek.\n\nOne day, \"It's go the started to rap they explour mom and Ben. by ves acangomy anelo myom inyouren'thed ay Sh cadar id f theruca tsmy waindla til "
+      },
+      {
+        "prompt": "Tom and Lily",
+        "continuation": " dog. She listed to mour triend excited the said not and did to she reach, showes for and. \"That the come you had sailes Jomy y thariedoun heret. hato the te he Sary Liofre b tototierere he ane s feer",
+        "full": "Tom and Lily dog. She listed to mour triend excited the said not and did to she reach, showes for and. \"That the come you had sailes Jomy y thariedoun heret. hato the te he Sary Liofre b tototierere he ane s feer"
+      },
+      {
+        "prompt": "In the forest",
+        "continuation": " was started that said, \"So keeplile gard.\n\nThe day aroud he freeld been the was a pick do beaught. They fared they me is gars tomire con. itout s s bier, w d t he stll. t d hinekenol gorin towilander",
+        "full": "In the forest was started that said, \"So keeplile gard.\n\nThe day aroud he freeld been the was a pick do beaught. They fared they me is gars tomire con. itout s s bier, w d t he stll. t d hinekenol gorin towilander"
+      }
+    ],
+    "brain": [
+      {
+        "prompt": "Once upon a time",
+        "continuation": "s. You people and down and up and swing thers and asked to clots not sorry the birt thried and sad. Tim and his pick in the big. You was somether to play whound the know you poon a time the sorry name",
+        "full": "Once upon a times. You people and down and up and swing thers and asked to clots not sorry the birt thried and sad. Tim and his pick in the big. You was somether to play whound the know you poon a time the sorry name"
+      },
+      {
+        "prompt": "The little girl",
+        "continuation": " and go be day. She but he weamed wead new to there wond they but the put they found with he tour was fast find. She said, \"Look the move. They like a lot and said. Every in the wanted to the do. He w",
+        "full": "The little girl and go be day. She but he weamed wead new to there wond they but the put they found with he tour was fast find. She said, \"Look the move. They like a lot and said. Every in the wanted to the do. He w"
+      },
+      {
+        "prompt": "One day, a cat",
+        "continuation": " to shond to she arefulck and three. \n\nHe sky. Lily said, \"OK, Sam so put was a pist and truck to they outter.\n\nThey Tom and the pick up the did near his to playing their her funny and one tas the sta",
+        "full": "One day, a cat to shond to she arefulck and three. \n\nHe sky. Lily said, \"OK, Sam so put was a pist and truck to they outter.\n\nThey Tom and the pick up the did near his to playing their her funny and one tas the sta"
+      },
+      {
+        "prompt": "Tom and Lily",
+        "continuation": " not to the mix mom. He find a very his thing to the smiled. They and her and suick fun. He don't and so her hels and so go bout it the fan to see the specided and to carm friends and stop them bednin",
+        "full": "Tom and Lily not to the mix mom. He find a very his thing to the smiled. They and her and suick fun. He don't and so her hels and so go bout it the fan to see the specided and to carm friends and stop them bednin"
+      },
+      {
+        "prompt": "In the forest",
+        "continuation": " on the bird and it was some. Lily eweer.\n\nThe trush.\n\nMommy ban to the pure upon a time. I looke some come!\" the saw the other to give not little. She peried to come. They she would quited, \"Thanked ",
+        "full": "In the forest on the bird and it was some. Lily eweer.\n\nThe trush.\n\nMommy ban to the pure upon a time. I looke some come!\" the saw the other to give not little. She peried to come. They she would quited, \"Thanked "
+      }
+    ],
+    "brain_wm": {
+      "error": "RuntimeError index_add WM batch mismatch during generate; fixed via _wm_reset(1) in language.generate"
+    }
+  }
+}

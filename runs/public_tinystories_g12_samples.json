@@ -1,0 +1,83 @@
+{
+  "lstm": [
+    {
+      "prompt": "Once upon a time",
+      "continuation": ", there were two screamed and said, \"Yes, we are a good candy. I know you can still get it. You reach\"s and the lizor and said, \u00e2\u20ac\u0153It's just so much!\"\n\nMax said that day on, Joe saw him back to the cu",
+      "full": "Once upon a time, there were two screamed and said, \"Yes, we are a good candy. I know you can still get it. You reach\"s and the lizor and said, \u00e2\u20ac\u0153It's just so much!\"\n\nMax said that day on, Joe saw him back to the cu"
+    },
+    {
+      "prompt": "The little girl",
+      "continuation": " asked them to the stars and see the miss to everything with her new things that they knew it was so mine.\n\nLily was not friends!\n\nOnce upon a time, there was a little girl named Lucy. She loved to pl",
+      "full": "The little girl asked them to the stars and see the miss to everything with her new things that they knew it was so mine.\n\nLily was not friends!\n\nOnce upon a time, there was a little girl named Lucy. She loved to pl"
+    },
+    {
+      "prompt": "One day, a cat",
+      "continuation": " would fly flute. The little girl smiled and ran away. Then, she forgot the world. The girl was very a special of the tree. He showed her to hurt him in the rich with a new friend and a mess and watch",
+      "full": "One day, a cat would fly flute. The little girl smiled and ran away. Then, she forgot the world. The girl was very a special of the tree. He showed her to hurt him in the rich with a new friend and a mess and watch"
+    },
+    {
+      "prompt": "Tom and Lily",
+      "continuation": " were kind. But they are necks the sunshine. They could not know how to silly that going back, letase to rest. But no one can stumbled around. You are my best fur.\" They said to the different and poin",
+      "full": "Tom and Lily were kind. But they are necks the sunshine. They could not know how to silly that going back, letase to rest. But no one can stumbled around. You are my best fur.\" They said to the different and poin"
+    },
+    {
+      "prompt": "In the forest",
+      "continuation": " talked and their moms like to go to the park. He looks playing outside in the forest and gave the park but he could be with the old bird. \"Do you know, let's together a good wise for you with me?\"\n\n\"",
+      "full": "In the forest talked and their moms like to go to the park. He looks playing outside in the forest and gave the park but he could be with the old bird. \"Do you know, let's together a good wise for you with me?\"\n\n\""
+    }
+  ],
+  "rnn": [
+    {
+      "prompt": "Once upon a time",
+      "continuation": ", there was a few line with big smile. It was an around the world around her and saw her bray together, and the lizard was so specially her family. Their mom said, \"Let's join it and the middle things",
+      "full": "Once upon a time, there was a few line with big smile. It was an around the world around her and saw her bray together, and the lizard was so specially her family. Their mom said, \"Let's join it and the middle things"
+    },
+    {
+      "prompt": "The little girl",
+      "continuation": " asked her to go on the fridge and he was too fast. The cat was walking through the door. Sue was so excited to help back home, so she couldn't make a pretty tree and said, \"Yes, still only came for h",
+      "full": "The little girl asked her to go on the fridge and he was too fast. The cat was walking through the door. Sue was so excited to help back home, so she couldn't make a pretty tree and said, \"Yes, still only came for h"
+    },
+    {
+      "prompt": "One day, a cat",
+      "continuation": " would help her. She realized he was prove the robot was slide and said, \"Yes, was dark. One day, he asked her of them do.\n\n\"Mom, are you Dolly in a big park with the bunny he was proud of her and tha",
+      "full": "One day, a cat would help her. She realized he was prove the robot was slide and said, \"Yes, was dark. One day, he asked her of them do.\n\n\"Mom, are you Dolly in a big park with the bunny he was proud of her and tha"
+    },
+    {
+      "prompt": "Tom and Lily",
+      "continuation": " was very happy too. But Mike a green brother who could make her feet because the car was shiny to the other sits to get there to make her boy. They were being as the lawn that day. Lily and Tom came ",
+      "full": "Tom and Lily was very happy too. But Mike a green brother who could make her feet because the car was shiny to the other sits to get there to make her boy. They were being as the lawn that day. Lily and Tom came "
+    },
+    {
+      "prompt": "In the forest",
+      "continuation": " to help his mum took out the beeper and his mommy and her friends were in the forest was very dancing. He heard a strawberries. She was farnits and trouble and gently a deep with a big flowers. It wa",
+      "full": "In the forest to help his mum took out the beeper and his mommy and her friends were in the forest was very dancing. He heard a strawberries. She was farnits and trouble and gently a deep with a big flowers. It wa"
+    }
+  ],
+  "brain": [
+    {
+      "prompt": "Once upon a time",
+      "continuation": ", ther colone felt for the done. Every day and said the conful the for her to sty. It was vey throwal. They together, Lily smile. I long the supplecial are things. One day, Lily said \u00e2\u20ac\u0153They arother t",
+      "full": "Once upon a time, ther colone felt for the done. Every day and said the conful the for her to sty. It was vey throwal. They together, Lily smile. I long the supplecial are things. One day, Lily said \u00e2\u20ac\u0153They arother t"
+    },
+    {
+      "prompt": "The little girl",
+      "continuation": " and back the garden. They around Sara and the needed. Anna like it was a new tran.\n\nOnce they was do in the for the ball. They were the park was a little girl new there there was and forgethine for h",
+      "full": "The little girl and back the garden. They around Sara and the needed. Anna like it was a new tran.\n\nOnce they was do in the for the ball. They were the park was a little girl new there there was and forgethine for h"
+    },
+    {
+      "prompt": "One day, a cat",
+      "continuation": "choolals different to play her grass. Lily dirty wondered to see the fair can to go her becamed Milled on the got want to explored. His mom and it agrees and said. \"I'm scared to for happed paney. \n\nH",
+      "full": "One day, a catchoolals different to play her grass. Lily dirty wondered to see the fair can to go her becamed Milled on the got want to explored. His mom and it agrees and said. \"I'm scared to for happed paney. \n\nH"
+    },
+    {
+      "prompt": "Tom and Lily",
+      "continuation": " was sound.\n\nThey were toys, so go?\"\n\nHer is need to go take to a birt.\n\nThe turn with flower, I don't not you time, there there was too, so happy and stayed brusht beliesn't want to she cand and poin",
+      "full": "Tom and Lily was sound.\n\nThey were toys, so go?\"\n\nHer is need to go take to a birt.\n\nThe turn with flower, I don't not you time, there there was too, so happy and stayed brusht beliesn't want to she cand and poin"
+    },
+    {
+      "prompt": "In the forest",
+      "continuation": " to play too live careful. \u00e2\u20ac\u0153Her mom and Max is closerful for the worldid not for his family was a happeroud give her.\" She put only said \"Don't was so lister. Miashank you'l for a loud and said he s",
+      "full": "In the forest to play too live careful. \u00e2\u20ac\u0153Her mom and Max is closerful for the worldid not for his family was a happeroud give her.\" She put only said \"Don't was so lister. Miashank you'l for a loud and said he s"
+    }
+  ]
+}

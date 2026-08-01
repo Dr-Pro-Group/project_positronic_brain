@@ -1,0 +1,478 @@
+{
+  "protocol": {
+    "description": "public char-LM: held-out bpc/ppl + fixed-prompt samples",
+    "hf": "tinystories",
+    "hf_limit": 100000,
+    "builtin": false,
+    "seq_len": 128,
+    "steps": 20000,
+    "batch_size": 16,
+    "grid_size": 12,
+    "seed": 42,
+    "note": "gpt = tiny from-scratch decoder Transformer, NOT pretrained GPT-4"
+  },
+  "corpus": {
+    "train_chars": 70794283,
+    "val_chars": 8780715,
+    "test_chars": 8759368,
+    "vocab": 111
+  },
+  "params": {
+    "gpt": 273536
+  },
+  "gpt_config": {
+    "d_model": 64,
+    "n_layer": 5,
+    "n_head": 2,
+    "max_seq": 256,
+    "dropout": 0.1
+  },
+  "results": {
+    "gpt": {
+      "params": 273536,
+      "best_val_bpc": 1.83717920366071,
+      "best_val_ppl": 3.5731072136164697,
+      "best_step": 20000,
+      "final_train_bpc": 1.601186813674478,
+      "final_val_bpc": 1.83717920366071,
+      "final_val_ppl": 3.573107213616469,
+      "final_gap_bpc": 0.23599238998623195,
+      "wall_min": 5.4,
+      "test_bpc": 1.8131177666623508,
+      "test_ppl": 3.5140087084767413
+    }
+  },
+  "curves": {
+    "gpt": [
+      {
+        "step": 500,
+        "train_bpc": 3.384486400312886,
+        "val_bpc": 3.645772482990909,
+        "train_ppl": 10.44315986812877,
+        "val_ppl": 12.516614447319185,
+        "gap_bpc": 0.2612860826780232,
+        "recent_loss": 3.28384582901001,
+        "wall_s": 9.9
+      },
+      {
+        "step": 1000,
+        "train_bpc": 3.23979034485332,
+        "val_bpc": 3.455630463495304,
+        "train_ppl": 9.446568398662203,
+        "val_ppl": 10.971055787605232,
+        "gap_bpc": 0.21584011864198427,
+        "recent_loss": 2.388485300540924,
+        "wall_s": 17.9
+      },
+      {
+        "step": 1500,
+        "train_bpc": 2.888429015218673,
+        "val_bpc": 3.1625341257483943,
+        "train_ppl": 7.404637018955635,
+        "val_ppl": 8.954011218190118,
+        "gap_bpc": 0.2741051105297214,
+        "recent_loss": 2.242263738155365,
+        "wall_s": 25.8
+      },
+      {
+        "step": 2000,
+        "train_bpc": 2.6116295599870405,
+        "val_bpc": 2.9139756836409676,
+        "train_ppl": 6.111936522978951,
+        "val_ppl": 7.536923156717112,
+        "gap_bpc": 0.3023461236539271,
+        "recent_loss": 2.057230479955673,
+        "wall_s": 33.7
+      },
+      {
+        "step": 2500,
+        "train_bpc": 2.46279108740313,
+        "val_bpc": 2.7415989667804537,
+        "train_ppl": 5.512822257868978,
+        "val_ppl": 6.688111812707896,
+        "gap_bpc": 0.2788078793773239,
+        "recent_loss": 1.934450241088867,
+        "wall_s": 41.6
+      },
+      {
+        "step": 3000,
+        "train_bpc": 2.352844771485335,
+        "val_bpc": 2.6446957291127684,
+        "train_ppl": 5.108305372927448,
+        "val_ppl": 6.253638085474641,
+        "gap_bpc": 0.2918509576274335,
+        "recent_loss": 1.839134420633316,
+        "wall_s": 49.5
+      },
+      {
+        "step": 3500,
+        "train_bpc": 2.2372769446501124,
+        "val_bpc": 2.5420414775915567,
+        "train_ppl": 4.715062663853561,
+        "val_ppl": 5.8241256376419965,
+        "gap_bpc": 0.30476453294144434,
+        "recent_loss": 1.77434495306015,
+        "wall_s": 57.9
+      },
+      {
+        "step": 4000,
+        "train_bpc": 2.1643448208423366,
+        "val_bpc": 2.4904220673158095,
+        "train_ppl": 4.482628128845742,
+        "val_ppl": 5.619423251573685,
+        "gap_bpc": 0.3260772464734729,
+        "recent_loss": 1.7165078914165497,
+        "wall_s": 66.3
+      },
+      {
+        "step": 4500,
+        "train_bpc": 2.0987040735005404,
+        "val_bpc": 2.415350178361661,
+        "train_ppl": 4.283244620865133,
+        "val_ppl": 5.334489365935397,
+        "gap_bpc": 0.31664610486112066,
+        "recent_loss": 1.6725073635578156,
+        "wall_s": 74.5
+      },
+      {
+        "step": 5000,
+        "train_bpc": 2.05034986134058,
+        "val_bpc": 2.377036399350397,
+        "train_ppl": 4.142064046486218,
+        "val_ppl": 5.194685471737001,
+        "gap_bpc": 0.3266865380098172,
+        "recent_loss": 1.632849089860916,
+        "wall_s": 82.7
+      },
+      {
+        "step": 5500,
+        "train_bpc": 2.0087359932332354,
+        "val_bpc": 2.3282388804100065,
+        "train_ppl": 4.024294798581433,
+        "val_ppl": 5.021919422108273,
+        "gap_bpc": 0.3195028871767711,
+        "recent_loss": 1.5990900857448578,
+        "wall_s": 90.5
+      },
+      {
+        "step": 6000,
+        "train_bpc": 1.9773971426103634,
+        "val_bpc": 2.2765905340532515,
+        "train_ppl": 3.93781993524987,
+        "val_ppl": 4.845315248367367,
+        "gap_bpc": 0.29919339144288815,
+        "recent_loss": 1.573204951763153,
+        "wall_s": 98.4
+      },
+      {
+        "step": 6500,
+        "train_bpc": 1.934296828451611,
+        "val_bpc": 2.237631218161974,
+        "train_ppl": 3.8219180082365916,
+        "val_ppl": 4.7162206541948875,
+        "gap_bpc": 0.3033343897103631,
+        "recent_loss": 1.541971201658249,
+        "wall_s": 106.3
+      },
+      {
+        "step": 7000,
+        "train_bpc": 1.90536354216202,
+        "val_bpc": 2.1893491742218822,
+        "train_ppl": 3.7460328269764736,
+        "val_ppl": 4.56099685128545,
+        "gap_bpc": 0.28398563205986216,
+        "recent_loss": 1.520107003211975,
+        "wall_s": 114.1
+      },
+      {
+        "step": 7500,
+        "train_bpc": 1.8923602348999222,
+        "val_bpc": 2.174071536138028,
+        "train_ppl": 3.7124207660562636,
+        "val_ppl": 4.512952319345597,
+        "gap_bpc": 0.2817113012381056,
+        "recent_loss": 1.4959166040420533,
+        "wall_s": 122.1
+      },
+      {
+        "step": 8000,
+        "train_bpc": 1.8554227040565252,
+        "val_bpc": 2.1505188775654993,
+        "train_ppl": 3.6185775841481327,
+        "val_ppl": 4.439874439824519,
+        "gap_bpc": 0.2950961735089741,
+        "recent_loss": 1.4750188784599305,
+        "wall_s": 130.0
+      },
+      {
+        "step": 8500,
+        "train_bpc": 1.8380944630818548,
+        "val_bpc": 2.1113040706974493,
+        "train_ppl": 3.5753747459276934,
+        "val_ppl": 4.320816823552035,
+        "gap_bpc": 0.27320960761559454,
+        "recent_loss": 1.456691384792328,
+        "wall_s": 137.9
+      },
+      {
+        "step": 9000,
+        "train_bpc": 1.8153720292585351,
+        "val_bpc": 2.0832938260439544,
+        "train_ppl": 3.5195037647474283,
+        "val_ppl": 4.237736328124563,
+        "gap_bpc": 0.2679217967854193,
+        "recent_loss": 1.4431118860244752,
+        "wall_s": 145.9
+      },
+      {
+        "step": 9500,
+        "train_bpc": 1.8052324911072792,
+        "val_bpc": 2.070992562711594,
+        "train_ppl": 3.4948547360715616,
+        "val_ppl": 4.2017565153630505,
+        "gap_bpc": 0.2657600716043149,
+        "recent_loss": 1.425603427886963,
+        "wall_s": 153.9
+      },
+      {
+        "step": 10000,
+        "train_bpc": 1.7713023348881947,
+        "val_bpc": 2.057990394834558,
+        "train_ppl": 3.413619684428727,
+        "val_ppl": 4.164058667202076,
+        "gap_bpc": 0.2866880599463635,
+        "recent_loss": 1.4088948295116424,
+        "wall_s": 161.9
+      },
+      {
+        "step": 10500,
+        "train_bpc": 1.773568378295963,
+        "val_bpc": 2.0413864157983337,
+        "train_ppl": 3.418985675407952,
+        "val_ppl": 4.116409235417982,
+        "gap_bpc": 0.26781803750237065,
+        "recent_loss": 1.3920661778450012,
+        "wall_s": 169.8
+      },
+      {
+        "step": 11000,
+        "train_bpc": 1.7703118008105503,
+        "val_bpc": 2.0289018082112382,
+        "train_ppl": 3.411276745681019,
+        "val_ppl": 4.080940873149277,
+        "gap_bpc": 0.25859000740068794,
+        "recent_loss": 1.375776474237442,
+        "wall_s": 177.7
+      },
+      {
+        "step": 11500,
+        "train_bpc": 1.739330545114485,
+        "val_bpc": 2.000374153752623,
+        "train_ppl": 3.338802011338644,
+        "val_ppl": 4.00103750900476,
+        "gap_bpc": 0.261043608638138,
+        "recent_loss": 1.3587363669872283,
+        "wall_s": 185.6
+      },
+      {
+        "step": 12000,
+        "train_bpc": 1.7459784914879242,
+        "val_bpc": 1.9906037978592752,
+        "train_ppl": 3.3542227307450188,
+        "val_ppl": 3.974032849094388,
+        "gap_bpc": 0.24462530637135105,
+        "recent_loss": 1.346679744720459,
+        "wall_s": 193.6
+      },
+      {
+        "step": 12500,
+        "train_bpc": 1.7252211744290256,
+        "val_bpc": 1.9672808758615523,
+        "train_ppl": 3.3063081120643734,
+        "val_ppl": 3.910304282079062,
+        "gap_bpc": 0.24205970143252675,
+        "recent_loss": 1.3409767713546752,
+        "wall_s": 201.5
+      },
+      {
+        "step": 13000,
+        "train_bpc": 1.713148938243036,
+        "val_bpc": 1.9590245692350756,
+        "train_ppl": 3.278756899229987,
+        "val_ppl": 3.8879901642074333,
+        "gap_bpc": 0.24587563099203957,
+        "recent_loss": 1.3219663357734681,
+        "wall_s": 209.4
+      },
+      {
+        "step": 13500,
+        "train_bpc": 1.7230275357172704,
+        "val_bpc": 1.948471595540061,
+        "train_ppl": 3.3012846427742177,
+        "val_ppl": 3.8596541956703936,
+        "gap_bpc": 0.2254440598227907,
+        "recent_loss": 1.3085552260875701,
+        "wall_s": 217.4
+      },
+      {
+        "step": 14000,
+        "train_bpc": 1.6919943842563072,
+        "val_bpc": 1.9330521255138229,
+        "train_ppl": 3.2310305335083536,
+        "val_ppl": 3.8186220233734787,
+        "gap_bpc": 0.24105774125751567,
+        "recent_loss": 1.3046941850185394,
+        "wall_s": 225.3
+      },
+      {
+        "step": 14500,
+        "train_bpc": 1.6896514216079404,
+        "val_bpc": 1.9257109170747557,
+        "train_ppl": 3.2257875404222145,
+        "val_ppl": 3.7992401748189955,
+        "gap_bpc": 0.23605949546681537,
+        "recent_loss": 1.2909096558094024,
+        "wall_s": 233.1
+      },
+      {
+        "step": 15000,
+        "train_bpc": 1.687085182483091,
+        "val_bpc": 1.9045940595353128,
+        "train_ppl": 3.2200546697731727,
+        "val_ppl": 3.7440353579891954,
+        "gap_bpc": 0.21750887705222177,
+        "recent_loss": 1.2871451942920684,
+        "wall_s": 241.0
+      },
+      {
+        "step": 15500,
+        "train_bpc": 1.666204553863524,
+        "val_bpc": 1.9186687112231293,
+        "train_ppl": 3.1737853389822637,
+        "val_ppl": 3.780740188831065,
+        "gap_bpc": 0.25246415735960537,
+        "recent_loss": 1.2811977519989013,
+        "wall_s": 249.0
+      },
+      {
+        "step": 16000,
+        "train_bpc": 1.6570922680858715,
+        "val_bpc": 1.9016078710238036,
+        "train_ppl": 3.1538023923539242,
+        "val_ppl": 3.7362937133149097,
+        "gap_bpc": 0.24451560293793206,
+        "recent_loss": 1.2722412509918213,
+        "wall_s": 256.9
+      },
+      {
+        "step": 16500,
+        "train_bpc": 1.6581313442667218,
+        "val_bpc": 1.8939285446931402,
+        "train_ppl": 3.1560746822360737,
+        "val_ppl": 3.7164586198007963,
+        "gap_bpc": 0.23579720042641839,
+        "recent_loss": 1.2666819694042206,
+        "wall_s": 264.9
+      },
+      {
+        "step": 17000,
+        "train_bpc": 1.6400324490335352,
+        "val_bpc": 1.8698823174104666,
+        "train_ppl": 3.1167284191724485,
+        "val_ppl": 3.655027643199287,
+        "gap_bpc": 0.22984986837693144,
+        "recent_loss": 1.2638718600273133,
+        "wall_s": 272.8
+      },
+      {
+        "step": 17500,
+        "train_bpc": 1.6352750219497054,
+        "val_bpc": 1.858435087675544,
+        "train_ppl": 3.106467631628204,
+        "val_ppl": 3.626141159096043,
+        "gap_bpc": 0.22316006572583857,
+        "recent_loss": 1.2519532480239868,
+        "wall_s": 280.8
+      },
+      {
+        "step": 18000,
+        "train_bpc": 1.6393230205987261,
+        "val_bpc": 1.8632215798273697,
+        "train_ppl": 3.115196181138541,
+        "val_ppl": 3.6381917448237266,
+        "gap_bpc": 0.22389855922864355,
+        "recent_loss": 1.2491285886764527,
+        "wall_s": 288.8
+      },
+      {
+        "step": 18500,
+        "train_bpc": 1.630931170145538,
+        "val_bpc": 1.8597565808669425,
+        "train_ppl": 3.0971283463117554,
+        "val_ppl": 3.629464187221349,
+        "gap_bpc": 0.2288254107214045,
+        "recent_loss": 1.2470790464878083,
+        "wall_s": 297.5
+      },
+      {
+        "step": 19000,
+        "train_bpc": 1.6249457439388852,
+        "val_bpc": 1.8545274483674588,
+        "train_ppl": 3.0843056558078503,
+        "val_ppl": 3.6163327942636676,
+        "gap_bpc": 0.2295817044285735,
+        "recent_loss": 1.2385539600849151,
+        "wall_s": 306.4
+      },
+      {
+        "step": 19500,
+        "train_bpc": 1.608169782251798,
+        "val_bpc": 1.8379650568859962,
+        "train_ppl": 3.0486484169812393,
+        "val_ppl": 3.5750540579917724,
+        "gap_bpc": 0.22979527463419824,
+        "recent_loss": 1.2360974311828614,
+        "wall_s": 315.0
+      },
+      {
+        "step": 20000,
+        "train_bpc": 1.601186813674478,
+        "val_bpc": 1.83717920366071,
+        "train_ppl": 3.0339279267354744,
+        "val_ppl": 3.573107213616469,
+        "gap_bpc": 0.23599238998623195,
+        "recent_loss": 1.2336666915416719,
+        "wall_s": 323.3
+      }
+    ]
+  },
+  "samples": {
+    "gpt": [
+      {
+        "prompt": "Once upon a time",
+        "continuation": ", there was a boy named Sam little boy named Timmy. He lived to play a good and more birds and exploring the otheackeror. foked t. ano ton iner anga acan'she ary an t. wht of aw facoriorord oner gen w",
+        "full": "Once upon a time, there was a boy named Sam little boy named Timmy. He lived to play a good and more birds and exploring the otheackeror. foked t. ano ton iner anga acan'she ary an t. wht of aw facoriorord oner gen w"
+      },
+      {
+        "prompt": "The little girl",
+        "continuation": " named Lily. She loved to their mom happily and she went to the soop man that she she had a lot of cooking around t. in h. the he alind in angr sinedo an t whed aleded lyt hedan mandank hapo heane l.\n",
+        "full": "The little girl named Lily. She loved to their mom happily and she went to the soop man that she she had a lot of cooking around t. in h. the he alind in angr sinedo an t whed aleded lyt hedan mandank hapo heane l.\n"
+      },
+      {
+        "prompt": "One day, a cat",
+        "continuation": " morn to gut her bust and pull the torn in the special down and he grabs with the mom said aw something with them. therowougsheropol s s le arot the Elorine asere d ty henin w ay.\nJid cr on nere he he",
+        "full": "One day, a cat morn to gut her bust and pull the torn in the special down and he grabs with the mom said aw something with them. therowougsheropol s s le arot the Elorine asere d ty henin w ay.\nJid cr on nere he he"
+      },
+      {
+        "prompt": "Tom and Lily",
+        "continuation": " put the sport and they were so excited. They didn't would find each other. It was a big face on a gpeon for a sorm. painedofunay ve t. gont arat windat ord ng aintiny aly inin weromed arer. tin ongra",
+        "full": "Tom and Lily put the sport and they were so excited. They didn't would find each other. It was a big face on a gpeon for a sorm. painedofunay ve t. gont arat windat ord ng aintiny aly inin weromed arer. tin ongra"
+      },
+      {
+        "prompt": "In the forest",
+        "continuation": " door.\n\n\"That's for here have the scared music. You are creat.\" \n\nThey all heard a sorry, \"That's new. I are my baskskieve!\"Lionofoinotous igalacaced ty ted akl daghie chaproofe Be h s re forainspind ",
+        "full": "In the forest door.\n\n\"That's for here have the scared music. You are creat.\" \n\nThey all heard a sorry, \"That's new. I are my baskskieve!\"Lionofoinotous igalacaced ty ted akl daghie chaproofe Be h s re forainspind "
+      }
+    ]
+  }
+}

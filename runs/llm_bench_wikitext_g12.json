@@ -1,0 +1,1186 @@
+{
+  "protocol": {
+    "description": "Primary intelligence track: public LLM data + bpc/ppl/bpb + samples",
+    "work_dir": "data/llm_wikitext",
+    "dataset": "wikitext",
+    "tokenization": "subword_bpe",
+    "vocab_size": 4096,
+    "param_target": 7422511,
+    "match": "plain brain G params (brain_wm may exceed)",
+    "metrics": [
+      "val_bpc",
+      "test_bpc",
+      "ppl",
+      "bpb",
+      "samples"
+    ],
+    "note": "CNN is local floor / negative control. Tiny GPT = from-scratch LLM prior, NOT pretrained GPT-4. Synthetic hard tasks are NOT the headline metric.",
+    "steps": 8000,
+    "seq_len": 128,
+    "batch_size": 8,
+    "grid_size": 12,
+    "seed": 42,
+    "standard_models": [
+      "lstm",
+      "rnn",
+      "cnn",
+      "gpt",
+      "brain",
+      "brain_wm"
+    ]
+  },
+  "corpus": {
+    "train_tokens": 4483456,
+    "val_tokens": 249080,
+    "test_tokens": 249080,
+    "bytes_per_token_est": 2.3444
+  },
+  "params": {
+    "lstm": 7430240,
+    "rnn": 7421000,
+    "cnn": 1532864,
+    "gpt": 5853184,
+    "brain": 7422511,
+    "brain_wm": 7483863
+  },
+  "results": {
+    "lstm": {
+      "params": 7430240,
+      "best_val_bpc": 3.9761735560386393,
+      "best_step": 8000,
+      "wall_min": 10.99,
+      "test_bpc": 4.0832848454461175,
+      "test_ppl": 16.950839795292822,
+      "test_bpb": 1.7417184974603812
+    },
+    "rnn": {
+      "params": 7421000,
+      "best_val_bpc": 4.744301260426722,
+      "best_step": 8000,
+      "wall_min": 13.69,
+      "test_bpc": 4.8661254506372,
+      "test_ppl": 29.16417686316406,
+      "test_bpb": 2.0756378820325883
+    },
+    "cnn": {
+      "params": 1532864,
+      "best_val_bpc": 4.498396919080904,
+      "best_step": 8000,
+      "wall_min": 2.0,
+      "test_bpc": 4.603762154625498,
+      "test_ppl": 24.314788790894493,
+      "test_bpb": 1.963727245617428
+    },
+    "gpt": {
+      "params": 5853184,
+      "best_val_bpc": 4.458948140565271,
+      "best_step": 8000,
+      "wall_min": 5.22,
+      "test_bpc": 4.6113024114851076,
+      "test_ppl": 24.442202899123785,
+      "test_bpb": 1.9669435298946887
+    },
+    "brain": {
+      "params": 7422511,
+      "best_val_bpc": 4.396471379549229,
+      "best_step": 8000,
+      "wall_min": 72.58,
+      "test_bpc": 4.5381599528953265,
+      "test_ppl": 23.23390829995482,
+      "test_bpb": 1.9357447333626203
+    },
+    "brain_wm": {
+      "params": 7483863,
+      "best_val_bpc": 4.345646658107456,
+      "best_step": 8000,
+      "wall_min": 104.62,
+      "test_bpc": 4.482821159820694,
+      "test_ppl": 22.35957962694678,
+      "test_bpb": 1.9121400613464827
+    }
+  },
+  "curves": {
+    "lstm": [
+      {
+        "step": 500,
+        "train_ce": 4.064908173561096,
+        "ce": 3.8915777653455734,
+        "bpc": 5.6143599432978135,
+        "ppl": 48.98811733553838,
+        "tokens": 16384,
+        "bpb": 2.394796085692635,
+        "wall_s": 41.1
+      },
+      {
+        "step": 1000,
+        "train_ce": 3.537496980667114,
+        "ce": 3.5237884670495987,
+        "bpc": 5.083752146554179,
+        "ppl": 33.912662409540395,
+        "tokens": 16384,
+        "bpb": 2.1684661945718218,
+        "wall_s": 82.2
+      },
+      {
+        "step": 1500,
+        "train_ce": 3.253186897754669,
+        "ce": 3.3016543835401535,
+        "bpc": 4.763280405862687,
+        "ppl": 27.157530748129556,
+        "tokens": 16384,
+        "bpb": 2.0317694957612558,
+        "wall_s": 123.3
+      },
+      {
+        "step": 2000,
+        "train_ce": 3.0734255704879763,
+        "ce": 3.18315452337265,
+        "bpc": 4.592321245252995,
+        "ppl": 24.122729368922812,
+        "tokens": 16384,
+        "bpb": 1.9588471443665736,
+        "wall_s": 164.5
+      },
+      {
+        "step": 2500,
+        "train_ce": 2.9545998544692993,
+        "ce": 3.0826738476753235,
+        "bpc": 4.447358272719289,
+        "ppl": 21.816658899662535,
+        "tokens": 16384,
+        "bpb": 1.8970134246371309,
+        "wall_s": 205.8
+      },
+      {
+        "step": 3000,
+        "train_ce": 2.8647585892677307,
+        "ce": 2.986550807952881,
+        "bpc": 4.308682039996548,
+        "ppl": 19.817211107024026,
+        "tokens": 16384,
+        "bpb": 1.8378613035303484,
+        "wall_s": 247.0
+      },
+      {
+        "step": 3500,
+        "train_ce": 2.7983534049987795,
+        "ce": 2.9518992602825165,
+        "bpc": 4.258690424013386,
+        "ppl": 19.14227538853242,
+        "tokens": 16384,
+        "bpb": 1.8165374611898082,
+        "wall_s": 288.3
+      },
+      {
+        "step": 4000,
+        "train_ce": 2.7316302399635317,
+        "ce": 2.906983509659767,
+        "bpc": 4.19389069333214,
+        "ppl": 18.30150889376992,
+        "tokens": 16384,
+        "bpb": 1.7888972416533613,
+        "wall_s": 329.5
+      },
+      {
+        "step": 4500,
+        "train_ce": 2.6618984532356262,
+        "ce": 2.8610799610614777,
+        "bpc": 4.127665871410183,
+        "ppl": 17.48039489224032,
+        "tokens": 16384,
+        "bpb": 1.7606491517702538,
+        "wall_s": 370.8
+      },
+      {
+        "step": 5000,
+        "train_ce": 2.6289546947479248,
+        "ce": 2.843902036547661,
+        "bpc": 4.102883364901334,
+        "ppl": 17.1826823508337,
+        "tokens": 16384,
+        "bpb": 1.7500782139998867,
+        "wall_s": 412.0
+      },
+      {
+        "step": 5500,
+        "train_ce": 2.5893991837501527,
+        "ce": 2.792175754904747,
+        "bpc": 4.028258114891476,
+        "ppl": 16.31648187487666,
+        "tokens": 16384,
+        "bpb": 1.7182469352036667,
+        "wall_s": 453.3
+      },
+      {
+        "step": 6000,
+        "train_ce": 2.5536770133972166,
+        "ce": 2.8187678456306458,
+        "bpc": 4.0666223923086,
+        "ppl": 16.756191732395337,
+        "tokens": 16384,
+        "bpb": 1.7346111552246204,
+        "wall_s": 494.5
+      },
+      {
+        "step": 6500,
+        "train_ce": 2.51661438369751,
+        "ce": 2.8031966388225555,
+        "bpc": 4.044157889465912,
+        "ppl": 16.497298476796896,
+        "tokens": 16384,
+        "bpb": 1.7250289581410647,
+        "wall_s": 535.7
+      },
+      {
+        "step": 7000,
+        "train_ce": 2.4804331192970275,
+        "ce": 2.7817110121250153,
+        "bpc": 4.013160682378979,
+        "ppl": 16.14662439649627,
+        "tokens": 16384,
+        "bpb": 1.7118071499654408,
+        "wall_s": 577.0
+      },
+      {
+        "step": 7500,
+        "train_ce": 2.455069375514984,
+        "ce": 2.7641821950674057,
+        "bpc": 3.9878719449373157,
+        "ppl": 15.866059341927349,
+        "tokens": 16384,
+        "bpb": 1.7010202802155416,
+        "wall_s": 618.3
+      },
+      {
+        "step": 8000,
+        "train_ce": 2.4305899572372436,
+        "ce": 2.7560734897851944,
+        "bpc": 3.9761735560386393,
+        "ppl": 15.73792634117665,
+        "tokens": 16384,
+        "bpb": 1.696030351492339,
+        "wall_s": 659.5
+      }
+    ],
+    "rnn": [
+      {
+        "step": 500,
+        "train_ce": 4.339546811103821,
+        "ce": 4.261603459715843,
+        "bpc": 6.148194177567296,
+        "ppl": 70.92361548807288,
+        "tokens": 16384,
+        "bpb": 2.622502208482894,
+        "wall_s": 51.3
+      },
+      {
+        "step": 1000,
+        "train_ce": 4.0412374124526975,
+        "ce": 4.055962309241295,
+        "bpc": 5.851516709574964,
+        "ppl": 57.740700679527016,
+        "tokens": 16384,
+        "bpb": 2.4959549179214147,
+        "wall_s": 102.7
+      },
+      {
+        "step": 1500,
+        "train_ce": 3.8879014925956725,
+        "ce": 3.93665312230587,
+        "bpc": 5.679389937250733,
+        "ppl": 51.24679719480866,
+        "tokens": 16384,
+        "bpb": 2.42253452365242,
+        "wall_s": 154.0
+      },
+      {
+        "step": 2000,
+        "train_ce": 3.749038951396942,
+        "ce": 3.8005877137184143,
+        "bpc": 5.4830890470450795,
+        "ppl": 44.727463714229806,
+        "tokens": 16384,
+        "bpb": 2.3388026987907695,
+        "wall_s": 205.3
+      },
+      {
+        "step": 2500,
+        "train_ce": 3.6160283703804015,
+        "ce": 3.694624811410904,
+        "bpc": 5.330216893367833,
+        "ppl": 40.23047574063452,
+        "tokens": 16384,
+        "bpb": 2.273595330731886,
+        "wall_s": 256.7
+      },
+      {
+        "step": 3000,
+        "train_ce": 3.5029726758003235,
+        "ce": 3.5704292356967926,
+        "bpc": 5.1510405521847344,
+        "ppl": 35.53184141355266,
+        "tokens": 16384,
+        "bpb": 2.197167954352813,
+        "wall_s": 308.0
+      },
+      {
+        "step": 3500,
+        "train_ce": 3.4154972586631773,
+        "ce": 3.518057107925415,
+        "bpc": 5.075483543168165,
+        "ppl": 33.718852689497005,
+        "tokens": 16384,
+        "bpb": 2.164939235270502,
+        "wall_s": 359.3
+      },
+      {
+        "step": 4000,
+        "train_ce": 3.3582321529388426,
+        "ce": 3.487062841653824,
+        "bpc": 5.030768268922149,
+        "ppl": 32.68979146846488,
+        "tokens": 16384,
+        "bpb": 2.1458660079005925,
+        "wall_s": 410.7
+      },
+      {
+        "step": 4500,
+        "train_ce": 3.3011297755241396,
+        "ce": 3.4363117665052414,
+        "bpc": 4.957549944485505,
+        "ppl": 31.072145243182135,
+        "tokens": 16384,
+        "bpb": 2.114634850915162,
+        "wall_s": 462.0
+      },
+      {
+        "step": 5000,
+        "train_ce": 3.259034131526947,
+        "ce": 3.4147819429636,
+        "bpc": 4.926488974830765,
+        "ppl": 30.41031752080994,
+        "tokens": 16384,
+        "bpb": 2.1013858449201357,
+        "wall_s": 513.3
+      },
+      {
+        "step": 5500,
+        "train_ce": 3.220420790195465,
+        "ce": 3.3856352269649506,
+        "bpc": 4.884439152201314,
+        "ppl": 29.53674929778851,
+        "tokens": 16384,
+        "bpb": 2.0834495615941453,
+        "wall_s": 564.6
+      },
+      {
+        "step": 6000,
+        "train_ce": 3.183824520111084,
+        "ce": 3.397462785243988,
+        "bpc": 4.901502711876307,
+        "ppl": 29.88817105541804,
+        "tokens": 16384,
+        "bpb": 2.0907279951698974,
+        "wall_s": 615.9
+      },
+      {
+        "step": 6500,
+        "train_ce": 3.1534232831001283,
+        "ce": 3.3686076998710632,
+        "bpc": 4.8598736233043605,
+        "ppl": 29.03806919210665,
+        "tokens": 16384,
+        "bpb": 2.0729711752705855,
+        "wall_s": 667.2
+      },
+      {
+        "step": 7000,
+        "train_ce": 3.1239825196266175,
+        "ce": 3.3176946192979813,
+        "bpc": 4.786421574445195,
+        "ppl": 27.596656368016927,
+        "tokens": 16384,
+        "bpb": 2.0416403235135623,
+        "wall_s": 718.5
+      },
+      {
+        "step": 7500,
+        "train_ce": 3.100530188560486,
+        "ce": 3.3364282101392746,
+        "bpc": 4.813448433049972,
+        "ppl": 28.11851370597503,
+        "tokens": 16384,
+        "bpb": 2.053168586013467,
+        "wall_s": 769.8
+      },
+      {
+        "step": 8000,
+        "train_ce": 3.0817653789520265,
+        "ce": 3.288499042391777,
+        "bpc": 4.744301260426722,
+        "ppl": 26.802603877136722,
+        "tokens": 16384,
+        "bpb": 2.0236739722004446,
+        "wall_s": 821.1
+      }
+    ],
+    "cnn": [
+      {
+        "step": 500,
+        "train_ce": 4.22929493188858,
+        "ce": 3.98539000749588,
+        "bpc": 5.749702399822735,
+        "ppl": 53.80627023501453,
+        "tokens": 16384,
+        "bpb": 2.4525261899943422,
+        "wall_s": 7.3
+      },
+      {
+        "step": 1000,
+        "train_ce": 3.742783142566681,
+        "ce": 3.821844696998596,
+        "bpc": 5.513756391407658,
+        "ppl": 45.68841190823594,
+        "tokens": 16384,
+        "bpb": 2.3518838045588035,
+        "wall_s": 15.0
+      },
+      {
+        "step": 1500,
+        "train_ce": 3.6338641304969785,
+        "ce": 3.723086357116699,
+        "bpc": 5.371278224213619,
+        "ppl": 41.391947501443184,
+        "tokens": 16384,
+        "bpb": 2.2911099744982164,
+        "wall_s": 22.6
+      },
+      {
+        "step": 2000,
+        "train_ce": 3.533242338180542,
+        "ce": 3.6422324627637863,
+        "bpc": 5.2546307117941105,
+        "ppl": 38.17697032593122,
+        "tokens": 16384,
+        "bpb": 2.2413541681428555,
+        "wall_s": 30.2
+      },
+      {
+        "step": 2500,
+        "train_ce": 3.4591800127029417,
+        "ce": 3.534858778119087,
+        "bpc": 5.099723229435228,
+        "ppl": 34.29017184971224,
+        "tokens": 16384,
+        "bpb": 2.175278633951215,
+        "wall_s": 37.7
+      },
+      {
+        "step": 3000,
+        "train_ce": 3.3767195091247557,
+        "ce": 3.473962888121605,
+        "bpc": 5.01186903092534,
+        "ppl": 32.26434943877486,
+        "tokens": 16384,
+        "bpb": 2.1378045687277516,
+        "wall_s": 44.8
+      },
+      {
+        "step": 3500,
+        "train_ce": 3.3252938022613527,
+        "ce": 3.423345297574997,
+        "bpc": 4.938843284062001,
+        "ppl": 30.67185005329236,
+        "tokens": 16384,
+        "bpb": 2.106655555392425,
+        "wall_s": 52.3
+      },
+      {
+        "step": 4000,
+        "train_ce": 3.270077198982239,
+        "ce": 3.3556738048791885,
+        "bpc": 4.841213957140204,
+        "ppl": 28.664912242776953,
+        "tokens": 16384,
+        "bpb": 2.0650119250726005,
+        "wall_s": 59.9
+      },
+      {
+        "step": 4500,
+        "train_ce": 3.213209948539734,
+        "ce": 3.3104784339666367,
+        "bpc": 4.7760108196535285,
+        "ppl": 27.398230580824226,
+        "tokens": 16384,
+        "bpb": 2.037199633020615,
+        "wall_s": 67.5
+      },
+      {
+        "step": 5000,
+        "train_ce": 3.168074723243713,
+        "ce": 3.278943657875061,
+        "bpc": 4.730515754570669,
+        "ppl": 26.54771441385211,
+        "tokens": 16384,
+        "bpb": 2.017793787139852,
+        "wall_s": 74.9
+      },
+      {
+        "step": 5500,
+        "train_ce": 3.1361501240730285,
+        "ce": 3.245203211903572,
+        "bpc": 4.681838580490219,
+        "ppl": 25.66692535506557,
+        "tokens": 16384,
+        "bpb": 1.997030617851143,
+        "wall_s": 82.4
+      },
+      {
+        "step": 6000,
+        "train_ce": 3.086174687862396,
+        "ce": 3.249903619289398,
+        "bpc": 4.688619834915909,
+        "ppl": 25.78785434568768,
+        "tokens": 16384,
+        "bpb": 1.9999231508769448,
+        "wall_s": 89.8
+      },
+      {
+        "step": 6500,
+        "train_ce": 3.0475297141075135,
+        "ce": 3.1976843923330307,
+        "bpc": 4.613283415146902,
+        "ppl": 24.475788203546827,
+        "tokens": 16384,
+        "bpb": 1.9677885237787502,
+        "wall_s": 97.3
+      },
+      {
+        "step": 7000,
+        "train_ce": 3.017835601806641,
+        "ce": 3.1510813534259796,
+        "bpc": 4.546049442025344,
+        "ppl": 23.361312762969987,
+        "tokens": 16384,
+        "bpb": 1.9391099820957791,
+        "wall_s": 104.8
+      },
+      {
+        "step": 7500,
+        "train_ce": 2.9892671599388123,
+        "ce": 3.125554069876671,
+        "bpc": 4.5092213566413895,
+        "ppl": 22.772509160008667,
+        "tokens": 16384,
+        "bpb": 1.9234010222834796,
+        "wall_s": 112.6
+      },
+      {
+        "step": 8000,
+        "train_ce": 2.9494338693618776,
+        "ce": 3.118051141500473,
+        "bpc": 4.498396919080904,
+        "ppl": 22.602288031835215,
+        "tokens": 16384,
+        "bpb": 1.9187838760795533,
+        "wall_s": 120.2
+      }
+    ],
+    "gpt": [
+      {
+        "step": 500,
+        "train_ce": 8.222860860824586,
+        "ce": 4.71153062582016,
+        "bpc": 6.797301868867219,
+        "ppl": 111.22226936278776,
+        "tokens": 16384,
+        "bpb": 2.8993780365412127,
+        "wall_s": 19.5
+      },
+      {
+        "step": 1000,
+        "train_ce": 4.688343634605408,
+        "ce": 4.329715877771378,
+        "bpc": 6.2464596253189715,
+        "ppl": 75.92271217426386,
+        "tokens": 16384,
+        "bpb": 2.6644171751061987,
+        "wall_s": 39.1
+      },
+      {
+        "step": 1500,
+        "train_ce": 4.214069275379181,
+        "ce": 4.037183523178101,
+        "bpc": 5.824424648047679,
+        "ppl": 56.66651790529902,
+        "tokens": 16384,
+        "bpb": 2.4843988432211566,
+        "wall_s": 58.6
+      },
+      {
+        "step": 2000,
+        "train_ce": 3.903605299472809,
+        "ce": 3.8142155408859253,
+        "bpc": 5.50274984571774,
+        "ppl": 45.3411741310711,
+        "tokens": 16384,
+        "bpb": 2.3471889804289967,
+        "wall_s": 78.2
+      },
+      {
+        "step": 2500,
+        "train_ce": 3.7303131251335144,
+        "ce": 3.638513430953026,
+        "bpc": 5.249265283043818,
+        "ppl": 38.03525264846967,
+        "tokens": 16384,
+        "bpb": 2.2390655532519275,
+        "wall_s": 97.7
+      },
+      {
+        "step": 3000,
+        "train_ce": 3.6224725618362426,
+        "ce": 3.569724217057228,
+        "bpc": 5.1500234252897,
+        "ppl": 35.50679963155685,
+        "tokens": 16384,
+        "bpb": 2.1967341005330576,
+        "wall_s": 117.3
+      },
+      {
+        "step": 3500,
+        "train_ce": 3.540205193042755,
+        "ce": 3.457093760371208,
+        "bpc": 4.987532023975721,
+        "ppl": 31.724642993311004,
+        "tokens": 16384,
+        "bpb": 2.1274236580684702,
+        "wall_s": 136.9
+      },
+      {
+        "step": 4000,
+        "train_ce": 3.469533230304718,
+        "ce": 3.386618435382843,
+        "bpc": 4.8858576221099685,
+        "ppl": 29.56580435958532,
+        "tokens": 16384,
+        "bpb": 2.0840546076224062,
+        "wall_s": 156.5
+      },
+      {
+        "step": 4500,
+        "train_ce": 3.411034306049347,
+        "ce": 3.3334388583898544,
+        "bpc": 4.809135710105611,
+        "ppl": 28.034583089406603,
+        "tokens": 16384,
+        "bpb": 2.0513290010687646,
+        "wall_s": 176.1
+      },
+      {
+        "step": 5000,
+        "train_ce": 3.365501697063446,
+        "ce": 3.275708556175232,
+        "bpc": 4.725848489391554,
+        "ppl": 26.461968630773338,
+        "tokens": 16384,
+        "bpb": 2.0158029727826117,
+        "wall_s": 195.7
+      },
+      {
+        "step": 5500,
+        "train_ce": 3.3085137820243835,
+        "ce": 3.243815094232559,
+        "bpc": 4.679835950010079,
+        "ppl": 25.631321359404424,
+        "tokens": 16384,
+        "bpb": 1.9961763990829549,
+        "wall_s": 215.3
+      },
+      {
+        "step": 6000,
+        "train_ce": 3.2766143708229065,
+        "ce": 3.2131060659885406,
+        "bpc": 4.635532187251914,
+        "ppl": 24.856171355314228,
+        "tokens": 16384,
+        "bpb": 1.9772787012676651,
+        "wall_s": 234.8
+      },
+      {
+        "step": 6500,
+        "train_ce": 3.2367404770851134,
+        "ce": 3.170978233218193,
+        "bpc": 4.574754571830734,
+        "ppl": 23.830785023352824,
+        "tokens": 16384,
+        "bpb": 1.9513541084417056,
+        "wall_s": 254.4
+      },
+      {
+        "step": 7000,
+        "train_ce": 3.2102024416923522,
+        "ce": 3.1706264466047287,
+        "bpc": 4.574247051028038,
+        "ppl": 23.822403146595722,
+        "tokens": 16384,
+        "bpb": 1.9511376262702775,
+        "wall_s": 274.0
+      },
+      {
+        "step": 7500,
+        "train_ce": 3.175834306716919,
+        "ce": 3.110828995704651,
+        "bpc": 4.487977565156695,
+        "ppl": 22.439639056628373,
+        "tokens": 16384,
+        "bpb": 1.9143395176406308,
+        "wall_s": 293.6
+      },
+      {
+        "step": 8000,
+        "train_ce": 3.147370761871338,
+        "ce": 3.0907073318958282,
+        "bpc": 4.458948140565271,
+        "ppl": 21.992628563057625,
+        "tokens": 16384,
+        "bpb": 1.9019570638821324,
+        "wall_s": 313.2
+      }
+    ],
+    "brain": [
+      {
+        "step": 500,
+        "train_ce": 4.036559992313385,
+        "ce": 3.821873515844345,
+        "bpc": 5.513797968213504,
+        "ppl": 45.689728614504126,
+        "tokens": 16384,
+        "bpb": 2.3519015390775913,
+        "wall_s": 272.2
+      },
+      {
+        "step": 1000,
+        "train_ce": 3.595582461357117,
+        "ce": 3.5999368876218796,
+        "bpc": 5.193611095285336,
+        "ppl": 36.59592471495424,
+        "tokens": 16384,
+        "bpb": 2.2153263501473024,
+        "wall_s": 544.4
+      },
+      {
+        "step": 1500,
+        "train_ce": 3.4267395715713502,
+        "ce": 3.4538991302251816,
+        "bpc": 4.982923146906574,
+        "ppl": 31.623456205670223,
+        "tokens": 16384,
+        "bpb": 2.1254577490643976,
+        "wall_s": 816.6
+      },
+      {
+        "step": 2000,
+        "train_ce": 3.3240805015563963,
+        "ce": 3.362872064113617,
+        "bpc": 4.851598850040747,
+        "ppl": 28.87199413243439,
+        "tokens": 16384,
+        "bpb": 2.0694415842180294,
+        "wall_s": 1088.8
+      },
+      {
+        "step": 2500,
+        "train_ce": 3.246415002822876,
+        "ce": 3.31127592921257,
+        "bpc": 4.777161362089969,
+        "ppl": 27.420089254395045,
+        "tokens": 16384,
+        "bpb": 2.0376903950221674,
+        "wall_s": 1361.0
+      },
+      {
+        "step": 3000,
+        "train_ce": 3.1905816683769226,
+        "ce": 3.2831436842679977,
+        "bpc": 4.736575111819361,
+        "ppl": 26.659449997008252,
+        "tokens": 16384,
+        "bpb": 2.0203783961010755,
+        "wall_s": 1633.1
+      },
+      {
+        "step": 3500,
+        "train_ce": 3.134969901561737,
+        "ce": 3.2357717007398605,
+        "bpc": 4.668231786106244,
+        "ppl": 25.425985461720686,
+        "tokens": 16384,
+        "bpb": 1.99122666187777,
+        "wall_s": 1905.3
+      },
+      {
+        "step": 4000,
+        "train_ce": 3.095833248615265,
+        "ce": 3.19121590256691,
+        "bpc": 4.6039513570392785,
+        "ppl": 24.317977765884837,
+        "tokens": 16384,
+        "bpb": 1.9638079495987368,
+        "wall_s": 2177.4
+      },
+      {
+        "step": 4500,
+        "train_ce": 3.0601124939918516,
+        "ce": 3.178138718008995,
+        "bpc": 4.585084967728785,
+        "ppl": 24.002037390338614,
+        "tokens": 16384,
+        "bpb": 1.9557605219795196,
+        "wall_s": 2449.5
+      },
+      {
+        "step": 5000,
+        "train_ce": 3.0253837399482726,
+        "ce": 3.1497112810611725,
+        "bpc": 4.544072845418977,
+        "ppl": 23.32932798967803,
+        "tokens": 16384,
+        "bpb": 1.9382668680340291,
+        "wall_s": 2721.6
+      },
+      {
+        "step": 5500,
+        "train_ce": 3.01191565656662,
+        "ce": 3.1152969002723694,
+        "bpc": 4.494423388919707,
+        "ppl": 22.54012152836068,
+        "tokens": 16384,
+        "bpb": 1.9170889732638234,
+        "wall_s": 2993.8
+      },
+      {
+        "step": 6000,
+        "train_ce": 2.981107444763184,
+        "ce": 3.0990959256887436,
+        "bpc": 4.471050323230342,
+        "ppl": 22.17789175294407,
+        "tokens": 16384,
+        "bpb": 1.9071192301784432,
+        "wall_s": 3265.9
+      },
+      {
+        "step": 6500,
+        "train_ce": 2.9589033627510073,
+        "ce": 3.0861287713050842,
+        "bpc": 4.452342673906595,
+        "ppl": 21.892164147343937,
+        "tokens": 16384,
+        "bpb": 1.8991395128419193,
+        "wall_s": 3538.2
+      },
+      {
+        "step": 7000,
+        "train_ce": 2.932117461681366,
+        "ce": 3.077870637178421,
+        "bpc": 4.440428704755062,
+        "ppl": 21.712120156405707,
+        "tokens": 16384,
+        "bpb": 1.89405762871313,
+        "wall_s": 3810.4
+      },
+      {
+        "step": 7500,
+        "train_ce": 2.9281937947273255,
+        "ce": 3.0722882449626923,
+        "bpc": 4.432375015189133,
+        "ppl": 21.591252265728357,
+        "tokens": 16384,
+        "bpb": 1.8906223405515838,
+        "wall_s": 4082.6
+      },
+      {
+        "step": 8000,
+        "train_ce": 2.9102009415626524,
+        "ce": 3.0474017411470413,
+        "bpc": 4.396471379549229,
+        "ppl": 21.060552504579213,
+        "tokens": 16384,
+        "bpb": 1.8753077032712975,
+        "wall_s": 4354.8
+      }
+    ],
+    "brain_wm": [
+      {
+        "step": 500,
+        "train_ce": 4.061068061828613,
+        "ce": 3.8443967700004578,
+        "bpc": 5.546292155289209,
+        "ppl": 46.730486615487614,
+        "tokens": 16384,
+        "bpb": 2.3657618816282246,
+        "wall_s": 391.3
+      },
+      {
+        "step": 1000,
+        "train_ce": 3.6050313229560853,
+        "ce": 3.591809034347534,
+        "bpc": 5.181885081673364,
+        "ppl": 36.29968394006122,
+        "tokens": 16384,
+        "bpb": 2.210324638147656,
+        "wall_s": 783.0
+      },
+      {
+        "step": 1500,
+        "train_ce": 3.4298972239494323,
+        "ce": 3.4703321158885956,
+        "bpc": 5.006630933830181,
+        "ppl": 32.14741734007981,
+        "tokens": 16384,
+        "bpb": 2.135570266946844,
+        "wall_s": 1175.0
+      },
+      {
+        "step": 2000,
+        "train_ce": 3.299183554172516,
+        "ce": 3.360925555229187,
+        "bpc": 4.848790631326134,
+        "ppl": 28.81584920037621,
+        "tokens": 16384,
+        "bpb": 2.068243743101064,
+        "wall_s": 1576.4
+      },
+      {
+        "step": 2500,
+        "train_ce": 3.2303089418411255,
+        "ce": 3.2945052087306976,
+        "bpc": 4.752966326818637,
+        "ppl": 26.96406918268877,
+        "tokens": 16384,
+        "bpb": 2.027370042150929,
+        "wall_s": 1968.2
+      },
+      {
+        "step": 3000,
+        "train_ce": 3.1648963317871095,
+        "ce": 3.2536304742097855,
+        "bpc": 4.693996550027664,
+        "ppl": 25.8841412497556,
+        "tokens": 16384,
+        "bpb": 2.002216579946965,
+        "wall_s": 2360.0
+      },
+      {
+        "step": 3500,
+        "train_ce": 3.1065844235420226,
+        "ce": 3.220218703150749,
+        "bpc": 4.645793553613475,
+        "ppl": 25.033594508683297,
+        "tokens": 16384,
+        "bpb": 1.9816556703691672,
+        "wall_s": 2751.9
+      },
+      {
+        "step": 4000,
+        "train_ce": 3.067000117778778,
+        "ce": 3.18293859064579,
+        "bpc": 4.592009720178788,
+        "ppl": 24.117521044534953,
+        "tokens": 16384,
+        "bpb": 1.9587142638537742,
+        "wall_s": 3143.6
+      },
+      {
+        "step": 4500,
+        "train_ce": 3.039165726184845,
+        "ce": 3.1422081142663956,
+        "bpc": 4.533248063893191,
+        "ppl": 23.154939202776184,
+        "tokens": 16384,
+        "bpb": 1.9336495751122638,
+        "wall_s": 3535.4
+      },
+      {
+        "step": 5000,
+        "train_ce": 3.0049853138923646,
+        "ce": 3.125427484512329,
+        "bpc": 4.5090387325640044,
+        "ppl": 22.76962667608366,
+        "tokens": 16384,
+        "bpb": 1.9233231242808415,
+        "wall_s": 3927.1
+      },
+      {
+        "step": 5500,
+        "train_ce": 2.9757977390289305,
+        "ce": 3.101510167121887,
+        "bpc": 4.474533337373447,
+        "ppl": 22.23149922276332,
+        "tokens": 16384,
+        "bpb": 1.90860490418591,
+        "wall_s": 4319.1
+      },
+      {
+        "step": 6000,
+        "train_ce": 2.962462585926056,
+        "ce": 3.0948284715414047,
+        "bpc": 4.464893688294755,
+        "ppl": 22.08345027247157,
+        "tokens": 16384,
+        "bpb": 1.9044931275783807,
+        "wall_s": 4710.3
+      },
+      {
+        "step": 6500,
+        "train_ce": 2.931032868862152,
+        "ce": 3.0581258684396744,
+        "bpc": 4.411943024812173,
+        "ppl": 21.28762394578368,
+        "tokens": 16384,
+        "bpb": 1.8819071083484786,
+        "wall_s": 5101.8
+      },
+      {
+        "step": 7000,
+        "train_ce": 2.9124848308563234,
+        "ce": 3.0406300872564316,
+        "bpc": 4.38670194806263,
+        "ppl": 20.918419513114298,
+        "tokens": 16384,
+        "bpb": 1.8711405681891444,
+        "wall_s": 5493.8
+      },
+      {
+        "step": 7500,
+        "train_ce": 2.896297288417816,
+        "ce": 3.0318832397460938,
+        "bpc": 4.374082914536054,
+        "ppl": 20.73624716580575,
+        "tokens": 16384,
+        "bpb": 1.865757940000023,
+        "wall_s": 5885.2
+      },
+      {
+        "step": 8000,
+        "train_ce": 2.876877438545227,
+        "ce": 3.0121727287769318,
+        "bpc": 4.345646658107456,
+        "ppl": 20.331526863442505,
+        "tokens": 16384,
+        "bpb": 1.853628501154861,
+        "wall_s": 6276.9
+      }
+    ]
+  },
+  "samples": {
+    "lstm": [
+      {
+        "prompt": "Once upon a time",
+        "continuation": " of the picture .In 2011 , the Simpson family song was written by Jupiter , to be a moment of the poem .Winley and Fanokie , the song is a convicted version of the song , and was criticized for the PlayStation Retes ' song \" Popple"
+      },
+      {
+        "prompt": "The scientific method",
+        "continuation": " of the city and the Ohio to help , but this is not well . \" However , he has a protagonist in the sweep , is a \" squakime or a \" murder and fresh \" .Members of the Lord Pagoda , was born in the United States in"
+      },
+      {
+        "prompt": "In the beginning",
+        "continuation": " of the first season , Carey 's first game was to be one of five players . The film was the first time since the 1978 film , Larwood called the song . Ten 's hotel session play and the number of the ball , which would be seen . On the second , he"
+      },
+      {
+        "prompt": "Artificial intelligence",
+        "continuation": " , and the rest of the two battalions had been identified as part of a large number of events from the Song , as well as their own childes as a \" palatiny squirs \" . Sk of Nuaden was a child , the song is referred to as her books and asked "
+      }
+    ],
+    "rnn": [
+      {
+        "prompt": "Once upon a time",
+        "continuation": " by the series of his own title , which tell in Nielsen rating as \" NC State Burger thought in the series , and a full female successed , and peaked with a small stagnk of the earliest card and the Communist Party , although after in his own , which has a"
+      },
+      {
+        "prompt": "The scientific method",
+        "continuation": " , the first council of 12 , hedress , Cirgius Fame was the first time at The Royal Commission , and most frequently around the word , but that the game and Eagle @-@ most of the other hand , with a topological order and romroceing of the stanzgian Army . The "
+      },
+      {
+        "prompt": "In the beginning",
+        "continuation": " of Stories , as well as the \" Ode Island 's \" same name , which he had never released to be a good of golfle on a repe . After the success of the United States , the director 's title had spipored the chices of the game 's national @-@ selling album overall from"
+      },
+      {
+        "prompt": "Artificial intelligence",
+        "continuation": " ; the gameplay as a result of the city 's procrey . \" D ' Kombes , released as the storm 's Senators . Bush of Stliie Person , a small @-@ selling album , described only about the first season in April 2010 , the first @-@ selling album , Dominel Sar ,"
+      }
+    ],
+    "cnn": [
+      {
+        "prompt": "Once upon a time",
+        "continuation": " with a brown . On the spring of the Wave and the Native American churchs in the cup . In October 2014 , the first samel @-@ sand was the only successful @-@ time from his career as the Mac@-@ 3 billings ( now by the Bostas Farm at the time \" "
+      },
+      {
+        "prompt": "The scientific method",
+        "continuation": " . On March 17 , the gameline had been built in 1812 , but the most notable at the scene for the first time in the Gulf Cills , the bandest of the film 's own book . He rejected a core with \" . The game 's daughter of the Church of England and"
+      },
+      {
+        "prompt": "In the beginning",
+        "continuation": " of the area . When the first , and in the Susa Committee , who was killed , but a part of the endwhere of the United States Greek of the game and Dutch to the east of the Pat Conga , a tip @-@ touchal . \" Congerate incapions for"
+      },
+      {
+        "prompt": "Artificial intelligence",
+        "continuation": " that the most popular park hore from Somalia on the Have ) as a \" squad of the Miami MD 8B .In the early 19th century , and it was a great @-@ wuser @-@ a @-@ finiment of the Ghost , but they came to one of the \" a "
+      }
+    ],
+    "gpt": [
+      {
+        "prompt": "Once upon a time",
+        "continuation": " in a record of the second . The Fort with the Warren said in \" Olympics Rihanna \" the episode ; the series \" 's \" . The Olympic NO and Dutch \" and \" The \" I 'Diita \" , a hills \" and \" I ' \""
+      },
+      {
+        "prompt": "The scientific method",
+        "continuation": " for the first week , a number of the Ben in late 17 . The United States , and the Wallia of 1814 . The two Sir was found to the new @-@ 3 season , including a new year on March 15 , the final of the season \" and the first half of the Sara"
+      },
+      {
+        "prompt": "In the beginning",
+        "continuation": " @-@ game @-@ tunnel , but is a \" covers be over her . A diga brown \" A \" Games , but it at the Wall \" , the Tig \" the rein the episode of the Sky of the Laser 's \" it 's \" . \" The \" Chelsea"
+      },
+      {
+        "prompt": "Artificial intelligence",
+        "continuation": " and the nur of the second of the Bank and in the murder ; and Dylan 's the Lake , but the two @-@ seekingy for the NO had later , although he had been taken in the route . The Barts of Gareculating the Live of the season of the"
+      }
+    ],
+    "brain": [
+      {
+        "prompt": "Once upon a time",
+        "continuation": " in the United States and a resulting in the time , and Bon of the Haylor of a puzzles , the only a mile . On July 1967 , the Wimbledon ( Cape ) and the Sakavian wrote that the river : Carey , and the Det of Ham"
+      },
+      {
+        "prompt": "The scientific method",
+        "continuation": " , and the Loyton in the Ridge , the repeatops was appointed as a number of Fantibi )Virginia Technology and the Mounced the Lesswell , the Dynasty is a result , and the first place in the final .There is a single for the album .Denned"
+      },
+      {
+        "prompt": "In the beginning",
+        "continuation": " after the episode 's first time , and a result to their ownership 's mother and has become a member of the game and in the Laco , the United States and an union of Bell , and the same name . He began \" The album , the film . Don Gunusers in the"
+      },
+      {
+        "prompt": "Artificial intelligence",
+        "continuation": " . The same time in the mid @-@ 54 : 45 million @-@ minute , she was reformed . As a @-@ samy of her , but the Silverton in the \" of the same time , and the Pacific and Games ( 1 @.@ 6 million . R & Liverpool and the "
+      }
+    ],
+    "brain_wm": [
+      {
+        "prompt": "Once upon a time",
+        "continuation": "<gen_error: source tensor shape must match self tensor shape, excluding the specified dimension. Got self.shape = [1, 1728] source.shape = [8, 328]>"
+      },
+      {
+        "prompt": "The scientific method",
+        "continuation": "<gen_error: source tensor shape must match self tensor shape, excluding the specified dimension. Got self.shape = [1, 1728] source.shape = [8, 328]>"
+      },
+      {
+        "prompt": "In the beginning",
+        "continuation": "<gen_error: source tensor shape must match self tensor shape, excluding the specified dimension. Got self.shape = [1, 1728] source.shape = [8, 328]>"
+      },
+      {
+        "prompt": "Artificial intelligence",
+        "continuation": "<gen_error: source tensor shape must match self tensor shape, excluding the specified dimension. Got self.shape = [1, 1728] source.shape = [8, 328]>"
+      }
+    ]
+  }
+}

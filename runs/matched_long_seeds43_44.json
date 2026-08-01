@@ -1,0 +1,87 @@
+{
+  "seeds": [
+    43,
+    44
+  ],
+  "args": {
+    "mode": "all",
+    "grid_size": 12,
+    "embed_dim": 64,
+    "inner_steps": 3,
+    "input_zone": "Association",
+    "steps": 3000,
+    "seq_len": 48,
+    "batch_size": 16,
+    "lr": 0.0008,
+    "grad_clip": 0.5,
+    "val_frac": 0.1,
+    "lstm_layers": 1,
+    "text": null,
+    "hf": null,
+    "hf_limit": 2000,
+    "hf_chat": "soda",
+    "hf_chat_limit": 4000,
+    "repeats": 60,
+    "rnn_layers": 1,
+    "device": "mps",
+    "seed": 42,
+    "seeds": "43,44",
+    "json": "runs/matched_long_seeds43_44.json"
+  },
+  "results": {
+    "brain (full biology)": {
+      "params": 266648,
+      "ppl_mean": 4.4819912024120345,
+      "ppl_std": 0.011897848102379227,
+      "ppl_runs": [
+        4.473578153337315,
+        4.490404251486755
+      ]
+    },
+    "lstm (matched)": {
+      "params": 264829,
+      "ppl_mean": 3.7020900569844617,
+      "ppl_std": 0.04072225045834537,
+      "ppl_runs": [
+        3.673295077540189,
+        3.730885036428735
+      ]
+    },
+    "dense RNN (matched)": {
+      "params": 267321,
+      "ppl_mean": 3.3281310352142075,
+      "ppl_std": 0.00748123652502918,
+      "ppl_runs": [
+        3.322841002135699,
+        3.3334210682927163
+      ]
+    },
+    "brain \u2212 no Dale's law": {
+      "params": 266648,
+      "ppl_mean": 4.757880541386511,
+      "ppl_std": 0.12862363693980047,
+      "ppl_runs": [
+        4.666929895485501,
+        4.84883118728752
+      ]
+    },
+    "brain \u2212 no conductance": {
+      "params": 266648,
+      "ppl_mean": 4.014096577239714,
+      "ppl_std": 0.020847996990717883,
+      "ppl_runs": [
+        3.999354817193421,
+        4.0288383372860075
+      ]
+    },
+    "brain \u2212 no spatial wiring": {
+      "params": 266648,
+      "ppl_mean": 4.412066428378232,
+      "ppl_std": 0.05038574689484362,
+      "ppl_runs": [
+        4.376438325073739,
+        4.447694531682725
+      ]
+    }
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "args": {
+    "seeds": "43,44",
+    "steps": 3000,
+    "grid": 16,
+    "device": "mps",
+    "json": "runs/lever_seeds.json"
+  },
+  "runs": [
+    {
+      "label": "baseline",
+      "seed": 43,
+      "grid": 16,
+      "bpc": 2.151384487745123,
+      "neurons": 4096,
+      "edges": 65536,
+      "params": 618390,
+      "min": 17.1
+    },
+    {
+      "label": "g_max 0.691",
+      "seed": 43,
+      "grid": 16,
+      "bpc": 2.064566312724033,
+      "neurons": 4096,
+      "edges": 65536,
+      "params": 618390,
+      "min": 17.1,
+      "g_max": 0.691
+    },
+    {
+      "label": "stp",
+      "seed": 43,
+      "grid": 16,
+      "bpc": 2.091667711476071,
+      "neurons": 4096,
+      "edges": 65536,
+      "params": 618390,
+      "min": 52.6,
+      "use_stp": true
+    },
+    {
+      "label": "baseline",
+      "seed": 44,
+      "grid": 16,
+      "bpc": 2.156712546098572,
+      "neurons": 4096,
+      "edges": 65536,
+      "params": 618390,
+      "min": 16.9
+    },
+    {
+      "label": "g_max 0.691",
+      "seed": 44,
+      "grid": 16,
+      "bpc": 2.079577940225638,
+      "neurons": 4096,
+      "edges": 65536,
+      "params": 618390,
+      "min": 17.0,
+      "g_max": 0.691
+    },
+    {
+      "label": "stp",
+      "seed": 44,
+      "grid": 16,
+      "bpc": 2.088315576130273,
+      "neurons": 4096,
+      "edges": 65536,
+      "params": 618390,
+      "min": 52.6,
+      "use_stp": true
+    }
+  ]
+}
