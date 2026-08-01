@@ -1,0 +1,53 @@
+{
+  "runs": [
+    {
+      "label": "baseline",
+      "bpc": 2.1524665094270827,
+      "edges": 65536,
+      "neurons": 4096,
+      "wall_min": 32.7
+    },
+    {
+      "label": "decay_sigma 12",
+      "bpc": 2.0421000542251173,
+      "edges": 65536,
+      "neurons": 4096,
+      "wall_min": 32.8
+    },
+    {
+      "label": "g_max 0.691 (weight-matched)",
+      "bpc": 2.039347636714765,
+      "edges": 65536,
+      "neurons": 4096,
+      "wall_min": 32.8
+    },
+    {
+      "label": "dendrites",
+      "bpc": 2.132946829685399,
+      "edges": 65536,
+      "neurons": 4096,
+      "wall_min": 25.9
+    },
+    {
+      "label": "g_max 0.514 (dendrite-gain-matched)",
+      "bpc": 2.145226756420137,
+      "edges": 65536,
+      "neurons": 4096,
+      "wall_min": 32.8
+    },
+    {
+      "label": "grid16 k16 (volume)",
+      "bpc": 2.1522519825679627,
+      "edges": 65536,
+      "neurons": 4096,
+      "wall_min": 32.8
+    },
+    {
+      "label": "grid12 k38 (density)",
+      "bpc": 2.0787751395432976,
+      "edges": 64576,
+      "neurons": 1728,
+      "wall_min": 76.0
+    }
+  ]
+}

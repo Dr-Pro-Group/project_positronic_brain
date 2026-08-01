@@ -268,6 +268,22 @@ def main() -> None:
                    help="enable spike-frequency adaptation (I_M/I_AHP): a slow "
                         "hyperpolarizing current that throttles a neuron's own "
                         "firing — a novelty/high-pass filter (Benda & Herz 2003)")
+    p.add_argument("--delays", action="store_true",
+                   help="enable distance-dependent axonal conduction delays: each "
+                        "synapse transmits the presynaptic rate from "
+                        "round(distance/velocity) steps ago, so the 3D geometry "
+                        "determines timing and not just wiring (Swadlow 2000)")
+    p.add_argument("--delay-velocity", type=float, default=1.0,
+                   help="lattice units an axon covers per integration step; lower "
+                        "means slower conduction and a wider spread of delays")
+    p.add_argument("--delay-max", type=int, default=8,
+                   help="cap on any single edge's delay, in integration steps")
+    p.add_argument("--delay-mode", choices=["distance", "uniform", "shuffled"],
+                   default="distance",
+                   help="control for --delays: 'uniform' gives every edge the same "
+                        "latency (lag without geometry) and 'shuffled' keeps the "
+                        "latency histogram but reassigns it at random. If distance "
+                        "does not beat both, the effect is lag, not distance")
     p.add_argument("--laminar", action="store_true",
                    help="enable laminar microcircuit: canonical L4->L2/3->L5/6 "
                         "connectivity bias + spatially-even inhibition")
@@ -324,6 +340,10 @@ def main() -> None:
         "use_oscillation": args.oscillation,
         "use_dendrites": args.dendrites,
         "use_adaptation": args.adaptation,
+        "use_delays": args.delays,
+        "delay_velocity": args.delay_velocity,
+        "delay_max": args.delay_max,
+        "delay_mode": args.delay_mode,
         "use_laminar": args.laminar,
     }
     cfg = LMConfig(

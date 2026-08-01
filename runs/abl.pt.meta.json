@@ -1,0 +1,41 @@
+{
+  "seed": 42,
+  "git_sha": null,
+  "git_dirty": null,
+  "device": "mps",
+  "platform": "macOS-15.7.4-arm64-arm-64bit",
+  "argv": "train_language.py --additive-current --grid-size 12 --steps 200 --out runs/abl.pt",
+  "libraries": {
+    "python": "3.11.9",
+    "torch": "2.12.0",
+    "numpy": "2.4.6"
+  },
+  "lm_config": {
+    "grid_size": 12,
+    "embed_dim": 64,
+    "inner_steps": 3,
+    "input_zone": "Association",
+    "token_gain": 3.0,
+    "state_leak": 1.0,
+    "grad_checkpoint": false,
+    "seed": 42,
+    "brain_overrides": {
+      "use_conductance": false,
+      "use_dale": true,
+      "spatial_wiring": true
+    }
+  },
+  "brain_overrides": {
+    "use_conductance": false,
+    "use_dale": true,
+    "spatial_wiring": true
+  },
+  "steps": 200,
+  "seq_len": 64,
+  "batch_size": 16,
+  "lr": 0.0008,
+  "grad_clip": 0.5,
+  "tbptt_chunk": 0,
+  "grad_checkpoint": false,
+  "wall_clock_s": 85.4
+}

@@ -1,0 +1,177 @@
+{
+  "args": {
+    "grids": "6,8,10,12,16",
+    "steps": 400,
+    "seq_len": 48,
+    "batch_size": 16,
+    "lr": 0.0008,
+    "grad_clip": 0.5,
+    "hf_chat": "soda",
+    "hf_chat_limit": 2000,
+    "no_conductance_too": true,
+    "frozen_too": true,
+    "device": "auto",
+    "seed": 42,
+    "json": "runs/scaling.json"
+  },
+  "vocab": 94,
+  "val_tokens": 136383,
+  "results": {
+    "full": [
+      {
+        "grid": 6,
+        "neurons": 216,
+        "edges": 3456,
+        "params": 35791,
+        "val_bpc": 3.3261192710818164,
+        "wall_s": 46.7,
+        "peak_mem_gb": 0.2,
+        "it_s": 8.57
+      },
+      {
+        "grid": 8,
+        "neurons": 512,
+        "edges": 8192,
+        "params": 77283,
+        "val_bpc": 2.9988073200252825,
+        "wall_s": 52.8,
+        "peak_mem_gb": 0.58,
+        "it_s": 7.57
+      },
+      {
+        "grid": 10,
+        "neurons": 1000,
+        "edges": 16000,
+        "params": 145954,
+        "val_bpc": 2.833386068706519,
+        "wall_s": 77.6,
+        "peak_mem_gb": 1.34,
+        "it_s": 5.15
+      },
+      {
+        "grid": 12,
+        "neurons": 1728,
+        "edges": 27648,
+        "params": 246925,
+        "val_bpc": 2.7424315349365993,
+        "wall_s": 120.0,
+        "peak_mem_gb": 2.71,
+        "it_s": 3.33
+      },
+      {
+        "grid": 16,
+        "neurons": 4096,
+        "edges": 65536,
+        "params": 580941,
+        "val_bpc": 2.5899766839763343,
+        "wall_s": 253.9,
+        "peak_mem_gb": 5.74,
+        "it_s": 1.58
+      }
+    ],
+    "no_conductance": [
+      {
+        "grid": 6,
+        "neurons": 216,
+        "edges": 3456,
+        "params": 35791,
+        "val_bpc": 3.1959294592055953,
+        "wall_s": 44.7,
+        "peak_mem_gb": 0.2,
+        "it_s": 8.96
+      },
+      {
+        "grid": 8,
+        "neurons": 512,
+        "edges": 8192,
+        "params": 77283,
+        "val_bpc": 2.800041650426468,
+        "wall_s": 51.4,
+        "peak_mem_gb": 0.58,
+        "it_s": 7.78
+      },
+      {
+        "grid": 10,
+        "neurons": 1000,
+        "edges": 16000,
+        "params": 145954,
+        "val_bpc": 2.585903300114771,
+        "wall_s": 75.3,
+        "peak_mem_gb": 1.34,
+        "it_s": 5.31
+      },
+      {
+        "grid": 12,
+        "neurons": 1728,
+        "edges": 27648,
+        "params": 246925,
+        "val_bpc": 2.4560031161950113,
+        "wall_s": 116.6,
+        "peak_mem_gb": 2.71,
+        "it_s": 3.43
+      },
+      {
+        "grid": 16,
+        "neurons": 4096,
+        "edges": 65536,
+        "params": 580941,
+        "val_bpc": 2.2720737157141397,
+        "wall_s": 249.1,
+        "peak_mem_gb": 5.74,
+        "it_s": 1.61
+      }
+    ],
+    "frozen_reservoir": [
+      {
+        "grid": 6,
+        "neurons": 216,
+        "edges": 3456,
+        "params": 32119,
+        "val_bpc": 3.4908053630680995,
+        "wall_s": 40.0,
+        "peak_mem_gb": 0.2,
+        "it_s": 9.99
+      },
+      {
+        "grid": 8,
+        "neurons": 512,
+        "edges": 8192,
+        "params": 68579,
+        "val_bpc": 3.1806541160868984,
+        "wall_s": 49.4,
+        "peak_mem_gb": 0.58,
+        "it_s": 8.1
+      },
+      {
+        "grid": 10,
+        "neurons": 1000,
+        "edges": 16000,
+        "params": 128954,
+        "val_bpc": 3.043488586995193,
+        "wall_s": 73.5,
+        "peak_mem_gb": 1.34,
+        "it_s": 5.44
+      },
+      {
+        "grid": 12,
+        "neurons": 1728,
+        "edges": 27648,
+        "params": 217549,
+        "val_bpc": 2.9070028709258184,
+        "wall_s": 114.1,
+        "peak_mem_gb": 2.71,
+        "it_s": 3.5
+      },
+      {
+        "grid": 16,
+        "neurons": 4096,
+        "edges": 65536,
+        "params": 511309,
+        "val_bpc": 2.7543370820977198,
+        "wall_s": 246.0,
+        "peak_mem_gb": 5.74,
+        "it_s": 1.63
+      }
+    ]
+  }
+}

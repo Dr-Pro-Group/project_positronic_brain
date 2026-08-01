@@ -1,0 +1,80 @@
+{
+  "seeds": [
+    42
+  ],
+  "args": {
+    "mode": "all",
+    "grid_size": 12,
+    "embed_dim": 64,
+    "inner_steps": 3,
+    "input_zone": "Association",
+    "steps": 3000,
+    "seq_len": 48,
+    "batch_size": 16,
+    "lr": 0.0008,
+    "grad_clip": 0.5,
+    "val_frac": 0.1,
+    "lstm_layers": 1,
+    "text": null,
+    "hf": null,
+    "hf_limit": 2000,
+    "hf_chat": "soda",
+    "hf_chat_limit": 4000,
+    "repeats": 60,
+    "rnn_layers": 1,
+    "device": "mps",
+    "seed": 42,
+    "seeds": "42",
+    "json": "runs/matched_long.json"
+  },
+  "results": {
+    "brain (full biology)": {
+      "params": 263062,
+      "ppl_mean": 4.532561578862954,
+      "ppl_std": 0.0,
+      "ppl_runs": [
+        4.532561578862954
+      ]
+    },
+    "lstm (matched)": {
+      "params": 264275,
+      "ppl_mean": 3.702632591981885,
+      "ppl_std": 0.0,
+      "ppl_runs": [
+        3.702632591981885
+      ]
+    },
+    "dense RNN (matched)": {
+      "params": 262211,
+      "ppl_mean": 3.359173480691872,
+      "ppl_std": 0.0,
+      "ppl_runs": [
+        3.359173480691872
+      ]
+    },
+    "brain \u2212 no Dale's law": {
+      "params": 263062,
+      "ppl_mean": 4.8244026670739855,
+      "ppl_std": 0.0,
+      "ppl_runs": [
+        4.8244026670739855
+      ]
+    },
+    "brain \u2212 no conductance": {
+      "params": 263062,
+      "ppl_mean": 4.079009706907505,
+      "ppl_std": 0.0,
+      "ppl_runs": [
+        4.079009706907505
+      ]
+    },
+    "brain \u2212 no spatial wiring": {
+      "params": 263062,
+      "ppl_mean": 4.435572566065861,
+      "ppl_std": 0.0,
+      "ppl_runs": [
+        4.435572566065861
+      ]
+    }
+  }
+}

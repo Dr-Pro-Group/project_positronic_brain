@@ -30,6 +30,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field, asdict
 from typing import Dict, List, Optional, Sequence, Union
+import math
 
 import numpy as np
 import torch
@@ -87,6 +88,15 @@ class BrainConfig:
     # Dynamics
     recurrent_steps: int = 12
     tau_m: float = 4.0
+    tau_m_spread: float = 0.0
+    # Heterogeneous membrane time constants. Cortex does not run on one time
+    # constant: interneuron classes and pyramidal cells integrate over visibly
+    # different windows, and a population with a RANGE of timescales can hold a
+    # richer history than one where every unit is the same low-pass filter --
+    # lengthening a single shared tau trades memory capacity away rather than
+    # buying it. With spread s > 0 each neuron draws tau from a log-uniform
+    # distribution over [tau_m / 10^s, tau_m * 10^s], so the mean timescale is
+    # unchanged and only its diversity grows. 0.0 reproduces the scalar case exactly.
     dt: float = 1.0
     E_L: float = 0.0
     E_E: float = 1.0
@@ -173,6 +183,32 @@ class BrainConfig:
     adapt_tau: float = 30.0       # adaptation time constant (steps); should be >> tau_m
     adapt_gain: float = 0.4       # strength of the hyperpolarizing self-feedback
 
+    # Axonal conduction delays: a synapse does not act instantaneously — the
+    # presynaptic spike has to travel down the axon, and unmyelinated cortical
+    # axons conduct at only ~0.1-10 m/s, so latency scales with the physical
+    # distance between the two cells (Swadlow 2000; Izhikevich 2006). The graph
+    # is already built in literal 3D and already knows every edge's length, but
+    # that length has so far only biased *which* neurons connect and *how
+    # strongly* — never *when* the signal lands. With this on, each edge carries
+    # an integer delay round(edge_dist / delay_velocity), and the synaptic current
+    # is driven by the presynaptic rate from that many steps ago instead of the
+    # current one. It is the mechanism that makes the 3D embedding load-bearing
+    # rather than decorative: distance finally buys time.
+    # Off by default; when off no history is allocated and step() is byte-identical.
+    use_delays: bool = False
+    delay_velocity: float = 1.0   # lattice units travelled per integration step;
+                                  # lower = slower axons = a wider delay spectrum
+    delay_max: int = 8            # cap on per-edge delay, in integration steps
+    delay_mode: str = "distance"
+    # Controls that separate "distance buys time" from "any lag buys time".
+    #   distance — latency from edge length, the mechanism under test
+    #   uniform  — every edge gets the same latency (mean of the distance case),
+    #              so the network gains a longer effective time constant but no
+    #              spatial structure whatsoever
+    #   shuffled — the exact distance-derived latency histogram, randomly
+    #              reassigned across edges: same distribution, geometry destroyed
+    # If distance does not beat both, the effect is lag, not geometry.
+
     # Laminar microcircuit: read the cube's z-axis as cortical depth (L2/3, L4,
     # L5/6) and bias connectivity toward the canonical L4→L2/3→L5/6 flow
     # (Douglas & Martin 2004; Bastos et al. 2012). Also places inhibitory neurons
@@ -181,6 +217,15 @@ class BrainConfig:
     # Off by default; keeps edge count, k_max and Dale fraction unchanged.
     use_laminar: bool = False
     laminar_bands: int = 3
+
+    # Top-down zone attention (biased competition / soft routing).
+    # A content-free query from the population mean is matched against
+    # learnable per-zone keys; softmax gains multiply firing rates used for
+    # recurrent transmission (and thus bias which areas "win"). Off by default;
+    # when off, step() is unchanged.
+    use_zone_attn: bool = False
+    zone_attn_dim: int = 16
+    zone_attn_scale: float = 1.0   # gain = 1 + scale * (softmax - 1/Z) so mean ~1
 
     # Sensory input pathway (real multimodal data -> per-neuron drive)
     #   sensory_embedding_dims:  modality name -> encoder embedding dimension.
@@ -320,6 +365,25 @@ class PositronicBrain(nn.Module):
 
         self.register_buffer("edge_index", torch.as_tensor(edge_index, dtype=torch.long))
         self.register_buffer("edge_sign", torch.as_tensor(edge_sign, dtype=torch.float32))
+        if cfg.use_delays:
+            # Distance -> latency. Registered only when the mechanism is on, so a
+            # checkpoint trained without delays still loads strictly.
+            delay = np.clip(np.round(edge_dist / max(cfg.delay_velocity, 1e-6)),
+                            1, cfg.delay_max).astype(np.int64)
+            if cfg.delay_mode == "uniform":
+                # Same mean latency, no spatial structure at all.
+                delay = np.full_like(delay, int(round(float(delay.mean()))))
+            elif cfg.delay_mode == "shuffled":
+                # Same latency histogram, reassigned at random across edges.
+                np.random.default_rng(cfg.seed + 991).shuffle(delay)
+            elif cfg.delay_mode != "distance":
+                raise ValueError(f"delay_mode must be distance|uniform|shuffled, "
+                                 f"got {cfg.delay_mode!r}")
+            self.register_buffer("edge_delay", torch.as_tensor(delay, dtype=torch.long))
+            # The delay line only ever needs to reach back as far as the longest
+            # axon actually present, which the geometry usually puts well below
+            # delay_max — holding fewer frames makes the per-step stack cheaper.
+            self._max_delay = int(delay.max())
         self.register_buffer("is_inhibitory", torch.as_tensor(is_inh, dtype=torch.bool))
         self.register_buffer("positions", torch.as_tensor(pos, dtype=torch.float32))
         if cfg.use_laminar:
@@ -337,6 +401,15 @@ class PositronicBrain(nn.Module):
         self.edge_weight = nn.Parameter(torch.as_tensor(np.abs(edge_weight), dtype=torch.float32))
         self.neuron_bias = nn.Parameter(torch.zeros(N))
         self.zone_gain = nn.Parameter(torch.ones(Z))
+
+        # Learnable per-zone keys for top-down zone attention (biased competition).
+        if cfg.use_zone_attn:
+            d = int(cfg.zone_attn_dim)
+            self.zone_attn_keys = nn.Parameter(torch.randn(Z, d) * 0.02)
+            self.zone_attn_query = nn.Linear(N, d, bias=False)
+        else:
+            self.zone_attn_keys = None
+            self.zone_attn_query = None
 
         self.readout = nn.Sequential(
             nn.Linear(N, cfg.readout_hidden),
@@ -363,13 +436,28 @@ class PositronicBrain(nn.Module):
             self.sensory_decode[m] = nn.Linear(N, emb_dim)
 
         # Cache integration constant.
-        self.alpha = cfg.dt / cfg.tau_m
+        if cfg.tau_m_spread > 0:
+            rng_t = np.random.default_rng(cfg.seed + 17)
+            lo, hi = -cfg.tau_m_spread, cfg.tau_m_spread
+            taus = cfg.tau_m * (10.0 ** rng_t.uniform(lo, hi, size=N)).astype(np.float32)
+            # Forward Euler is only stable while alpha = dt/tau stays comfortably
+            # below 1; a wide spread otherwise hands the fastest neurons alpha > 1
+            # and the network diverges on the first step. Floor tau at 2*dt so the
+            # fastest unit matches the stability margin the scalar default uses.
+            taus = np.maximum(taus, 2.0 * cfg.dt)
+            self.register_buffer("neuron_alpha",
+                                 torch.as_tensor(cfg.dt / taus, dtype=torch.float32))
+            self.alpha = cfg.dt / cfg.tau_m       # kept for reporting/back-compat
+        else:
+            self.neuron_alpha = None
+            self.alpha = cfg.dt / cfg.tau_m
 
         # Transient short-term-plasticity state (set by stp_begin during a forward).
         self._stp_u = None
         self._stp_x = None
         self._osc_t = 0          # oscillatory phase counter (reset each forward)
         self._adapt_a = None     # spike-frequency adaptation state (B, N), per forward
+        self._rate_hist = None   # axonal delay line: recent firing-rate frames
 
         # Dendritic branch assignment: deterministically bucket each neuron's
         # incoming edges into `dend_branches` branches. nb maps an edge to its
@@ -522,6 +610,10 @@ class PositronicBrain(nn.Module):
             self._adapt_a = torch.zeros((batch, self.num_neurons), device=self.device)
         else:
             self._adapt_a = None
+        # Axonal delay line: the last delay_max firing-rate frames, oldest first.
+        # Starts empty, so a synapse whose delay has not yet elapsed delivers
+        # nothing — the network wakes up silent, as it should.
+        self._rate_hist = [] if self.config.use_delays else None
         if not self.config.use_stp:
             self._stp_u = self._stp_x = None
             return
@@ -537,11 +629,14 @@ class PositronicBrain(nn.Module):
             self._stp_x = self._stp_x.detach()
         if getattr(self, "_adapt_a", None) is not None:
             self._adapt_a = self._adapt_a.detach()
+        if getattr(self, "_rate_hist", None):
+            self._rate_hist = [r.detach() for r in self._rate_hist]
 
     def stp_end(self) -> None:
-        """Clear transient per-forward state (STP, adaptation) after a forward pass."""
+        """Clear transient per-forward state (STP, adaptation, delay line)."""
         self._stp_u = self._stp_x = None
         self._adapt_a = None
+        self._rate_hist = None
 
     def step_mutates_state(self) -> bool:
         """True if :meth:`step` writes transient module state that a gradient-
@@ -553,7 +648,8 @@ class PositronicBrain(nn.Module):
         """
         cfg = self.config
         return bool(cfg.use_stp or cfg.use_oscillation
-                    or cfg.use_homeostasis or cfg.use_adaptation)
+                    or cfg.use_homeostasis or cfg.use_adaptation
+                    or cfg.use_delays)
 
     def _zone_pool(self, x: torch.Tensor) -> torch.Tensor:
         """Per-neuron zone-mean of ``x`` (B, N) -> (B, N).
@@ -587,8 +683,54 @@ class PositronicBrain(nn.Module):
         r = self.firing_rate(V)                      # (B, N) presyn firing rates
         if cfg.use_homeostasis and self.training:
             self._homeo_update(r)
+
+        # Top-down zone attention: soft gains over zones (biased competition).
+        # Population query → match learnable zone keys → softmax gains multiply
+        # rates used for recurrent transmission (which areas "win" the moment).
+        if cfg.use_zone_attn and self.zone_attn_query is not None:
+            Z = cfg.num_zones
+            q = self.zone_attn_query(r)                          # (B, d)
+            # keys: (Z, d) → scores (B, Z)
+            scores = torch.matmul(q, self.zone_attn_keys.t()) / math.sqrt(
+                max(cfg.zone_attn_dim, 1)
+            )
+            attn = torch.softmax(scores, dim=-1)                 # (B, Z)
+            # Zero-mean gain so the average population drive is preserved:
+            # gain_z = 1 + scale * (p_z - 1/Z)
+            gain_z = 1.0 + cfg.zone_attn_scale * (attn - (1.0 / Z))
+            gain_n = gain_z[:, self.zones]                       # (B, N)
+            r = r * gain_n
+
         w = self.signed_weights()                    # (E,)
-        r_pre = r[:, src]                            # (B, E) presyn rate per edge
+        if cfg.use_delays and self._rate_hist is not None:
+            # Each edge reads its presynaptic neuron's rate from `edge_delay`
+            # steps ago instead of right now, so a signal takes longer to cross a
+            # long axon than a short one.
+            #
+            # This is one fused gather rather than one per distinct delay. Stacking
+            # the recent frames costs a small (D, B, N) copy but turns the whole
+            # lookup into a single indexing op; the per-delay version it replaced
+            # issued a scatter per delay class and ran ~14x slower on MPS, which
+            # would have made the mechanism unusable at the sizes it is meant for.
+            hist = self._rate_hist
+            depth = len(hist)
+            if depth == 0:
+                # First step of a forward pass: nothing has traversed any axon yet,
+                # so every synapse is silent. Built from r so the graph still
+                # connects and the zero is differentiable rather than a constant.
+                r_pre = r[:, src] * 0.0
+            else:
+                H = torch.stack(hist)                # (depth, B, N), oldest first
+                # hist[-d] is the frame d steps back, i.e. H[depth - d]. Edges whose
+                # delay reaches past the start of the run are clamped to the oldest
+                # frame and then zeroed: nothing has traversed that axon yet.
+                idx = (depth - self.edge_delay).clamp(min=0)
+                r_pre = H[idx, :, src].transpose(0, 1)   # (E, B) -> (B, E)
+                if self._max_delay > depth:
+                    arrived = (self.edge_delay <= depth).to(V.dtype)
+                    r_pre = r_pre * arrived.unsqueeze(0)
+        else:
+            r_pre = r[:, src]                        # (B, E) presyn rate per edge
 
         if cfg.use_stp and self._stp_u is not None:
             # Short-term plasticity (Tsodyks-Markram, rate form). The effective
@@ -664,7 +806,15 @@ class PositronicBrain(nn.Module):
             alpha_a = cfg.dt / max(cfg.adapt_tau, 1.0)
             self._adapt_a = self._adapt_a + alpha_a * (r - self._adapt_a)
 
-        return V + self.alpha * dV
+        if cfg.use_delays and self._rate_hist is not None:
+            # Advance the delay line by one step, keeping only what the longest
+            # axon can still reach back for.
+            self._rate_hist.append(r)
+            if len(self._rate_hist) > self._max_delay:
+                self._rate_hist.pop(0)
+
+        alpha = self.alpha if self.neuron_alpha is None else self.neuron_alpha.unsqueeze(0)
+        return V + alpha * dV
 
     def integrate(self, V, I_ext, steps, collect_trace: bool = False):
         """Run ``steps`` recurrent integration steps from state ``V``.

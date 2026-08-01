@@ -1,0 +1,94 @@
+{
+  "seeds": [
+    42,
+    43,
+    44
+  ],
+  "args": {
+    "mode": "all",
+    "grid_size": 12,
+    "embed_dim": 64,
+    "inner_steps": 3,
+    "input_zone": "Association",
+    "steps": 400,
+    "seq_len": 64,
+    "batch_size": 16,
+    "lr": 0.0008,
+    "grad_clip": 0.5,
+    "val_frac": 0.1,
+    "lstm_layers": 1,
+    "text": null,
+    "hf": null,
+    "hf_limit": 2000,
+    "hf_chat": null,
+    "hf_chat_limit": 2000,
+    "repeats": 60,
+    "rnn_layers": 1,
+    "device": "auto",
+    "seed": 42,
+    "seeds": "42,43,44",
+    "json": "runs/matched_results.json"
+  },
+  "results": {
+    "brain (full biology)": {
+      "params": 169826,
+      "ppl_mean": 4.345475258520552,
+      "ppl_std": 0.14270955487548395,
+      "ppl_runs": [
+        4.502161275198719,
+        4.311326550559526,
+        4.222937949803414
+      ]
+    },
+    "lstm (matched)": {
+      "params": 169131,
+      "ppl_mean": 3.1149008293597524,
+      "ppl_std": 0.11750653505052527,
+      "ppl_runs": [
+        3.2490727042273226,
+        3.0653139426279643,
+        3.0303158412239695
+      ]
+    },
+    "dense RNN (matched)": {
+      "params": 168403,
+      "ppl_mean": 1.574536380956878,
+      "ppl_std": 0.007213874085070729,
+      "ppl_runs": [
+        1.566568754087776,
+        1.5806243975354548,
+        1.576415991247403
+      ]
+    },
+    "brain \u2212 no Dale's law": {
+      "params": 169826,
+      "ppl_mean": 5.612730183087965,
+      "ppl_std": 0.07467251887744634,
+      "ppl_runs": [
+        NaN,
+        5.665531627554488,
+        5.559928738621442
+      ]
+    },
+    "brain \u2212 no conductance": {
+      "params": 169826,
+      "ppl_mean": 2.5747167306970944,
+      "ppl_std": 0.14219115427497278,
+      "ppl_runs": [
+        2.7236673473172432,
+        2.440419940372553,
+        2.560062904401487
+      ]
+    },
+    "brain \u2212 no spatial wiring": {
+      "params": 169826,
+      "ppl_mean": 4.803562525930309,
+      "ppl_std": 0.1648848357848053,
+      "ppl_runs": [
+        4.9868292178599765,
+        4.756616972410947,
+        4.667241387520004
+      ]
+    }
+  }
+}

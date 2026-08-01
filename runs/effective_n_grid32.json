@@ -1,0 +1,88 @@
+{
+  "args": {
+    "checkpoint": "trained_models/brain_lm.pt",
+    "grid_size": 12,
+    "train_steps": 400,
+    "seq_len": 48,
+    "batch_size": 16,
+    "lr": 0.0008,
+    "hf_chat": "soda",
+    "hf_chat_limit": 2000,
+    "fractions": "0,0.25,0.5,0.75,0.9,0.95",
+    "control_repeats": 3,
+    "seed": 42,
+    "device": "mps",
+    "json": "runs/effective_n_grid32.json"
+  },
+  "neurons": 32768,
+  "baseline_bpc": 2.0043699592500785,
+  "rows": [
+    {
+      "fraction": 0.0,
+      "k": 0,
+      "targeted_bpc": 2.0043699592500785,
+      "random_bpc_mean": 2.0043699592500785,
+      "random_bpc_std": 0.0
+    },
+    {
+      "fraction": 0.25,
+      "k": 8192,
+      "targeted_bpc": 2.0047715889014497,
+      "random_bpc_mean": 2.299155363691915,
+      "random_bpc_std": 0.005152588665509916,
+      "random_bpc_runs": [
+        2.302108793091407,
+        2.2919096199559643,
+        2.303447678028374
+      ]
+    },
+    {
+      "fraction": 0.5,
+      "k": 16384,
+      "targeted_bpc": 2.005832388640887,
+      "random_bpc_mean": 2.993838166055435,
+      "random_bpc_std": 0.035672731881017,
+      "random_bpc_runs": [
+        3.0213490531105296,
+        3.01670483360663,
+        2.943460611449145
+      ]
+    },
+    {
+      "fraction": 0.75,
+      "k": 24576,
+      "targeted_bpc": 2.0077006827558446,
+      "random_bpc_mean": 4.080256070925013,
+      "random_bpc_std": 0.019828053844954247,
+      "random_bpc_runs": [
+        4.060730868629318,
+        4.107448601372824,
+        4.072588742772894
+      ]
+    },
+    {
+      "fraction": 0.9,
+      "k": 29491,
+      "targeted_bpc": 2.2136478577041347,
+      "random_bpc_mean": 4.834342387936332,
+      "random_bpc_std": 0.026941544754137167,
+      "random_bpc_runs": [
+        4.822396410902556,
+        4.871648114526044,
+        4.808982638380399
+      ]
+    },
+    {
+      "fraction": 0.95,
+      "k": 31130,
+      "targeted_bpc": 3.091680448106014,
+      "random_bpc_mean": 5.096081814493382,
+      "random_bpc_std": 0.02214705015296337,
+      "random_bpc_runs": [
+        5.127182144288691,
+        5.083743325277378,
+        5.077319973914078
+      ]
+    }
+  ]
+}

@@ -1,0 +1,631 @@
+{
+  "args": {
+    "grid_screen": 12,
+    "grid_train": 16,
+    "steps": 3000,
+    "seq_len": 48,
+    "batch_size": 16,
+    "lr": 0.0008,
+    "seeds": "42",
+    "top_k": 6,
+    "ladder": "8,12,16",
+    "hf_chat": "soda",
+    "hf_chat_limit": 4000,
+    "device": "mps",
+    "json": "runs/long_program.json"
+  },
+  "screen": [
+    {
+      "label": "baseline (as shipped)",
+      "kw": {},
+      "growth": 0.49384734965860844,
+      "MC": 3.457734629937627,
+      "expansion": 1.0915891652912741
+    },
+    {
+      "label": "tau spread 0.2",
+      "kw": {
+        "tau_m_spread": 0.2
+      },
+      "growth": 0.5101123563945293,
+      "MC": 4.09411826174659,
+      "expansion": 1.1952852442979665
+    },
+    {
+      "label": "tau spread 0.4",
+      "kw": {
+        "tau_m_spread": 0.4
+      },
+      "growth": 0.5651054531335831,
+      "MC": NaN,
+      "expansion": NaN
+    },
+    {
+      "label": "tau spread 0.6",
+      "kw": {
+        "tau_m_spread": 0.6
+      },
+      "growth": 0.6080171801149845,
+      "MC": NaN,
+      "expansion": NaN
+    },
+    {
+      "label": "tau spread 0.8",
+      "kw": {
+        "tau_m_spread": 0.8
+      },
+      "growth": 0.6373385265469551,
+      "MC": NaN,
+      "expansion": NaN
+    },
+    {
+      "label": "tau spread 1.0",
+      "kw": {
+        "tau_m_spread": 1.0
+      },
+      "growth": 0.6576460152864456,
+      "MC": NaN,
+      "expansion": NaN
+    },
+    {
+      "label": "tau spread 1.3",
+      "kw": {
+        "tau_m_spread": 1.3
+      },
+      "growth": 0.6777195483446121,
+      "MC": NaN,
+      "expansion": NaN
+    },
+    {
+      "label": "conn radius 1.5",
+      "kw": {
+        "connection_radius": 1.5
+      },
+      "growth": 0.4627491123974323,
+      "MC": 3.910431757251846,
+      "expansion": 1.184429607108475
+    },
+    {
+      "label": "conn radius 2.6",
+      "kw": {
+        "connection_radius": 2.6
+      },
+      "growth": 0.49384734965860844,
+      "MC": 3.457734629937627,
+      "expansion": 1.0915891652912741
+    },
+    {
+      "label": "conn radius 4.0",
+      "kw": {
+        "connection_radius": 4.0
+      },
+      "growth": 0.5759862959384918,
+      "MC": 2.975651041763842,
+      "expansion": 1.0422163980523687
+    },
+    {
+      "label": "conn radius 6.0",
+      "kw": {
+        "connection_radius": 6.0
+      },
+      "growth": 0.5977051183581352,
+      "MC": 2.6482606821585186,
+      "expansion": 1.0230578668017194
+    },
+    {
+      "label": "conn radius 9.0",
+      "kw": {
+        "connection_radius": 9.0
+      },
+      "growth": 0.5991780795156956,
+      "MC": 2.6226799417194835,
+      "expansion": 1.0219099917568557
+    },
+    {
+      "label": "k_max 4",
+      "kw": {
+        "k_max": 4
+      },
+      "growth": 0.7049806714057922,
+      "MC": 1.7121346639832768,
+      "expansion": 0.9177897600099867
+    },
+    {
+      "label": "k_max 8",
+      "kw": {
+        "k_max": 8
+      },
+      "growth": 0.6454405412077904,
+      "MC": 2.2258577925584966,
+      "expansion": 0.9861435334258366
+    },
+    {
+      "label": "k_max 16",
+      "kw": {
+        "k_max": 16
+      },
+      "growth": 0.49384734965860844,
+      "MC": 3.457734629937627,
+      "expansion": 1.0915891652912741
+    },
+    {
+      "label": "k_max 32",
+      "kw": {
+        "k_max": 32
+      },
+      "growth": 0.4026697464287281,
+      "MC": 3.6296202649604323,
+      "expansion": 1.1997019472836914
+    },
+    {
+      "label": "k_max 64",
+      "kw": {
+        "k_max": 64
+      },
+      "growth": 0.9406479224562645,
+      "MC": NaN,
+      "expansion": NaN
+    },
+    {
+      "label": "decay sigma 0.75",
+      "kw": {
+        "decay_sigma": 0.75
+      },
+      "growth": 0.6810184121131897,
+      "MC": 2.0188187567965326,
+      "expansion": 0.9398590746121558
+    },
+    {
+      "label": "decay sigma 1.75",
+      "kw": {
+        "decay_sigma": 1.75
+      },
+      "growth": 0.49384734965860844,
+      "MC": 3.457734629937627,
+      "expansion": 1.0915891652912741
+    },
+    {
+      "label": "decay sigma 4.0",
+      "kw": {
+        "decay_sigma": 4.0
+      },
+      "growth": 0.43939963914453983,
+      "MC": 4.1292674877387405,
+      "expansion": 1.2575632024205563
+    },
+    {
+      "label": "decay sigma 12.0",
+      "kw": {
+        "decay_sigma": 12.0
+      },
+      "growth": 0.4752215202897787,
+      "MC": 3.9996597053528173,
+      "expansion": 1.3317004060083304
+    },
+    {
+      "label": "random wiring",
+      "kw": {
+        "spatial_wiring": false
+      },
+      "growth": 0.7401058413088322,
+      "MC": 1.5574559038777998,
+      "expansion": 0.86455118568443
+    },
+    {
+      "label": "no Dale",
+      "kw": {
+        "use_dale": false
+      },
+      "growth": 0.9096785522997379,
+      "MC": NaN,
+      "expansion": 1.1810555846897384
+    },
+    {
+      "label": "no conductance",
+      "kw": {
+        "use_conductance": false
+      },
+      "growth": 0.8148254305124283,
+      "MC": 1.0889101347979855,
+      "expansion": 0.8629466903661136
+    },
+    {
+      "label": "E/I 50-50",
+      "kw": {
+        "frac_inhibitory": 0.5
+      },
+      "growth": 0.5743164755403996,
+      "MC": 2.5052065539877395,
+      "expansion": 1.2961253795990455
+    },
+    {
+      "label": "inh_scale 1 (no I boost)",
+      "kw": {
+        "inh_scale": 1.0
+      },
+      "growth": 0.3664614427834749,
+      "MC": 3.3511884961515577,
+      "expansion": 0.9511914401496061
+    },
+    {
+      "label": "laminar",
+      "kw": {
+        "use_laminar": true
+      },
+      "growth": 0.5239083208143711,
+      "MC": 3.2904474926124916,
+      "expansion": 1.1044059581617998
+    },
+    {
+      "label": "divnorm",
+      "kw": {
+        "use_divnorm": true
+      },
+      "growth": 0.48528236150741577,
+      "MC": 3.2289442654079368,
+      "expansion": 1.1356242562856556
+    },
+    {
+      "label": "stp",
+      "kw": {
+        "use_stp": true
+      },
+      "growth": 4.456412468105555,
+      "MC": 4.363468808848419,
+      "expansion": 1.2774923097616504
+    },
+    {
+      "label": "adaptation",
+      "kw": {
+        "use_adaptation": true
+      },
+      "growth": 12.493373483419418,
+      "MC": 3.1127777738518096,
+      "expansion": 1.1027773895544093
+    },
+    {
+      "label": "delays",
+      "kw": {
+        "use_delays": true
+      },
+      "growth": 2.1899744048714638,
+      "MC": 6.332287384460415,
+      "expansion": 1.0929160321233853
+    },
+    {
+      "label": "oscillation",
+      "kw": {
+        "use_oscillation": true
+      },
+      "growth": 697.5409107208252,
+      "MC": 3.1156390908868152,
+      "expansion": 1.0977437172520197
+    },
+    {
+      "label": "spread 0.8 + radius 4",
+      "kw": {
+        "tau_m_spread": 0.8,
+        "connection_radius": 4.0
+      },
+      "growth": 0.6449151709675789,
+      "MC": 3.8164546217886133,
+      "expansion": 1.426010566638976
+    },
+    {
+      "label": "spread 0.8 + k_max 32",
+      "kw": {
+        "tau_m_spread": 0.8,
+        "k_max": 32
+      },
+      "growth": 1.1673604100942612,
+      "MC": NaN,
+      "expansion": NaN
+    },
+    {
+      "label": "spread 0.8 + stp",
+      "kw": {
+        "tau_m_spread": 0.8,
+        "use_stp": true
+      },
+      "growth": 149.5343958735466,
+      "MC": NaN,
+      "expansion": NaN
+    },
+    {
+      "label": "spread 0.8 + adaptation",
+      "kw": {
+        "tau_m_spread": 0.8,
+        "use_adaptation": true
+      },
+      "growth": 15.70764809846878,
+      "MC": NaN,
+      "expansion": NaN
+    },
+    {
+      "label": "spread 0.8 + delays",
+      "kw": {
+        "tau_m_spread": 0.8,
+        "use_delays": true
+      },
+      "growth": 5.435057878494263,
+      "MC": NaN,
+      "expansion": NaN
+    },
+    {
+      "label": "spread 1.0 + radius 4 + k32",
+      "kw": {
+        "tau_m_spread": 1.0,
+        "connection_radius": 4.0,
+        "k_max": 32
+      },
+      "growth": 0.72889244556427,
+      "MC": NaN,
+      "expansion": NaN
+    }
+  ],
+  "trained": [
+    {
+      "label": "baseline",
+      "kw": {},
+      "seed": 42,
+      "grid": 16,
+      "neurons": 4096,
+      "params": 618390,
+      "steps": 3000,
+      "val_bpc": 2.1523912455194987,
+      "diverged_at": null,
+      "wall_s": 2053.8,
+      "readout_width": null
+    },
+    {
+      "label": "spread 0.8 + radius 4",
+      "kw": {
+        "tau_m_spread": 0.8,
+        "connection_radius": 4.0
+      },
+      "seed": 42,
+      "grid": 16,
+      "neurons": 4096,
+      "params": 618390,
+      "steps": 3000,
+      "val_bpc": 2.0718865177818633,
+      "diverged_at": null,
+      "wall_s": 2211.0,
+      "readout_width": null
+    },
+    {
+      "label": "decay sigma 12.0",
+      "kw": {
+        "decay_sigma": 12.0
+      },
+      "seed": 42,
+      "grid": 16,
+      "neurons": 4096,
+      "params": 618390,
+      "steps": 3000,
+      "val_bpc": 2.036872233093346,
+      "diverged_at": null,
+      "wall_s": 2106.3,
+      "readout_width": null
+    },
+    {
+      "label": "stp",
+      "kw": {
+        "use_stp": true
+      },
+      "seed": 42,
+      "grid": 16,
+      "neurons": 4096,
+      "params": 618390,
+      "steps": 3000,
+      "val_bpc": 2.067888960211152,
+      "diverged_at": null,
+      "wall_s": 3153.8,
+      "readout_width": null
+    },
+    {
+      "label": "E/I 50-50",
+      "kw": {
+        "frac_inhibitory": 0.5
+      },
+      "seed": 42,
+      "grid": 16,
+      "neurons": 4096,
+      "params": 618390,
+      "steps": 3000,
+      "val_bpc": 2.1629705791387295,
+      "diverged_at": null,
+      "wall_s": 1954.3,
+      "readout_width": null
+    },
+    {
+      "label": "decay sigma 4.0",
+      "kw": {
+        "decay_sigma": 4.0
+      },
+      "seed": 42,
+      "grid": 16,
+      "neurons": 4096,
+      "params": 618390,
+      "steps": 3000,
+      "val_bpc": 2.0839674749214403,
+      "diverged_at": null,
+      "wall_s": 1910.8,
+      "readout_width": null
+    },
+    {
+      "label": "tau spread 0.2",
+      "kw": {
+        "tau_m_spread": 0.2
+      },
+      "seed": 42,
+      "grid": 16,
+      "neurons": 4096,
+      "params": 618390,
+      "steps": 3000,
+      "val_bpc": 2.120091262686336,
+      "diverged_at": null,
+      "wall_s": 2140.8,
+      "readout_width": null
+    },
+    {
+      "label": "adaptation",
+      "kw": {
+        "use_adaptation": true
+      },
+      "seed": 42,
+      "grid": 16,
+      "neurons": 4096,
+      "params": 618390,
+      "steps": 3000,
+      "val_bpc": 2.153550544739246,
+      "diverged_at": null,
+      "wall_s": 1925.2,
+      "readout_width": null
+    },
+    {
+      "label": "delays",
+      "kw": {
+        "use_delays": true
+      },
+      "seed": 42,
+      "grid": 16,
+      "neurons": 4096,
+      "params": 618390,
+      "steps": 3000,
+      "val_bpc": 2.1278126961026858,
+      "diverged_at": null,
+      "wall_s": 1975.7,
+      "readout_width": null
+    },
+    {
+      "label": "divnorm",
+      "kw": {
+        "use_divnorm": true
+      },
+      "seed": 42,
+      "grid": 16,
+      "neurons": 4096,
+      "params": 618390,
+      "steps": 3000,
+      "val_bpc": 2.226633955952231,
+      "diverged_at": null,
+      "wall_s": 10020.3,
+      "readout_width": null
+    },
+    {
+      "label": "laminar",
+      "kw": {
+        "use_laminar": true
+      },
+      "seed": 42,
+      "grid": 16,
+      "neurons": 4096,
+      "params": 618390,
+      "steps": 3000,
+      "val_bpc": 2.1505075195445986,
+      "diverged_at": null,
+      "wall_s": 1912.7,
+      "readout_width": null
+    },
+    {
+      "label": "homeostasis",
+      "kw": {
+        "use_homeostasis": true
+      },
+      "seed": 42,
+      "grid": 16,
+      "neurons": 4096,
+      "params": 618390,
+      "steps": 3000,
+      "val_bpc": 2.2800586179524784,
+      "diverged_at": null,
+      "wall_s": 1936.7,
+      "readout_width": null
+    },
+    {
+      "label": "dendrites",
+      "kw": {
+        "use_dendrites": true
+      },
+      "seed": 42,
+      "grid": 16,
+      "neurons": 4096,
+      "params": 618390,
+      "steps": 3000,
+      "val_bpc": 2.1329418923501304,
+      "diverged_at": null,
+      "wall_s": 1527.6,
+      "readout_width": null
+    },
+    {
+      "label": "oscillation",
+      "kw": {
+        "use_oscillation": true
+      },
+      "seed": 42,
+      "grid": 16,
+      "neurons": 4096,
+      "params": 618390,
+      "steps": 3000,
+      "val_bpc": 2.159771314871717,
+      "diverged_at": null,
+      "wall_s": 1992.2,
+      "readout_width": null
+    }
+  ],
+  "ladder": [
+    {
+      "label": "baseline",
+      "kw": {},
+      "grid": 8,
+      "readout": "growing",
+      "neurons": 512,
+      "params": 82476,
+      "steps": 3000,
+      "val_bpc": 2.4363465763860623,
+      "diverged_at": null,
+      "wall_s": 478.4,
+      "readout_width": null
+    },
+    {
+      "label": "baseline",
+      "kw": {},
+      "grid": 8,
+      "readout": "fixed128",
+      "neurons": 512,
+      "params": 42924,
+      "steps": 3000,
+      "val_bpc": 2.5225931670670096,
+      "diverged_at": null,
+      "wall_s": 496.2,
+      "readout_width": 128
+    },
+    {
+      "label": "baseline",
+      "kw": {},
+      "grid": 12,
+      "readout": "growing",
+      "neurons": 1728,
+      "params": 263062,
+      "steps": 3000,
+      "val_bpc": 2.2422135418264224,
+      "diverged_at": null,
+      "wall_s": 915.0,
+      "readout_width": null
+    },
+    {
+      "label": "baseline",
+      "kw": {},
+      "grid": 12,
+      "readout": "fixed128",
+      "neurons": 1728,
+      "params": 98262,
+      "steps": 3000,
+      "val_bpc": 2.403816530927652,
+      "diverged_at": null,
+      "wall_s": 904.9,
+      "readout_width": 128
+    }
+  ]
+}

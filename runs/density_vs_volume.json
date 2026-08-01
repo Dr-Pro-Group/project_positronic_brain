@@ -1,0 +1,89 @@
+{
+  "rows": [
+    {
+      "mode": "volume",
+      "grid": 8,
+      "k_max": 16,
+      "neurons": 512,
+      "edges": 8192,
+      "reach": 0.935546875
+    },
+    {
+      "mode": "volume",
+      "grid": 12,
+      "k_max": 16,
+      "neurons": 1728,
+      "edges": 27648,
+      "reach": 0.39699074074074076
+    },
+    {
+      "mode": "volume",
+      "grid": 16,
+      "k_max": 16,
+      "neurons": 4096,
+      "edges": 65536,
+      "reach": 0.152099609375
+    },
+    {
+      "mode": "volume",
+      "grid": 20,
+      "k_max": 16,
+      "neurons": 8000,
+      "edges": 128000,
+      "reach": 0.097125
+    },
+    {
+      "mode": "volume",
+      "grid": 24,
+      "k_max": 16,
+      "neurons": 13824,
+      "edges": 221184,
+      "reach": 0.04955150462962963
+    },
+    {
+      "mode": "density",
+      "grid": 16,
+      "k_max": 16,
+      "radius": 2.6,
+      "neurons": 4096,
+      "edges": 65536,
+      "reach": 0.152099609375
+    },
+    {
+      "mode": "density",
+      "grid": 16,
+      "k_max": 32,
+      "radius": 3.5,
+      "neurons": 4096,
+      "edges": 131072,
+      "reach": 0.429931640625
+    },
+    {
+      "mode": "density",
+      "grid": 16,
+      "k_max": 64,
+      "radius": 4.5,
+      "neurons": 4096,
+      "edges": 262144,
+      "reach": 0.79345703125
+    },
+    {
+      "mode": "density",
+      "grid": 16,
+      "k_max": 128,
+      "radius": 6.0,
+      "neurons": 4096,
+      "edges": 524288,
+      "reach": 0.87255859375
+    },
+    {
+      "mode": "density",
+      "grid": 16,
+      "k_max": 256,
+      "radius": 8.0,
+      "neurons": 4096,
+      "edges": 1048576,
+      "reach": 0.000244140625
+    }
+  ]
+}

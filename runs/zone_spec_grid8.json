@@ -1,0 +1,498 @@
+{
+  "args": {
+    "grid_size": 8,
+    "dim": 64,
+    "scenes": 1500,
+    "val_frac": 0.25,
+    "n_content": 6,
+    "steps": 1500,
+    "batch_size": 32,
+    "lr": 0.002,
+    "seeds": 3,
+    "seed0": 42,
+    "probe_repeats": 3,
+    "modality_dropout": 0.5,
+    "device": "cpu",
+    "json": "runs/zone_spec_grid8.json"
+  },
+  "device": "cpu",
+  "seeds": [
+    {
+      "seed": 42,
+      "loss_first": 5.71183967590332,
+      "loss_last": 0.12405947700142861,
+      "untrained": {
+        "selectivity": {
+          "Visual": {
+            "prefers": "vision",
+            "index": 0.5953203439712524
+          },
+          "Auditory": {
+            "prefers": "audio",
+            "index": 0.6335790753364563
+          },
+          "Somatosensory": {
+            "prefers": "vision",
+            "index": 0.0750841498374939
+          },
+          "Memory": {
+            "prefers": "text",
+            "index": 0.0766800045967102
+          },
+          "Emotion": {
+            "prefers": "text",
+            "index": 0.07090047001838684
+          },
+          "Association": {
+            "prefers": "text",
+            "index": 0.6252401471138
+          }
+        },
+        "decode_acc_mean": 1.0,
+        "decode_acc_std": 0.0,
+        "decode_acc_runs": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "entry_zones": [
+          "Association",
+          "Auditory",
+          "Visual"
+        ],
+        "non_entry_zones": [
+          "Somatosensory",
+          "Memory",
+          "Emotion"
+        ],
+        "lesion": {
+          "Visual": {
+            "vision": -0.0458683967590332,
+            "audio": -0.07017755508422852,
+            "text": -0.026011943817138672
+          },
+          "Auditory": {
+            "vision": -0.013950347900390625,
+            "audio": -0.04102182388305664,
+            "text": -0.10517740249633789
+          },
+          "Somatosensory": {
+            "vision": 0.010044097900390625,
+            "audio": -0.003131389617919922,
+            "text": 0.026382923126220703
+          },
+          "Memory": {
+            "vision": -0.00458526611328125,
+            "audio": -0.005564212799072266,
+            "text": -0.014458656311035156
+          },
+          "Emotion": {
+            "vision": 0.00431060791015625,
+            "audio": 0.002524852752685547,
+            "text": -0.020227909088134766
+          },
+          "Association": {
+            "vision": -0.05014610290527344,
+            "audio": -0.032758235931396484,
+            "text": -0.048940181732177734
+          }
+        }
+      },
+      "trained": {
+        "selectivity": {
+          "Visual": {
+            "prefers": "vision",
+            "index": 0.15054923295974731
+          },
+          "Auditory": {
+            "prefers": "audio",
+            "index": 0.12786537408828735
+          },
+          "Somatosensory": {
+            "prefers": "audio",
+            "index": 0.014214752241969109
+          },
+          "Memory": {
+            "prefers": "vision",
+            "index": 0.028090346604585648
+          },
+          "Emotion": {
+            "prefers": "text",
+            "index": 0.0448252372443676
+          },
+          "Association": {
+            "prefers": "text",
+            "index": 0.16292575001716614
+          }
+        },
+        "decode_acc_mean": 1.0,
+        "decode_acc_std": 0.0,
+        "decode_acc_runs": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "entry_zones": [
+          "Association",
+          "Auditory",
+          "Visual"
+        ],
+        "non_entry_zones": [
+          "Somatosensory",
+          "Memory",
+          "Emotion"
+        ],
+        "lesion": {
+          "Visual": {
+            "vision": 0.5554703548550606,
+            "audio": 0.5946932211518288,
+            "text": 0.5783217996358871
+          },
+          "Auditory": {
+            "vision": 2.24290282279253,
+            "audio": 2.0503716245293617,
+            "text": 2.103246435523033
+          },
+          "Somatosensory": {
+            "vision": 0.1645268276333809,
+            "audio": 0.1233789399266243,
+            "text": 0.180429145693779
+          },
+          "Memory": {
+            "vision": 0.26626742631196976,
+            "audio": 0.2483605220913887,
+            "text": 0.2811399847269058
+          },
+          "Emotion": {
+            "vision": 0.1775900200009346,
+            "audio": 0.1552499607205391,
+            "text": 0.19334466755390167
+          },
+          "Association": {
+            "vision": 0.6026609614491463,
+            "audio": 0.688650943338871,
+            "text": 0.6019012778997421
+          }
+        }
+      }
+    },
+    {
+      "seed": 43,
+      "loss_first": 8.612777709960938,
+      "loss_last": 0.1177751250565052,
+      "untrained": {
+        "selectivity": {
+          "Visual": {
+            "prefers": "vision",
+            "index": 0.6580690145492554
+          },
+          "Auditory": {
+            "prefers": "audio",
+            "index": 0.594014585018158
+          },
+          "Somatosensory": {
+            "prefers": "audio",
+            "index": 0.024798717349767685
+          },
+          "Memory": {
+            "prefers": "text",
+            "index": 0.15942582488059998
+          },
+          "Emotion": {
+            "prefers": "text",
+            "index": 0.0984414741396904
+          },
+          "Association": {
+            "prefers": "text",
+            "index": 0.6389092803001404
+          }
+        },
+        "decode_acc_mean": 1.0,
+        "decode_acc_std": 0.0,
+        "decode_acc_runs": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "entry_zones": [
+          "Association",
+          "Auditory",
+          "Visual"
+        ],
+        "non_entry_zones": [
+          "Somatosensory",
+          "Memory",
+          "Emotion"
+        ],
+        "lesion": {
+          "Visual": {
+            "vision": -0.16481590270996094,
+            "audio": -0.11603069305419922,
+            "text": 0.1043386459350586
+          },
+          "Auditory": {
+            "vision": 0.014874458312988281,
+            "audio": 0.07728385925292969,
+            "text": 0.021650314331054688
+          },
+          "Somatosensory": {
+            "vision": -0.022298812866210938,
+            "audio": 0.015875816345214844,
+            "text": 0.00615692138671875
+          },
+          "Memory": {
+            "vision": -0.009156227111816406,
+            "audio": 0.017317771911621094,
+            "text": 0.0020990371704101562
+          },
+          "Emotion": {
+            "vision": 0.01610088348388672,
+            "audio": -0.03507041931152344,
+            "text": 0.019418716430664062
+          },
+          "Association": {
+            "vision": 0.07138442993164062,
+            "audio": -0.21256542205810547,
+            "text": -0.03128623962402344
+          }
+        }
+      },
+      "trained": {
+        "selectivity": {
+          "Visual": {
+            "prefers": "vision",
+            "index": 0.1600407063961029
+          },
+          "Auditory": {
+            "prefers": "audio",
+            "index": 0.11642224341630936
+          },
+          "Somatosensory": {
+            "prefers": "audio",
+            "index": 0.029350051656365395
+          },
+          "Memory": {
+            "prefers": "text",
+            "index": 0.05603962391614914
+          },
+          "Emotion": {
+            "prefers": "text",
+            "index": 0.07173553109169006
+          },
+          "Association": {
+            "prefers": "text",
+            "index": 0.17901286482810974
+          }
+        },
+        "decode_acc_mean": 1.0,
+        "decode_acc_std": 0.0,
+        "decode_acc_runs": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "entry_zones": [
+          "Association",
+          "Auditory",
+          "Visual"
+        ],
+        "non_entry_zones": [
+          "Somatosensory",
+          "Memory",
+          "Emotion"
+        ],
+        "lesion": {
+          "Visual": {
+            "vision": 1.3710537403821945,
+            "audio": 1.3731990456581116,
+            "text": 1.3514991402626038
+          },
+          "Auditory": {
+            "vision": 1.1141682118177414,
+            "audio": 1.1251370310783386,
+            "text": 1.13904470205307
+          },
+          "Somatosensory": {
+            "vision": 0.6469414085149765,
+            "audio": 0.5568774938583374,
+            "text": 0.4242675304412842
+          },
+          "Memory": {
+            "vision": 0.16242332756519318,
+            "audio": 0.10120400786399841,
+            "text": 0.10367563366889954
+          },
+          "Emotion": {
+            "vision": 0.34179697930812836,
+            "audio": 0.1905096471309662,
+            "text": 0.22151678800582886
+          },
+          "Association": {
+            "vision": 2.1587610691785812,
+            "audio": 2.8239120841026306,
+            "text": 1.909181296825409
+          }
+        }
+      }
+    },
+    {
+      "seed": 44,
+      "loss_first": 6.554327487945557,
+      "loss_last": 0.1427864281833172,
+      "untrained": {
+        "selectivity": {
+          "Visual": {
+            "prefers": "vision",
+            "index": 0.5988407135009766
+          },
+          "Auditory": {
+            "prefers": "audio",
+            "index": 0.632439136505127
+          },
+          "Somatosensory": {
+            "prefers": "vision",
+            "index": 0.052687812596559525
+          },
+          "Memory": {
+            "prefers": "text",
+            "index": 0.20109334588050842
+          },
+          "Emotion": {
+            "prefers": "text",
+            "index": 0.12208566814661026
+          },
+          "Association": {
+            "prefers": "text",
+            "index": 0.5668876767158508
+          }
+        },
+        "decode_acc_mean": 1.0,
+        "decode_acc_std": 0.0,
+        "decode_acc_runs": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "entry_zones": [
+          "Association",
+          "Auditory",
+          "Visual"
+        ],
+        "non_entry_zones": [
+          "Somatosensory",
+          "Memory",
+          "Emotion"
+        ],
+        "lesion": {
+          "Visual": {
+            "vision": -0.0019459724426269531,
+            "audio": -0.010023117065429688,
+            "text": 0.018749713897705078
+          },
+          "Auditory": {
+            "vision": 0.06243085861206055,
+            "audio": 0.024898529052734375,
+            "text": 0.026488780975341797
+          },
+          "Somatosensory": {
+            "vision": 0.01602029800415039,
+            "audio": -0.0014677047729492188,
+            "text": -0.000873565673828125
+          },
+          "Memory": {
+            "vision": -0.029277324676513672,
+            "audio": -0.011771678924560547,
+            "text": -0.00963735580444336
+          },
+          "Emotion": {
+            "vision": 0.005328178405761719,
+            "audio": -0.0035643577575683594,
+            "text": 0.012499332427978516
+          },
+          "Association": {
+            "vision": 0.020411968231201172,
+            "audio": 0.009678840637207031,
+            "text": -0.0332331657409668
+          }
+        }
+      },
+      "trained": {
+        "selectivity": {
+          "Visual": {
+            "prefers": "vision",
+            "index": 0.16039898991584778
+          },
+          "Auditory": {
+            "prefers": "audio",
+            "index": 0.07140961289405823
+          },
+          "Somatosensory": {
+            "prefers": "vision",
+            "index": 0.09475107491016388
+          },
+          "Memory": {
+            "prefers": "text",
+            "index": 0.17690739035606384
+          },
+          "Emotion": {
+            "prefers": "text",
+            "index": 0.08847878873348236
+          },
+          "Association": {
+            "prefers": "text",
+            "index": 0.13589753210544586
+          }
+        },
+        "decode_acc_mean": 1.0,
+        "decode_acc_std": 0.0,
+        "decode_acc_runs": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "entry_zones": [
+          "Association",
+          "Auditory",
+          "Visual"
+        ],
+        "non_entry_zones": [
+          "Somatosensory",
+          "Memory",
+          "Emotion"
+        ],
+        "lesion": {
+          "Visual": {
+            "vision": 0.7607178688049316,
+            "audio": 0.70212172716856,
+            "text": 0.7424480468034744
+          },
+          "Auditory": {
+            "vision": 1.5676310658454895,
+            "audio": 1.300453893840313,
+            "text": 1.2289767414331436
+          },
+          "Somatosensory": {
+            "vision": 0.2794347405433655,
+            "audio": 0.13954738527536392,
+            "text": 0.18710963428020477
+          },
+          "Memory": {
+            "vision": 0.2936704158782959,
+            "audio": 0.2182716652750969,
+            "text": 0.24071188271045685
+          },
+          "Emotion": {
+            "vision": 0.16357463598251343,
+            "audio": 0.10427608340978622,
+            "text": 0.1534692496061325
+          },
+          "Association": {
+            "vision": 0.7914115786552429,
+            "audio": 0.5807546898722649,
+            "text": 0.6087487488985062
+          }
+        }
+      }
+    }
+  ]
+}

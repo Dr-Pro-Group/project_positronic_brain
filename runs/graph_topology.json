@@ -1,0 +1,58 @@
+{
+  "rows": [
+    {
+      "label": "shipped (sigma 1.75)",
+      "edges": 23662,
+      "mean_edge_len": 1.8581128120422363,
+      "max_edge_len": 2.4494898319244385,
+      "mean_path": 4.238097993827161,
+      "clustering": 0.2855620058535363,
+      "components": 1
+    },
+    {
+      "label": "sigma 4.0",
+      "edges": 23990,
+      "mean_edge_len": 1.9517000913619995,
+      "max_edge_len": 2.4494898319244385,
+      "mean_path": 4.13984375,
+      "clustering": 0.259386999830967,
+      "components": 1
+    },
+    {
+      "label": "sigma 12.0",
+      "edges": 23902,
+      "mean_edge_len": 1.9741276502609253,
+      "max_edge_len": 2.4494898319244385,
+      "mean_path": 4.13221450617284,
+      "clustering": 0.24934099564517528,
+      "components": 1
+    },
+    {
+      "label": "radius 4.0",
+      "edges": 25675,
+      "mean_edge_len": 2.3658018112182617,
+      "max_edge_len": 4.0,
+      "mean_path": 3.367332175925926,
+      "clustering": 0.1652243706816777,
+      "components": 1
+    },
+    {
+      "label": "radius 6.0",
+      "edges": 26125,
+      "mean_edge_len": 2.639819622039795,
+      "max_edge_len": 6.0,
+      "mean_path": 3.0668306327160493,
+      "clustering": 0.1293229098322876,
+      "components": 1
+    },
+    {
+      "label": "random wiring",
+      "edges": 27399,
+      "mean_edge_len": 7.904996871948242,
+      "max_edge_len": 17.972200393676758,
+      "mean_path": 2.5262538580246914,
+      "clustering": 0.018496410235893494,
+      "components": 1
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "note": "effective dimensionality of the recurrent state vs input rank",
+  "rows": [
+    {
+      "label": "as shipped",
+      "neurons": 1000,
+      "eff_dim_rank8": 11.834824900580935,
+      "eff_dim_rank64": 67.94407316086681,
+      "expansion_at_64": 1.0616261431385439
+    },
+    {
+      "label": "no conductance",
+      "neurons": 1000,
+      "eff_dim_rank8": 18.317118118645247,
+      "eff_dim_rank64": 51.57135923723522,
+      "expansion_at_64": 0.8058024880818003
+    },
+    {
+      "label": "random wiring",
+      "neurons": 1000,
+      "eff_dim_rank8": 12.222363467803902,
+      "eff_dim_rank64": 54.17151776852241,
+      "expansion_at_64": 0.8464299651331627
+    },
+    {
+      "label": "tau_m=20",
+      "neurons": 1000,
+      "eff_dim_rank8": 7.93457627330468,
+      "eff_dim_rank64": 22.994392727336923,
+      "expansion_at_64": 0.3592873863646394
+    },
+    {
+      "label": "grid 12 (1728)",
+      "neurons": 1728,
+      "eff_dim_rank8": 11.798636626876116,
+      "eff_dim_rank64": 69.86170657864155,
+      "expansion_at_64": 1.0915891652912741
+    },
+    {
+      "label": "grid 16 (4096)",
+      "neurons": 4096,
+      "eff_dim_rank8": 11.81024955982044,
+      "eff_dim_rank64": 71.64101564484281,
+      "expansion_at_64": 1.119390869450669
+    }
+  ]
+}

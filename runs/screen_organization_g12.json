@@ -1,0 +1,432 @@
+{
+  "args": {
+    "grid_size": 12,
+    "rank": 64,
+    "json": "runs/screen_organization_g12.json"
+  },
+  "rows": [
+    {
+      "label": "baseline (as shipped)",
+      "kw": {},
+      "neurons": 1728,
+      "growth": 0.49384734965860844,
+      "MC": 29.999980291845343,
+      "MC_over_N": 0.017361099705929018,
+      "expansion": 1.0915891652912741
+    },
+    {
+      "label": "tau spread 0.2",
+      "kw": {
+        "tau_m_spread": 0.2
+      },
+      "neurons": 1728,
+      "growth": 0.5101123563945293,
+      "MC": 29.999998745508318,
+      "MC_over_N": 0.01736111038513213,
+      "expansion": 1.1952852442979665
+    },
+    {
+      "label": "tau spread 0.4",
+      "kw": {
+        "tau_m_spread": 0.4
+      },
+      "neurons": 1728,
+      "growth": 0.5798121690750122,
+      "MC": NaN,
+      "MC_over_N": NaN,
+      "expansion": NaN
+    },
+    {
+      "label": "tau spread 0.6",
+      "kw": {
+        "tau_m_spread": 0.6
+      },
+      "neurons": 1728,
+      "growth": 106.30587077140808,
+      "MC": NaN,
+      "MC_over_N": NaN,
+      "expansion": NaN
+    },
+    {
+      "label": "tau spread 0.8",
+      "kw": {
+        "tau_m_spread": 0.8
+      },
+      "neurons": 1728,
+      "growth": 347876004.0,
+      "MC": NaN,
+      "MC_over_N": NaN,
+      "expansion": NaN
+    },
+    {
+      "label": "tau spread 1.0",
+      "kw": {
+        "tau_m_spread": 1.0
+      },
+      "neurons": 1728,
+      "growth": 80079157460992.0,
+      "MC": NaN,
+      "MC_over_N": NaN,
+      "expansion": NaN
+    },
+    {
+      "label": "tau spread 1.3",
+      "kw": {
+        "tau_m_spread": 1.3
+      },
+      "neurons": 1728,
+      "growth": 8.534962243175386e+20,
+      "MC": NaN,
+      "MC_over_N": NaN,
+      "expansion": NaN
+    },
+    {
+      "label": "conn radius 1.5",
+      "kw": {
+        "connection_radius": 1.5
+      },
+      "neurons": 1728,
+      "growth": 0.4627491123974323,
+      "MC": 29.999999446732758,
+      "MC_over_N": 0.017361110790933307,
+      "expansion": 1.184429607108475
+    },
+    {
+      "label": "conn radius 2.6",
+      "kw": {
+        "connection_radius": 2.6
+      },
+      "neurons": 1728,
+      "growth": 0.49384734965860844,
+      "MC": 29.999980291845343,
+      "MC_over_N": 0.017361099705929018,
+      "expansion": 1.0915891652912741
+    },
+    {
+      "label": "conn radius 4.0",
+      "kw": {
+        "connection_radius": 4.0
+      },
+      "neurons": 1728,
+      "growth": 0.5759862959384918,
+      "MC": 29.999864253903297,
+      "MC_over_N": 0.017361032554342185,
+      "expansion": 1.0422163980523687
+    },
+    {
+      "label": "conn radius 6.0",
+      "kw": {
+        "connection_radius": 6.0
+      },
+      "neurons": 1728,
+      "growth": 0.5977051183581352,
+      "MC": 29.99976441137118,
+      "MC_over_N": 0.017360974775099063,
+      "expansion": 1.0230578668017194
+    },
+    {
+      "label": "conn radius 9.0",
+      "kw": {
+        "connection_radius": 9.0
+      },
+      "neurons": 1728,
+      "growth": 0.5991780795156956,
+      "MC": 29.999803604860276,
+      "MC_over_N": 0.017360997456516362,
+      "expansion": 1.0219099917568557
+    },
+    {
+      "label": "k_max 4",
+      "kw": {
+        "k_max": 4
+      },
+      "neurons": 1728,
+      "growth": 0.7049806714057922,
+      "MC": 29.975556815180664,
+      "MC_over_N": 0.017346965749525847,
+      "expansion": 0.9177897600099867
+    },
+    {
+      "label": "k_max 8",
+      "kw": {
+        "k_max": 8
+      },
+      "neurons": 1728,
+      "growth": 0.6454405412077904,
+      "MC": 29.999534680422613,
+      "MC_over_N": 0.017360841828948273,
+      "expansion": 0.9861435334258366
+    },
+    {
+      "label": "k_max 16",
+      "kw": {
+        "k_max": 16
+      },
+      "neurons": 1728,
+      "growth": 0.49384734965860844,
+      "MC": 29.999980291845343,
+      "MC_over_N": 0.017361099705929018,
+      "expansion": 1.0915891652912741
+    },
+    {
+      "label": "k_max 32",
+      "kw": {
+        "k_max": 32
+      },
+      "neurons": 1728,
+      "growth": 0.4026697464287281,
+      "MC": 29.999999949773297,
+      "MC_over_N": 0.01736111108204473,
+      "expansion": 1.1997019472836914
+    },
+    {
+      "label": "k_max 64",
+      "kw": {
+        "k_max": 64
+      },
+      "neurons": 1728,
+      "growth": 0.9406479224562645,
+      "MC": NaN,
+      "MC_over_N": NaN,
+      "expansion": NaN
+    },
+    {
+      "label": "decay sigma 0.75",
+      "kw": {
+        "decay_sigma": 0.75
+      },
+      "neurons": 1728,
+      "growth": 0.6810184121131897,
+      "MC": 29.9388073061661,
+      "MC_over_N": 0.017325698672549825,
+      "expansion": 0.9398590746121558
+    },
+    {
+      "label": "decay sigma 1.75",
+      "kw": {
+        "decay_sigma": 1.75
+      },
+      "neurons": 1728,
+      "growth": 0.49384734965860844,
+      "MC": 29.999980291845343,
+      "MC_over_N": 0.017361099705929018,
+      "expansion": 1.0915891652912741
+    },
+    {
+      "label": "decay sigma 4.0",
+      "kw": {
+        "decay_sigma": 4.0
+      },
+      "neurons": 1728,
+      "growth": 0.43939963914453983,
+      "MC": 29.999999950752194,
+      "MC_over_N": 0.017361111082611222,
+      "expansion": 1.2575632024205563
+    },
+    {
+      "label": "decay sigma 12.0",
+      "kw": {
+        "decay_sigma": 12.0
+      },
+      "neurons": 1728,
+      "growth": 0.4752215202897787,
+      "MC": 29.999999995669928,
+      "MC_over_N": 0.017361111108605283,
+      "expansion": 1.3317004060083304
+    },
+    {
+      "label": "random wiring",
+      "kw": {
+        "spatial_wiring": false
+      },
+      "neurons": 1728,
+      "growth": 0.7401058413088322,
+      "MC": 23.849384154687794,
+      "MC_over_N": 0.013801726941370251,
+      "expansion": 0.86455118568443
+    },
+    {
+      "label": "no Dale",
+      "kw": {
+        "use_dale": false
+      },
+      "neurons": 1728,
+      "growth": 0.9096785522997379,
+      "MC": NaN,
+      "MC_over_N": NaN,
+      "expansion": 1.1810555846897384
+    },
+    {
+      "label": "no conductance",
+      "kw": {
+        "use_conductance": false
+      },
+      "neurons": 1728,
+      "growth": 0.8148254305124283,
+      "MC": 29.999999986666975,
+      "MC_over_N": 0.01736111110339524,
+      "expansion": 0.8629466903661136
+    },
+    {
+      "label": "E/I 50-50",
+      "kw": {
+        "frac_inhibitory": 0.5
+      },
+      "neurons": 1728,
+      "growth": 0.5743164755403996,
+      "MC": 29.999905684227436,
+      "MC_over_N": 0.01736105653022421,
+      "expansion": 1.2961253795990455
+    },
+    {
+      "label": "inh_scale 1 (no I boost)",
+      "kw": {
+        "inh_scale": 1.0
+      },
+      "neurons": 1728,
+      "growth": 0.3664614427834749,
+      "MC": 29.896054127061426,
+      "MC_over_N": 0.017300957249456843,
+      "expansion": 0.9511914401496061
+    },
+    {
+      "label": "laminar",
+      "kw": {
+        "use_laminar": true
+      },
+      "neurons": 1728,
+      "growth": 0.5239083208143711,
+      "MC": 29.999979943624545,
+      "MC_over_N": 0.017361099504412354,
+      "expansion": 1.1044059581617998
+    },
+    {
+      "label": "divnorm",
+      "kw": {
+        "use_divnorm": true
+      },
+      "neurons": 1728,
+      "growth": 0.48528236150741577,
+      "MC": 29.999921468933024,
+      "MC_over_N": 0.017361065664891796,
+      "expansion": 1.1356242562856556
+    },
+    {
+      "label": "stp",
+      "kw": {
+        "use_stp": true
+      },
+      "neurons": 1728,
+      "growth": 4.456412468105555,
+      "MC": 29.999999984148218,
+      "MC_over_N": 0.017361111101937627,
+      "expansion": 1.2774923097616504
+    },
+    {
+      "label": "adaptation",
+      "kw": {
+        "use_adaptation": true
+      },
+      "neurons": 1728,
+      "growth": 12.493373483419418,
+      "MC": 29.99998545340969,
+      "MC_over_N": 0.017361102692945423,
+      "expansion": 1.1027773895544093
+    },
+    {
+      "label": "delays",
+      "kw": {
+        "use_delays": true
+      },
+      "neurons": 1728,
+      "growth": 2.1899744048714638,
+      "MC": 29.99999996055546,
+      "MC_over_N": 0.01736111108828441,
+      "expansion": 1.0929160321233853
+    },
+    {
+      "label": "oscillation",
+      "kw": {
+        "use_oscillation": true
+      },
+      "neurons": 1728,
+      "growth": 697.5409107208252,
+      "MC": 29.999997621582285,
+      "MC_over_N": 0.01736110973471197,
+      "expansion": 1.0977437172520197
+    },
+    {
+      "label": "spread 0.8 + radius 4",
+      "kw": {
+        "tau_m_spread": 0.8,
+        "connection_radius": 4.0
+      },
+      "neurons": 1728,
+      "growth": 4337611.9140625,
+      "MC": NaN,
+      "MC_over_N": NaN,
+      "expansion": NaN
+    },
+    {
+      "label": "spread 0.8 + k_max 32",
+      "kw": {
+        "tau_m_spread": 0.8,
+        "k_max": 32
+      },
+      "neurons": 1728,
+      "growth": 1884721164320768.0,
+      "MC": NaN,
+      "MC_over_N": NaN,
+      "expansion": NaN
+    },
+    {
+      "label": "spread 0.8 + stp",
+      "kw": {
+        "tau_m_spread": 0.8,
+        "use_stp": true
+      },
+      "neurons": 1728,
+      "growth": 1453787525046272.0,
+      "MC": NaN,
+      "MC_over_N": NaN,
+      "expansion": NaN
+    },
+    {
+      "label": "spread 0.8 + adaptation",
+      "kw": {
+        "tau_m_spread": 0.8,
+        "use_adaptation": true
+      },
+      "neurons": 1728,
+      "growth": 217556102.5,
+      "MC": NaN,
+      "MC_over_N": NaN,
+      "expansion": NaN
+    },
+    {
+      "label": "spread 0.8 + delays",
+      "kw": {
+        "tau_m_spread": 0.8,
+        "use_delays": true
+      },
+      "neurons": 1728,
+      "growth": 5389946386.824219,
+      "MC": NaN,
+      "MC_over_N": NaN,
+      "expansion": NaN
+    },
+    {
+      "label": "spread 1.0 + radius 4 + k32",
+      "kw": {
+        "tau_m_spread": 1.0,
+        "connection_radius": 4.0,
+        "k_max": 32
+      },
+      "neurons": 1728,
+      "growth": 5.715315267857285e+17,
+      "MC": NaN,
+      "MC_over_N": NaN,
+      "expansion": NaN
+    }
+  ]
+}

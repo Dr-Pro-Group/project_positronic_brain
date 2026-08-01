@@ -43,8 +43,11 @@ behind the README's honest-scope caveats.
 | `--oscillation` | theta-like **pacemaker** drive on inhibitory cells | Buzsáki; Lisman & Jensen 2013 | **fidelity** | a temporal clock / phase substrate |
 | `--dendrites` | per-branch **NMDA** thresholded nonlinearity | Poirazi 2003; Beniaguev et al. 2021 | **fidelity** | per-neuron nonlinear depth without growing the head |
 | `--adaptation` | **spike-frequency adaptation** (I_M / I_AHP): a slow per-neuron hyperpolarizing current that low-pass-filters the neuron's own rate and subtracts it from the membrane (`τ_a·ȧ = −a + r`; `dV −= g_a·a`) | Benda & Herz 2003; Brette & Gerstner 2005 | **fidelity** (may be quality-positive) | rate-model reduction of the AdEx adaptation current; a novelty / high-pass filter that decorrelates repeated characters. One extra `(B,N)` state, threaded through `step`/reverberation/TBPTT like STP |
+| `--delays` | distance-dependent **axonal conduction delays**: every edge carries an integer latency `round(edge_dist / delay_velocity)` clamped to `[1, delay_max]`, and its synaptic current is driven by the presynaptic rate from that many steps ago | Swadlow 2000; Izhikevich 2006 | **fidelity** (a second timescale; NOT, as measured, a way to make the 3D embedding load-bearing) | the graph already knew every edge's length, but distance had only biased *which* neurons connect and *how strongly* — never *when* the signal lands. A bounded delay line of past rate frames, one gather per distinct delay, so a step costs O(distinct delays) and never materialises a `(delay, B, N)` tensor. Widen the spectrum with `--delay-velocity` (lower = slower axons). **Measured:** held-out bpc 2.7359 -> 2.7003 at grid-12/400 steps/SODA, improving on 3/3 seeds (~1.3% relative). **Controls show the gain is lag, not distance**: `--delay-mode uniform` (one latency everywhere) reaches 2.6992 and `--delay-mode shuffled` (same histogram, geometry destroyed) 2.7002 — both within noise of the distance arm. The spectrum is only {1,2} steps at this connection radius, too narrow for geometry to express. ~7% slower per step |
 | `--sparse-weight W` | metabolic **sparse-coding** penalty toward a firing set-point | Olshausen & Field 1996 | fidelity / anti-dead-unit | per-neuron mean-rate penalty |
 | `--learning-rule eprop` | forward-only **eligibility-trace** learning (vs BPTT) | Bellec et al. 2020 | **fidelity** + online learning | gated by a gradient-agreement test (cosine to BPTT > 0.2); includes the conductance driving-force term |
+| `use_wm_attn` (LMConfig) | **working-memory attention**: circular buffer of recent token embeddings, content-based soft read injected as top-down current | WM + biased retrieval | **routing / attention** | limited-capacity addressable memory; off by default |
+| `use_zone_attn` (BrainConfig) | **zone gain routing**: population query vs learnable zone keys → softmax gains multiply rates | biased competition | **attention-like** | soft “which area wins”; off by default |
 | `--laminar` | canonical **laminar microcircuit**: L4→L2/3→L5/6 connectivity bias + spatially-even inhibition | Douglas & Martin 2004; Bastos et al. 2012 | **fidelity** | reshapes local wiring (same edge count/k_max); also fixes the random-inhibition zero-gap problem |
 | `--lr-schedule warmcos` | LR warmup + cosine decay | standard | quality/stability | tied to step count |
 
@@ -65,7 +68,7 @@ for seed in 42 43 44; do
       --device mps --seed $seed --eval-every 100 --divnorm --out runs/divnorm_$seed.pt
 done
 # the classic biology ablations + matched LSTM/RNN baselines (multi-seed):
-python research_paper/matched_experiment.py --mode all --grid-size 12 \
+python experiments/matched_experiment.py --mode all --grid-size 12 \
     --steps 400 --seeds 42,43,44 --json runs/matched_fixed.json
 ```
 

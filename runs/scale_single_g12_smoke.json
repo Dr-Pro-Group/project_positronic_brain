@@ -1,0 +1,93 @@
+{
+  "mode": "single",
+  "dataset": "tinystories",
+  "grid_size": 12,
+  "params": 3750447,
+  "neurons": 1728,
+  "vocab_size": 2048,
+  "best_val_bpc": 4.740758546805936,
+  "best_step": 600,
+  "curve": [
+    {
+      "step": 100,
+      "train_ce": 4.242600319385528,
+      "ce": 3.8061087876558304,
+      "bpc": 5.491054273034972,
+      "ppl": 44.97509030176069,
+      "tokens": 3072,
+      "wall_s": 19.1
+    },
+    {
+      "step": 200,
+      "train_ce": 3.6346724939346315,
+      "ce": 3.628515273332596,
+      "bpc": 5.234840990626798,
+      "ppl": 37.656864939399725,
+      "tokens": 3072,
+      "wall_s": 36.2
+    },
+    {
+      "step": 300,
+      "train_ce": 3.54799106836319,
+      "ce": 3.5165540874004364,
+      "bpc": 5.073315142910424,
+      "ppl": 33.66821062938752,
+      "tokens": 3072,
+      "wall_s": 53.4
+    },
+    {
+      "step": 400,
+      "train_ce": 3.3733852910995483,
+      "ce": 3.420526310801506,
+      "bpc": 4.934776345823554,
+      "ppl": 30.58550826902514,
+      "tokens": 3072,
+      "wall_s": 70.5
+    },
+    {
+      "step": 500,
+      "train_ce": 3.313428478240967,
+      "ce": 3.347787708044052,
+      "bpc": 4.829836724344183,
+      "ppl": 28.439746973545876,
+      "tokens": 3072,
+      "wall_s": 87.7
+    },
+    {
+      "step": 600,
+      "train_ce": 3.2127320671081545,
+      "ce": 3.286043420433998,
+      "bpc": 4.740758546805936,
+      "ppl": 26.736867559336012,
+      "tokens": 3072,
+      "wall_s": 103.2
+    }
+  ],
+  "protocol": {
+    "cmd": "train-single",
+    "work_dir": "data/scale_tinystories",
+    "device": "mps",
+    "steps": 600,
+    "steps_per_area": 1500,
+    "seq_len": 48,
+    "batch_size": 4,
+    "lr": 0.0008,
+    "grad_clip": 0.5,
+    "eval_every": 100,
+    "max_windows": 64,
+    "grid_size": 12,
+    "embed_dim": 64,
+    "inner_steps": 2,
+    "seed": 42,
+    "json": "runs/scale_single_g12_smoke.json",
+    "checkpoint": "",
+    "grad_checkpoint": true,
+    "readout_width": 0,
+    "n_areas": 3,
+    "area_dir": "",
+    "offload_inactive": false
+  },
+  "test_bpc": 4.718261109285608,
+  "test_ppl": 26.323165922877205,
+  "wall_min": 1.73
+}
